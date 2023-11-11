@@ -7,7 +7,7 @@ endif()
 
 FetchContent_Declare(
   BoostCMake
-  GIT_REPOSITORY https://github.com/Guekka/boost-cmake.git
+  GIT_REPOSITORY https://github.com/Orphis/boost-cmake.git
 )
 
 FetchContent_MakeAvailable(BoostCMake)

@@ -43,6 +43,13 @@ jobs:
         with:
           dir: "${{ github.workspace}}/"
 
+      - name: Set up cmake deps cache
+        uses: actions/cache@v3
+        with:
+          path: ./_deps
+          key: ${{ runner.os }}.deps.${{ hashFiles('**/') }}
+          restore-keys: ${{ runner.os }}.deps.
+
       - name: Build
         run: cmake ./CMakeLists.txt
 

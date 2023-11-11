@@ -40,12 +40,13 @@ jobs:
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
-        dir: "${{ github.workspace}}/"
+        with:
+          dir: "${{ github.workspace}}/"
 
       - name: Build
         run: cmake ./CMakeLists.txt
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3
-        with: |
-          ./build
+        with:
+          path: ./build

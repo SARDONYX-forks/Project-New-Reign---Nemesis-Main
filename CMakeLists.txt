@@ -141,7 +141,6 @@ set(Header_Files__utilities
     "include/utilities/regex.h"
     "include/utilities/renew.h"
     "include/utilities/scope.h"
-    "include/utilities/stringsplit.h"
     "include/utilities/writetextfile.h"
     "include/utilities/threadpool.h"
     )
@@ -244,7 +243,6 @@ set(Source_Files__utilities
     "src/utilities/regex.cpp"
     "src/utilities/renew.cpp"
     "src/utilities/scope.cpp"
-    "src/utilities/stringsplit.cpp"
     "src/utilities/threadpool.cpp"
     )
 source_group("Source Files\\utilities" FILES ${Source_Files__utilities})

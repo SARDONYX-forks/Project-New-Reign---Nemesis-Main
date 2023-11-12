@@ -62,7 +62,6 @@ set(Header_Files__generate
     "include/generate/behaviorprocess.h"
     "include/generate/behaviorprocess_utility.h"
     "include/generate/behaviorsubprocess.h"
-    "include/generate/behaviortype.h"
     "include/generate/generator_utility.h"
     "include/generate/installscripts.h"
     "include/generate/papyruscompile.h"

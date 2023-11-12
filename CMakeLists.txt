@@ -82,7 +82,6 @@ set(Header_Files__generate__animation
     "include/generate/animation/paired.h"
     "include/generate/animation/registeranimation.h"
     "include/generate/animation/singletemplate.h"
-    "include/generate/animation/templateinfo.h"
     "include/generate/animation/templateprocessing.h"
     "include/generate/animation/templatetree.h"
     )
@@ -194,7 +193,6 @@ set(Source_Files__generate__animation
     "src/generate/animation/paired.cpp"
     "src/generate/animation/registeranimation.cpp"
     "src/generate/animation/singletemplate.cpp"
-    "src/generate/animation/templateinfo.cpp"
     "src/generate/animation/templateprocessing.cpp"
     )
 source_group("Source Files\\generate\\animation" FILES ${Source_Files__generate__animation})

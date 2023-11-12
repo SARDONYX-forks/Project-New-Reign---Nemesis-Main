@@ -54,6 +54,8 @@ jobs:
       - name: Create a solution file(.sln) with cmake
         run: cmake ./CMakeLists.txt
 
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - name: Build by solution file
         run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release
 

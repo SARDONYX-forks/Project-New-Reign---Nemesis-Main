@@ -52,7 +52,10 @@ jobs:
           restore-keys: ${{ runner.os }}.deps.
 
       - name: Create a solution file(.sln) with cmake
-        run: cmake ./CMakeLists.txt
+        run: cmake -A Win32 ./CMakeLists.txt
+        # - Why use `Win32`?
+        #   Cannot compile `hkxcmd` without specifying `WIn32` for the architecture
+        #   (except IA-32, which causes compile errors in preprocessing).
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1

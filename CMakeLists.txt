@@ -284,13 +284,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC $ENV{UniversalCRTSdkDir}/Inclu
 ################################################################################
 # Compile definitions
 ################################################################################
+# _WIN32_WINNT=0x0601: Windows7
+# See: https://learn.microsoft.com/en-US/cpp/porting/modifying-winver-and-win32-winnt?view=msvc-170
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     "UNICODE;"
     "_UNICODE;"
     "WIN32;"
     "WIN64"
     "_WIN32_WINNT=0x0601"
-    "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING" #There are no alternatives
     )
 
 ################################################################################

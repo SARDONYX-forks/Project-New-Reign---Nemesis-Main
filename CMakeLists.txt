@@ -128,7 +128,6 @@ source_group("Header Files\\update\\animdata" FILES ${Header_Files__update})
 set(Header_Files__utilities
     "include/utilities/algorithm.h"
     "include/utilities/alphanum.hpp"
-    "include/utilities/animationsconvert.h"
     "include/utilities/atomiclock.h"
     "include/utilities/bsasupport.h"
     "include/utilities/compute.h"
@@ -236,7 +235,6 @@ source_group("Source Files\\update\\animdata" FILES ${Source_Files__update})
 
 set(Source_Files__utilities
     "src/utilities/algorithm.cpp"
-    "src/utilities/animationsconvert.cpp"
     "src/utilities/compute.cpp"
     "src/utilities/conditions.cpp"
     "src/utilities/crc32.cpp"

@@ -52,7 +52,7 @@ jobs:
           restore-keys: ${{ runner.os }}.deps.
 
       - name: Create a solution file(.sln) with cmake
-        run: cmake ../CMakeLists.txt
+        run: cmake ./CMakeLists.txt
 
       - name: Build by solution file
         run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release

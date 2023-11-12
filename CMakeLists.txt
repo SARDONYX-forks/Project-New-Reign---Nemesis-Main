@@ -220,7 +220,6 @@ set(Source_Files__update
     "src/update/animdata/animdatacond.cpp"
     "src/update/animdata/animdatapackcond.cpp"
     "src/update/animdata/animdataprojectcond.cpp"
-    "src/update/animdata/infodatacond.cpp"
     )
 source_group("Source Files\\update" FILES ${Source_Files__update})
 

@@ -58,8 +58,10 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Build by solution file
-        run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release /p:Platform=Win32
+        run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release /p:Platform=x86
         # Need IA-32(32bit) mode for `hkxcmd`
+        # `*.sln` -> x86
+        # `.vcxproj` -> Win32
 
       - name: List files
         shell: pwsh

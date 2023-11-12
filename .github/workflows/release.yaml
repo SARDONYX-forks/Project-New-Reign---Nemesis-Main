@@ -52,14 +52,12 @@ jobs:
           restore-keys: ${{ runner.os }}.deps.
 
       - name: Create a solution file(.sln) with cmake
-        run: cmake ./CMakeLists.txt
-        # Error Win32 in Cpython.cmake. Therefore, use 64bit mode in this runner.
+        run: cmake ./CMakeLists.txt -A Win32 # Need IA-32(32bit) mode for `hkxcmd`
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Build by solution file
         run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release /p:Platform=X86
-        # Need IA-32(32bit) mode for `hkxcmd`
         # `*.sln` -> X86
         # `.vcxproj` -> Win32
 

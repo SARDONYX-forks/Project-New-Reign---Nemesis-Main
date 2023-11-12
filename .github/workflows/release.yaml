@@ -54,7 +54,11 @@ jobs:
       - name: Build
         run: cmake ./CMakeLists.txt
 
+      - name: List files
+        shell: pwsh
+        run: Get-ChildItem
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3
         with:
-          path: ${{ github.workspace}}/Project-New-Reign---Nemesis-Main
+          path: ${{ github.workspace}}/

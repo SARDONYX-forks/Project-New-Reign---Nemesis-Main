@@ -39,6 +39,8 @@ jobs:
         with:
           xmake-version: latest
         continue-on-error: true # Add because cache is wasted while build fails
+      - name: Setup conan
+        run: pip install conan # Install C, C++ build Manager(For install deps)
 
       - name: Build Nemesis
         run: xmake -y

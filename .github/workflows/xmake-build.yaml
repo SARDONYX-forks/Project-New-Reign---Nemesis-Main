@@ -47,12 +47,12 @@ jobs:
           xmake-version: latest
 
       - name: Build Nemesis
-        run: xmake --yes --verbose
+        run: xmake --yes
         continue-on-error: true # Add because cache is wasted while build fails
 
       - name: Show file tree
         shell: pwsh
-        run: tree /f > ./Build/tree.txt
+        run: mkdir -p ./build;tree /f > ./build/tree.txt
 
       - name: Compress build files
         shell: pwsh

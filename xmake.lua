@@ -21,6 +21,6 @@ set_policy("package.requires_lock", true)
 
 -- packages
 -- ref: https://xmake.io/mirror/manual/global_interfaces.html#:~:text=Install%20third%2Dparty%20manager%20package
-add_requires("conan::boost/1.72.0", { alias = "boost" }) -- https://conan.io/center/recipes/boost
+add_requires("boost 1.72.0", { alias = "boost" }) -- https://conan.io/center/recipes/boost
 
 includes("src")

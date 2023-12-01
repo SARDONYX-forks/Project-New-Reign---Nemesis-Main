@@ -30,8 +30,9 @@ jobs:
       - name: Python Cache
         uses: actions/cache@v3
         with:
-          path: ./Python3_8_10_x86-windows
-          key: Python3_8_10_x86-${{ runner.os }}
+          path: |
+            ./Python3_10_11_x64-windows
+          key: Python3-${{ runner.os }}
       - name: Get Python3.8.10
         shell: pwsh
         run: |
@@ -44,14 +45,6 @@ jobs:
         uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
-
-      - name: Setup conan
-        run: pip install conan # Install C, C++ build Manager(For install deps)
-      - name: Conan Cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.conan2
-          key: Conan-${{ runner.os }}
 
       - name: Build Nemesis
         run: xmake --yes --verbose

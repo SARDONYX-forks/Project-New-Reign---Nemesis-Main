@@ -21,6 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          dir: "${{ github.workspace}}/"
+          cache: true
+
       - name: Python Cache
         uses: actions/cache@v3
         with:
@@ -29,9 +35,9 @@ jobs:
       - name: Get Python3.8.10
         shell: pwsh
         run: |
-          if (!$(Test-Path ./Python3_8_10_x86-windows)) {
-            Invoke-WebRequest https://github.com/SARDONYX-forks/Project-New-Reign---Nemesis-Main/releases/download/v0.84-beta/Python3_8_10_x86-windows.zip -OutFile "./Python3_8_10_x86-windows.zip"
-            Expand-Archive ./Python3_8_10_x86-windows.zip
+          if (!$(Test-Path ./Python3_10_11_x64-windows)) {
+            Invoke-WebRequest https://github.com/SARDONYX-forks/Project-New-Reign---Nemesis-Main/releases/download/v0.84-beta/Python3_10_11_x64-windows.zip -OutFile "./Python3_10_11_x64-windows.zip"
+            Expand-Archive ./Python3_10_11_x64-windows.zip
           }
 
       - name: Setup xmake
@@ -53,11 +59,11 @@ jobs:
 
       - name: Show file tree
         shell: pwsh
-        run: tree /f > ./Release/tree.txt
+        run: tree /f > ./Build/tree.txt
 
       - name: Compress build files
         shell: pwsh
-        run: Compress-Archive ./Release ./build.zip
+        run: Compress-Archive ./Build ./build.zip
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3

@@ -60,7 +60,7 @@ jobs:
 
       - name: Show file tree
         shell: pwsh
-        run: mkdir -p ./build;tree /f > ./build/tree.txt
+        run: if (!$(Test-Path ./build)) { mkdir -p ./build };tree /f > ./build/tree.txt
 
       - name: Compress build files
         shell: pwsh

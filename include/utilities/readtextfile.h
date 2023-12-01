@@ -6,6 +6,8 @@
 #include <QtCore\QFile.h>
 #include <QtCore\QTextStream.h>
 
+#include "utilities/conditiondetails.h"
+
 struct FileReader
 {
     QFile file;
@@ -79,7 +81,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(QString& line)
     {
         ++linenum;
@@ -97,7 +99,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(nemesis::Line& line)
     {
         ++linenum;
@@ -116,7 +118,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(nemesis::Line& line, nemesis::SharableWrapper<std::filesystem::path>* path_ptr)
     {
         ++linenum;

@@ -46,6 +46,14 @@ jobs:
         with:
           xmake-version: latest
 
+      - name: Setup conan # use Conan because the installation of boost fails for some reason with xmake.
+        run: pip install conan # Install C, C++ build Manager(For install deps)
+      - name: Conan Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.conan2
+          key: Conan-${{ runner.os }}
+
       - name: Build Nemesis
         run: xmake --yes
         continue-on-error: true # Add because cache is wasted while build fails

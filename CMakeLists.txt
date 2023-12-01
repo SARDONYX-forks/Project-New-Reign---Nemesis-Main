@@ -36,15 +36,15 @@ add_subdirectory(external/hkxcmd)
 # Source groups
 ################################################################################
 # Header Files
-file(GLOB Header_Files "include/*.h" "include/**/*.h")
+set(GLOB Header_Files "include/*.h" "include/**/*.h")
 source_group("Header Files" FILES ${Header_Files})
 
 # Source Files
-file(GLOB Source_Files "src/*.cpp" "src/**/*.cpp")
+set(GLOB Source_Files "src/*.cpp" "src/**/*.cpp")
 source_group("Source Files" FILES ${Source_Files})
 
 # Resources Files
-file(GLOB Resources_Files "resources/*.rc" "resources/*.qrc")
+set(GLOB Resources_Files "resources/*.rc" "resources/*.qrc")
 source_group("Resources Files" FILES ${Resources_Files})
 
 set(ALL_FILES

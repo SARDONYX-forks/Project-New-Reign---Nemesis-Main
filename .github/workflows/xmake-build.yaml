@@ -38,12 +38,12 @@ jobs:
         uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
-        continue-on-error: true # Add because cache is wasted while build fails
       - name: Setup conan
         run: pip install conan # Install C, C++ build Manager(For install deps)
 
       - name: Build Nemesis
-        run: xmake -y
+        run: xmake --yes --verbose
+        continue-on-error: true # Add because cache is wasted while build fails
 
       - name: Show file tree
         shell: pwsh

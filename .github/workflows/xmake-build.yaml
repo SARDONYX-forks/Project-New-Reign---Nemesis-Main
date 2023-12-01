@@ -55,7 +55,7 @@ jobs:
           key: Conan-${{ runner.os }}
 
       - name: Build Nemesis
-        run: xmake --yes
+        run: xmake --yes --verbose
         continue-on-error: true # Add because cache is wasted while build fails
 
       - name: Show file tree

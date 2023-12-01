@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "scope/scopeinfo.h"
+
 namespace nemesis
 {
 	struct AnimValue

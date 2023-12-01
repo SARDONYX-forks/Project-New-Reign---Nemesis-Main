@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/linkedpreprocessline.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {

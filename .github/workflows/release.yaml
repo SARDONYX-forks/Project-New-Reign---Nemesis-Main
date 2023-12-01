@@ -44,24 +44,6 @@ jobs:
           dir: "${{ github.workspace}}/"
           cache: true
 
-      - name: Install boost
-        uses: MarkusJx/install-boost@v2.4.4
-        id: install-boost
-        with:
-          # REQUIRED: Specify the required boost version
-          # A list of supported versions can be found here:
-          # https://github.com/MarkusJx/prebuilt-boost/blob/main/versions-manifest.json
-          boost_version: 1.80.0
-          # OPTIONAL: Specify a custon install location
-          boost_install_dir: C:/IT/Boost_1.72.0
-          # OPTIONAL: Specify a platform version
-          platform_version: 2022
-          # OPTIONAL: Specify a toolset
-          toolset: msvc
-          # NOTE:
-          # - CI default arch is x86
-          # - If a boost version matching all requirements cannot be found, this build step will fail
-
       - name: Set up cmake deps cache
         uses: actions/cache@v3
         with:
@@ -70,18 +52,13 @@ jobs:
           restore-keys: ${{ runner.os }}.deps.
 
       - name: Create a solution file(.sln) with cmake
-        run: |
-          cmake ./CMakeLists.txt -A Win32\
-            -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include\
-            -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
-        # -A Win32 Need IA-32(32bit) mode for `hkxcmd`
-        env:
-          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+        run: cmake ./CMakeLists.txt -A Win32 # Need IA-32(32bit) mode for `hkxcmd`
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Build by solution file
         run: msbuild.exe NemesisUnlimitedBehaviorEngine.sln -t:Rebuild -p:Configuration=Release
+        continue-on-error: true # Add because cache is wasted while build fails
 
       - name: List files
         shell: pwsh

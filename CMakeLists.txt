@@ -7,15 +7,15 @@ project(NemesisUnlimitedBehaviorEngine LANGUAGES CXX VERSION 0.84)
 
 
 # This part is the only one that should be modified by the user wanting to compile Nemesis
+# cmake -DUseLocalBoost=ON path/to/project_dir
+set(Qt5_DIR "C:/IT/Qt/5.14.1/msvc2017/lib/cmake/Qt5") # Comment out when use Github CI
 
-# set(Qt5_DIR "C:/IT/Qt/5.14.1/msvc2017/lib/cmake/Qt5") # Comment out when use Github CI
-
-option(UseLocalBoost "Uses local copy of Boost instead of downloading it" OFF) # ON or OFF
+option(UseLocalBoost "Uses local copy of Boost instead of downloading it" ON) # ON or OFF
 set(BOOST_ROOT "C:/IT/Boost_1.72.0" CACHE PATH "Boost local path" )
 
 #You have to use a local copy of Python source, not the binaries
 #Note: It MUST match the version set in Python.cmake
-option(UseLocalPython "Uses local copy of Python instead of downloading it" OFF) # ON or OFF
+option(UseLocalPython "Uses local copy of Python instead of downloading it") # ON or OFF
 set(PYTHON_ROOT "C:/IT/cpython" CACHE PATH "Python local path" )
 
 ################################################################################

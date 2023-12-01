@@ -47,6 +47,11 @@ source_group("Source Files" FILES ${Source_Files})
 file(GLOB Resources_Files "resources/*.rc" "resources/*.qrc")
 source_group("Resources Files" FILES ${Resources_Files})
 
+set(ALL_FILES
+    ${Header_Files}
+    ${Source_Files}
+    ${Resources_Files}
+    )
 ################################################################################
 # Target
 ################################################################################

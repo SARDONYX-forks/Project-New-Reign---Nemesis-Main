@@ -72,7 +72,6 @@ jobs:
       - name: Create a solution file(.sln) with cmake
         run: |
           cmake ./CMakeLists.txt -A Win32\
-            -DCMAKE_BUILD_TYPE=$BUILD_TYPE -B build\
             -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include\
             -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
         # -A Win32 Need IA-32(32bit) mode for `hkxcmd`

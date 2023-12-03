@@ -2194,9 +2194,14 @@ void proc::import(nemesis::scope blok, VecStr& blocks, AnimThreadInfo& curAnimIn
 
                 pos = keyword.rfind("!~^!");
 
-                openBrack != 0 || pos == NOT_FOUND || pos != keyword.length() - 4
-                    ? ErrorMessage(1139, format, behaviorFile, curAnimInfo.numline, import)
-                    : keyword = keyword.substr(0, keyword.length() - 4);
+                if (openBrack != 0 || pos == NOT_FOUND || pos != keyword.length() - 4)
+                {
+                    ErrorMessage(1139, format, behaviorFile, curAnimInfo.numline, import);
+                }
+                else
+                {
+                    keyword = keyword.substr(0, keyword.length() - 4);
+                }
             }
 
             Lockless lock(curAnimInfo.animLock->exportLock);

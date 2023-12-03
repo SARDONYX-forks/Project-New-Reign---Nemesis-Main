@@ -12,6 +12,9 @@ Thanks to all for supporting this project
   - Feature: msvc v140 VS2015 C++ (Need to build Cpython 3.8.2)
 
 - Python(For aqt command.This is Unofficial Qt installer)
+  - version: 3.8~3.10
+    - To avoid this error
+      [cannot open file 'libffi-7.lib'](https://discuss.python.org/t/struggling-to-build-python-on-windows-10/11031)
 
 ```powershell
 mkdir -p ./build;cd ./build;

@@ -2,20 +2,21 @@
 
 #include <functional>
 
+#include "core/AnimationRequest.h"
 #include "core/Statements/Statement.h"
 
-#include "core/AnimationRequest.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct CompileState;
     struct SemanticManager;
 
-	struct ForEachStatement : public nemesis::Statement
+    struct ForEachStatement : public nemesis::Statement
     {
     private:
         std::string* OptionName = nullptr;
-        int LoopCycle = 0;
+        int LoopCycle           = 0;
         std::function<void(nemesis::CompileState&, std::function<void()>)> ForEachFunction;
 
         void ParseComponents(nemesis::SemanticManager& manager);
@@ -32,4 +33,4 @@ namespace nemesis
         void ForEach(nemesis::CompileState& state, std::function<void()> action) const;
         bool TryGetOptionName(std::string& option_name) const noexcept;
     };
-}
+} // namespace nemesis

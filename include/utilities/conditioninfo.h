@@ -9,7 +9,7 @@ namespace nemesis
     private:
         nemesis::Line condition;
         const nemesis::Line* refline = nullptr;
-        nemesis::CondType type = nemesis::CondType::NONE;
+        nemesis::CondType type       = nemesis::CondType::NONE;
         Deq<nemesis::Line> contents;
         bool Success = true;
 
@@ -44,4 +44,4 @@ namespace nemesis
         size_t GetLineNumber() const noexcept;
         nemesis::CondType GetType() const noexcept;
     };
-}
+} // namespace nemesis

@@ -20,10 +20,11 @@ conditions that will create another nested scope and so on
 #include "scope/layers.h"
 #include "scope/stateidmanager.h"
 
+#include "utilities/conditiondetails.h"
 #include "utilities/noncopyable.h"
 
-#include "hkx/HkxVariable.h"
 #include "hkx/HkxEvent.h"
+#include "hkx/HkxVariable.h"
 
 namespace nemesis
 {
@@ -37,7 +38,7 @@ namespace nemesis
     struct Condt;
     struct HkxBehaviorFile;
 
-	struct ScopeInfo
+    struct ScopeInfo
     {
     private:
         struct TemporaryScope
@@ -57,7 +58,7 @@ namespace nemesis
             virtual void Next()  = 0;
         };
 
-        template<typename T>
+        template <typename T>
         struct TempScopeLayer : public NonCopyableStruct, public TemporaryScope
         {
         private:
@@ -110,12 +111,12 @@ namespace nemesis
             <do something>
         }
         */
-        template<typename ValueType>
+        template <typename ValueType>
         struct ScopeIteratorValue : public ScopeIterator
         {
         private:
-            size_t index = 0;
-            const Vec<ValueType>* list_ptr = nullptr;
+            size_t index                             = 0;
+            const Vec<ValueType>* list_ptr           = nullptr;
             nemesis::Layers<ValueType>* currentlayer = nullptr;
 
         public:
@@ -125,7 +126,7 @@ namespace nemesis
                 SetListPtr(list);
                 SetCurrentLayer(layer);
             }
-            
+
             ~ScopeIteratorValue()
             {
                 if (!currentlayer) return;
@@ -207,7 +208,7 @@ namespace nemesis
         Vec<const MultiChoice::Choice*> failed;
         const MultiChoice::Choice* captured;
 
-        int elementcounter = 0;
+        int elementcounter       = 0;
         std::string* elementline = nullptr;
         std::string_view nodeid_sv;
         size_t animcounter;
@@ -234,18 +235,17 @@ namespace nemesis
         const Vec<const nemesis::AnimQuery*>*
         GetTemplateAllQueries(const nemesis::TemplateCategory* templtclass) const;
 
-        const Vec<const nemesis::AnimQuery*>*
-        GetTemplateAllAnim(const nemesis::Condition& condition) const;
+        const Vec<const nemesis::AnimQuery*>* GetTemplateAllAnim(const nemesis::Condition& condition) const;
 
-        
         const nemesis::Option* GetCurrentOptionPtr(const std::string& optionname,
                                                    size_t index,
                                                    const nemesis::TemplateCategory* templtclass) const;
-        nemesis::Layers<const nemesis::Option*>& GetOptionLayers(const nemesis::Option& opt,
-                                                                 const nemesis::TemplateCategory* templtclass);
-        nemesis::Layers<const std::string*>& GetAnimObjListLayers(size_t animobj_grp,
-                                                            const nemesis::AnimQuery* animquery,
-                                                            const nemesis::TemplateCategory* templtclass);
+        nemesis::Layers<const nemesis::Option*>&
+        GetOptionLayers(const nemesis::Option& opt, const nemesis::TemplateCategory* templtclass);
+        nemesis::Layers<const std::string*>&
+        GetAnimObjListLayers(size_t animobj_grp,
+                             const nemesis::AnimQuery* animquery,
+                             const nemesis::TemplateCategory* templtclass);
         const ScopeLayer::QueryDataLayers*
         GetCurrentQueryDataLayers(const nemesis::TemplateCategory* templtclass) const;
 
@@ -278,14 +278,14 @@ namespace nemesis
                                size_t animobj_grp,
                                const nemesis::AnimQuery* animquery,
                                const nemesis::TemplateCategory* templtclass) noexcept;
-        
+
         template <typename T>
         void Insert(nemesis::Layers<T>& layers, T value)
         {
             layers.AddLayer(value);
             layerorder.emplace_back(&layers);
         }
-        
+
         void InsertQuery(const nemesis::AnimQuery& index, const nemesis::TemplateCategory* templtclass);
         void InsertAnim(const nemesis::AnimQuery& anim, const nemesis::TemplateCategory* templtclass);
         void InsertOption(const nemesis::Option& opt, const nemesis::TemplateCategory* templtclass);
@@ -295,17 +295,19 @@ namespace nemesis
                               const nemesis::TemplateCategory* templtclass);
 
         void DropLayer() noexcept;
-        
+
         bool IsTemplateActive(const std::string& name) const;
         bool HasQuery(size_t index) const;
         bool HasAnim(size_t index, const nemesis::TemplateCategory* templtclass) const;
-        bool HasOption(std::string optionname, size_t index, const nemesis::TemplateCategory* templtclass) const;
+        bool
+        HasOption(std::string optionname, size_t index, const nemesis::TemplateCategory* templtclass) const;
 
         void ExeTempNumQuery(size_t index,
                              const nemesis::TemplateCategory* templtclass,
                              std::function<void()> callback);
-        void
-        ExeTempNumAnim(size_t index, const nemesis::TemplateCategory* templtclass, std::function<void()> callback);
+        void ExeTempNumAnim(size_t index,
+                            const nemesis::TemplateCategory* templtclass,
+                            std::function<void()> callback);
         void ExeTempOption(const nemesis::Option& opt,
                            const nemesis::TemplateCategory* templtclass,
                            std::function<void()> callback);
@@ -347,9 +349,9 @@ namespace nemesis
         const nemesis::Option* GetOptionPtr(const std::string& optionname,
                                             size_t index,
                                             const nemesis::TemplateCategory* templtclass) const;
-        const Vec<const nemesis::Option*>* GetOptionListPtr(const std::string& optionname,
-                                                            const nemesis::TemplateCategory* templtclass) const;
-        
+        const Vec<const nemesis::Option*>*
+        GetOptionListPtr(const std::string& optionname, const nemesis::TemplateCategory* templtclass) const;
+
         void GenerateStateIdManager(const nemesis::HkxBehaviorFile& behavior);
         nemesis::StateIdManager* GetStateIdManager();
 
@@ -363,14 +365,14 @@ namespace nemesis
         UPtr<ScopeIterator> ExeGroupQuery(const Condition& condition);
         UPtr<ScopeIterator> ExeAnimQuery(const Condition& condition);
         UPtr<ScopeIterator> ExeAnimObjectQuery(const AnimVarPtr& var);
-        
-        #pragma region STATIC
+
+#pragma region STATIC
         static constexpr std::string_view nodeid_search_sv1 = "<hkobject name=\"#";
         static constexpr std::string_view nodeid_search_sv2 = "\" class=\"";
-        #pragma endregion STATIC
+#pragma endregion STATIC
 
         friend Process;
         friend Exporter;
         friend Condition;
     };
-}
+} // namespace nemesis

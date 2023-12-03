@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utilities/conditiondetails.h"
 #include "utilities/option.h"
 #include "utilities/templatecategory.h"
 
@@ -7,7 +8,7 @@ namespace nemesis
 {
     struct AnimQueryFile;
 
-	struct AnimQuery : public std::enable_shared_from_this<AnimQuery>
+    struct AnimQuery : public std::enable_shared_from_this<AnimQuery>
     {
     private:
         static nemesis::regex animobj_rgx;
@@ -17,7 +18,7 @@ namespace nemesis
         Vec<UPtr<nemesis::Option>> options;
         UMap<std::string, Vec<const nemesis::Option*>> optionsmap;
 
-        // to keep objects in children alive 
+        // to keep objects in children alive
         Vec<SPtr<const nemesis::AnimQuery>> sharedarray;
         SPtr<Vec<const nemesis::AnimQuery*>> array = std::make_shared<Vec<const nemesis::AnimQuery*>>();
 
@@ -89,4 +90,4 @@ namespace nemesis
         bool IsLast() const noexcept;
         bool IsFirst() const noexcept;
     };
-}
+} // namespace nemesis

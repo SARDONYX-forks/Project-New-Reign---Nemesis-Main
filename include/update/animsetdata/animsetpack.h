@@ -2,19 +2,20 @@
 
 #include <string>
 
+#include "utilities/conditiondetails.h"
 #include "utilities/linkedvar.h"
 
 struct AnimSetPack
 {
     using AttackData = std::string;
-    using ModCode = std::string;
+    using ModCode    = std::string;
 
 private:
     class Parser
     {
     private:
-        short type    = 0;
-        int linenum   = 1;
+        short type      = 0;
+        int linenum     = 1;
         size_t asdCount = 0;
 
         ModCode format;
@@ -34,7 +35,6 @@ private:
         void ImportAnimSetPack();
 
     private:
-
     };
 
     nemesis::LinkedVar<std::string> name;

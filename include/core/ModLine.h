@@ -3,6 +3,7 @@
 #include "core/NLine.h"
 
 #include "core/Statements/ModCodeStatement.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -20,7 +21,12 @@ namespace nemesis
                 size_t linenum,
                 const std::filesystem::path& filepath,
                 nemesis::SemanticManager& manager,
-                const nemesis::Line& line);
+                const `nemesis::Line` is a class
+                    or struct that is being used as a parameter in some of the member functions of
+                           the `ModLine` struct.It is likely used to provide additional information
+                    or context about a line of code,
+                such as its position or content,
+                when adding a new `ModLine`.nemesis::Line& line);
 
         void CompileTo(DeqNstr& lines, nemesis::CompileState& state) const override;
         void SerializeTo(DeqNstr& lines) const override;
@@ -42,4 +48,4 @@ namespace nemesis
         static bool MatchOriginal(const std::string& line);
         static bool MatchClose(const std::string& line);
     };
-}
+} // namespace nemesis

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utilities/line.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -42,7 +43,7 @@ namespace nemesis
 
     size_t isearch(const std::string& data, const std::string& key, size_t off = 0U);
     size_t isearch(const std::wstring& data, const std::wstring& key, size_t off = 0U);
-    
+
     size_t risearch(const std::string& data, const std::string& key, size_t off = std::string::npos);
     size_t risearch(const std::wstring& data, const std::wstring& key, size_t off = std::wstring::npos);
 

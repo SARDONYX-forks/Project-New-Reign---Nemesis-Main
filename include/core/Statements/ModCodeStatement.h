@@ -1,12 +1,13 @@
 #pragma once
 
 #include "core/Statements/ConditionalStatement.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct CompileState;
 
-	struct ModCodeStatement : public nemesis::ConditionalStatement
+    struct ModCodeStatement : public nemesis::ConditionalStatement
     {
     public:
         ModCodeStatement(const std::string& mod_code,
@@ -19,4 +20,4 @@ namespace nemesis
 
         bool IsTrue(nemesis::CompileState& state) const override;
     };
-}
+} // namespace nemesis

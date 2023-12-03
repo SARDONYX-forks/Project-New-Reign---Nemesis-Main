@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include "utilities/conditiondetails.h"
 #include "utilities/types.h"
 
 namespace nemesis
@@ -12,7 +13,7 @@ namespace nemesis
     struct TemplateClass;
     struct SemanticManager;
 
-	struct Statement
+    struct Statement
     {
     protected:
         std::string Expression;
@@ -37,4 +38,4 @@ namespace nemesis
 
         static VecStr SplitComponents(const std::string& value);
     };
-}
+} // namespace nemesis

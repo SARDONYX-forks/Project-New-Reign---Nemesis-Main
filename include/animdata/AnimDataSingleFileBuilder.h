@@ -1,6 +1,7 @@
 #pragma once
 
 #include "animdata/AnimDataProjectListBuilder.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -36,7 +37,7 @@ namespace nemesis
             void AddMovementLine(const nemesis::Line& line);
             void AddRotationCounterLine(const nemesis::Line& line);
             void AddRotationLine(const nemesis::Line& line);
-            
+
         public:
             AnimDataSingleFileBuilder(nemesis::File& file);
             void AppendLine(const nemesis::Line& line);

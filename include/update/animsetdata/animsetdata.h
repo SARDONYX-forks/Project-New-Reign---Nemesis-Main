@@ -2,12 +2,12 @@
 
 #include <deque>
 
-#include "utilities/line.h"
-#include "utilities/conditionscope.h"
 #include "utilities/conditiondetails.h"
+#include "utilities/conditionscope.h"
+#include "utilities/line.h"
 
-#include "update/animsetdata/animsetpack.h"
 #include "update/animsetdata/animsetcrc32pack.h"
+#include "update/animsetdata/animsetpack.h"
 
 struct AnimSetData
 {
@@ -37,10 +37,7 @@ struct AnimSetData
 
     void ImportData(std::filesystem::path path, size_t& num, const VecNstr& storeline);
 
-    void ImportData(std::filesystem::path path,
-                    size_t& num,
-                    const VecNstr& storeline,
-                    const ModCode& format);
+    void ImportData(std::filesystem::path path, size_t& num, const VecNstr& storeline, const ModCode& format);
 
     void ImportDataTemplate(std::filesystem::path path,
                             size_t& num,
@@ -74,7 +71,8 @@ private:
     AddCrc32Pack(const AnimSetCRC32Pack& crc32pack, size_t num, const nemesis::ConditionInfo& conditioninfo);
 
     template <typename BaseData>
-    static SPtr<BaseData>& AddData(Vec<nemesis::LinkedVar<BaseData>>& tarGet, const BaseData& type, size_t num);
+    static SPtr<BaseData>&
+    AddData(Vec<nemesis::LinkedVar<BaseData>>& tarGet, const BaseData& type, size_t num);
 
     template <typename BaseData>
     static SPtr<BaseData>& AddData(Vec<nemesis::LinkedVar<BaseData>>& tarGet,
@@ -103,7 +101,6 @@ private:
     {
         struct EquipConditionScope : public nemesis::ConditionScope
         {
-
             EquipConditionScope(const std::string& _modcode, const std::filesystem::path& _path)
                 : nemesis::ConditionScope(_modcode, _path)
             {
@@ -173,7 +170,8 @@ private:
 
         Vec<size_t> GetAttackSetDataSections(size_t start, size_t end) const;
         Vec<size_t> GetAttackSetDataSections(size_t start, size_t end, const VecNstr& _storeline) const;
-        Vec<size_t> GetAttackSetDataSections(size_t start, size_t end, const Deq<nemesis::Line>& _storeline) const;
+        Vec<size_t>
+        GetAttackSetDataSections(size_t start, size_t end, const Deq<nemesis::Line>& _storeline) const;
     };
 };
 

@@ -3,9 +3,8 @@
 #include <regex>
 
 #include "base/file.h"
-
 #include "core/animvarptr.h"
-
+#include "utilities/conditiondetails.h"
 #include "utilities/conditioninfo.h"
 
 namespace nemesis
@@ -48,9 +47,9 @@ namespace nemesis
         {
             enum struct ErrorType
             {
-                NONE = 0,
+                NONE             = 0,
                 UNCLOSED_BRACKET = 1180,
-                SYNTAX_ERROR = 1223
+                SYNTAX_ERROR     = 1223
             };
 
         private:
@@ -94,7 +93,10 @@ namespace nemesis
         CondType type;
 
     public:
-        Condition(const std::string& expression, const nemesis::Line& line, const nemesis::File& file, CondType type);
+        Condition(const std::string& expression,
+                  const nemesis::Line& line,
+                  const nemesis::File& file,
+                  CondType type);
         Condition(const Lexer::Iter& tokens, Condition& condition);
 
         const nemesis::AnimVarPtr& GetVariableA() const;
@@ -113,4 +115,4 @@ namespace nemesis
         bool IsOrTrue(nemesis::ScopeInfo& scopeinfo) const;
         void TrimCondition(std::string& condition);
     };
-}
+} // namespace nemesis

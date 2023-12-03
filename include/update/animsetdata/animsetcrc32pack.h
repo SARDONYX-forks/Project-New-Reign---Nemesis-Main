@@ -4,6 +4,7 @@
 
 #include "Global.h"
 
+#include "utilities/conditiondetails.h"
 #include "utilities/linkedvar.h"
 
 struct AnimSetCRC32Pack

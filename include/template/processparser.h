@@ -2,8 +2,9 @@
 
 #include "base/importerbase.h"
 
-#include "core/preprocessline.h"
 #include "core/linkedpreprocessline.h"
+#include "core/preprocessline.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -30,7 +31,7 @@ namespace nemesis
 
         SPtr<nemesis::LineProcess> lineprocessptr;
 
-        public:
+    public:
         Vec<UPtr<nemesis::Process>> processlist;
 
         void Reset();
@@ -86,6 +87,7 @@ namespace nemesis
         bool IsWithinAny(Position& pos, Vec<Position> installed_positions);
 
         void (nemesis::Process::*ptr)(VecStr&, nemesis::ScopeInfo&) const;
+
     public:
         ProcessParser(nemesis::ImporterBase& parser);
 
@@ -134,4 +136,4 @@ namespace nemesis
         const std::string animobj_str  = "AnimObject/";
         const std::string nodeidPrefix = "#NID~";
     };
-}
+} // namespace nemesis

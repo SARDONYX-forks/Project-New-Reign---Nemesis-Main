@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "utilities/conditiondetails.h"
 #include "utilities/condtype.h"
 
 namespace nemesis
@@ -55,5 +56,5 @@ namespace nemesis
         std::string EndIf() noexcept;
 
         std::string EndSyntax() noexcept;
-    }
-}
+    } // namespace syntax
+} // namespace nemesis

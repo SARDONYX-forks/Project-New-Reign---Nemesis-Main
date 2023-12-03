@@ -11,6 +11,8 @@
 #include <vector>
 #include <queue>
 
+#include "debugmsg.h"
+
 namespace nemesis
 {
     using uint = unsigned int;
@@ -36,7 +38,7 @@ namespace nemesis
         std::condition_variable condition;
         std::mutex queue_mutex;
         bool abort = false;
-        bool sync = false;
+        bool sync  = false;
     };
 
     // add new work item to the pool
@@ -64,6 +66,6 @@ namespace nemesis
         condition.notify_one();
         return res;
     }
-}
+} // namespace nemesis
 
 #endif

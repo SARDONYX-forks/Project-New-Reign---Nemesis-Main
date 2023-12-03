@@ -2,7 +2,7 @@
 
 nemesis::CRC32::CRC32(void)
 {
-    memset(&iTable, 0, sizeof(iTable)); 
+    memset(&iTable, 0, sizeof(iTable));
 
     // 256 values representing ASCII character codes.
     for (int iCodes = 0; iCodes <= 0xFF; iCodes++)
@@ -11,17 +11,14 @@ nemesis::CRC32::CRC32(void)
 
         for (int iPos = 0; iPos < 8; iPos++)
         {
-            iTable[iCodes]
-                = (iTable[iCodes] << 1) ^ ((iTable[iCodes] & (1 << 31)) ? iPolynomial : 0);
+            iTable[iCodes] = (iTable[iCodes] << 1) ^ ((iTable[iCodes] & (1 << 31)) ? iPolynomial : 0);
         }
 
         iTable[iCodes] = Reflect(iTable[iCodes], 32);
     }
 }
 
-nemesis::CRC32::~CRC32(void)
-{
-}
+nemesis::CRC32::~CRC32(void) {}
 
 uint nemesis::CRC32::Reflect(uint iReflect, const char cChar)
 {
@@ -48,19 +45,19 @@ void nemesis::CRC32::PartialCRC(uint* iCRC, const unsigned char* sData, size_t i
 
 void nemesis::CRC32::FullCRC(const unsigned char* sData, size_t iDataLength, uint* iOutCRC)
 {
-    ((uint) *iOutCRC) = initial;
+    *iOutCRC = initial;
 
     PartialCRC(iOutCRC, sData, iDataLength);
 
-    ((uint) *iOutCRC) ^= finalxor;
+    *iOutCRC = reinterpret_cast<uint>(iOutCRC) ^ finalxor;
 }
 
-void nemesis::CRC32::FullCRC(const char* sData, size_t iLength, uint* iOutCRC) 
+void nemesis::CRC32::FullCRC(const char* sData, size_t iLength, uint* iOutCRC)
 {
     FullCRC((unsigned char*) sData, iLength, iOutCRC);
 }
 
-void nemesis::CRC32::FullCRC(const std::string& sData, uint* iOutCRC) 
+void nemesis::CRC32::FullCRC(const std::string& sData, uint* iOutCRC)
 {
     FullCRC((unsigned char*) sData.c_str(), sData.length());
 }
@@ -86,7 +83,7 @@ uint nemesis::CRC32::FullCRC(const std::string& sData)
 
 bool nemesis::CRC32::FileCRC(const char* sFileName, uint* iOutCRC, size_t iBufferSize)
 {
-    ((uint) *iOutCRC) = initial;
+    *iOutCRC = initial;
 
     FILE* fSource       = NULL;
     unsigned char* sBuf = NULL;
@@ -111,7 +108,7 @@ bool nemesis::CRC32::FileCRC(const char* sFileName, uint* iOutCRC, size_t iBuffe
     free(sBuf);
     fclose(fSource);
 
-    ((uint) *iOutCRC) ^= finalxor;
+    *iOutCRC = reinterpret_cast<uint>(iOutCRC) ^ finalxor;
 
     return true;
 }

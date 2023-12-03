@@ -1,10 +1,12 @@
 #ifndef DEBUGMSG_H_
 #define DEBUGMSG_H_
 
-#include <mutex>
+#include <filesystem>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <unordered_map>
+#include <xstring>
 
 #include "debuglog.h"
 
@@ -21,7 +23,8 @@ extern std::mutex err_Mutex;
 namespace nemesis
 {
     class exception
-    {};
+    {
+    };
 } // namespace nemesis
 
 // debugging
@@ -32,8 +35,7 @@ struct DebugMsg
     std::unordered_map<int, std::wstring> uilist;
     std::unordered_map<int, std::wstring> textlist;
 
-    DebugMsg()
-    {}
+    DebugMsg() {}
     DebugMsg(std::string language);
     DebugMsg(std::wstring language);
 
@@ -199,7 +201,8 @@ inline void AdditionalInput(std::string& message, int counter, const std::wstrin
 }
 
 template <typename... other>
-inline void AdditionalInput(std::string& message, int counter, const std::filesystem::path& input, other... rest)
+inline void
+AdditionalInput(std::string& message, int counter, const std::filesystem::path& input, other... rest)
 {
     std::string newInput    = "<" + std::to_string(counter) + ">";
     std::string replacement = input.string();
@@ -396,7 +399,8 @@ inline void AdditionalInput(std::wstring& message, int counter, const std::strin
 }
 
 template <typename... other>
-inline void AdditionalInput(std::wstring& message, int counter, const std::filesystem::path& input, other... rest)
+inline void
+AdditionalInput(std::wstring& message, int counter, const std::filesystem::path& input, other... rest)
 {
     std::wstring newInput    = L"<" + std::to_wstring(counter) + L">";
     std::wstring replacement = input.wstring();
@@ -426,7 +430,7 @@ inline void AdditionalInput(std::wstring& message, int counter, type input, othe
 {
     std::wstring newInput    = L"<" + std::to_wstring(counter) + L">";
     std::wstring replacement = (std::wostringstream() << input).str();
-    int ref                 = sameWordCount(message, newInput);
+    int ref                  = sameWordCount(message, newInput);
 
     if (ref != 0)
     {
@@ -487,7 +491,7 @@ inline void WarningMessage(int warningcode, other... rest)
     if (error) throw nemesis::exception();
 
     std::wstring warninmsg = L"WARNING(" + std::to_wstring(warningcode) + L"): " + DMLogWarning(warningcode);
-    std::string englog    = "WARNING(" + std::to_string(warningcode) + "): " + EngLogWarning(warningcode);
+    std::string englog     = "WARNING(" + std::to_string(warningcode) + "): " + EngLogWarning(warningcode);
 
     if (DMLogWarning(warningcode).length() == 0)
     {

@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 
+#include "debuglog.h"
 #include "utilities/atomiclock.h"
 
 class FileWriter
@@ -18,7 +19,7 @@ private:
     std::atomic_flag filelock{};
 
 public:
-    FileWriter(std::filesystem::path filename, VecWstr args = { L"ccs=UTF-8" });
+    FileWriter(std::filesystem::path filename, VecWstr args = {L"ccs=UTF-8"});
 
     ~FileWriter();
 

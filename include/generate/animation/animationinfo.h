@@ -1,6 +1,8 @@
 #ifndef ANIMATIONINFO_H_
 #define ANIMATIONINFO_H_
 
+#include <filesystem>
+
 #include "generate/animation/optionlist.h"
 
 #pragma warning(disable : 4503)
@@ -34,8 +36,7 @@ struct AnimationInfo
     std::unordered_map<std::string, std::unordered_map<std::string, VecStr>> groupAddition;
     std::unordered_map<int, VecStr> AnimObject;
 
-    AnimationInfo()
-    {}
+    AnimationInfo() {}
     AnimationInfo(VecStr newAnimInfo,
                   std::filesystem::path curFilename,
                   OptionList behaviorOption,

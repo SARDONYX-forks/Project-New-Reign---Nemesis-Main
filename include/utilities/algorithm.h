@@ -31,21 +31,13 @@ namespace nemesis
     bool iequals(const std::string& l, const std::string& r);
     bool iequals(const std::wstring& l, const std::wstring& r);
 
-    // Generic template for most types
-    template <typename To, typename From>
-    inline To transform_to(const From& value) noexcept
+    template <typename T, typename F>
+    inline T transform_to(const F& str) noexcept
     {
-        if constexpr (std::is_same_v<To, From>)
-        {
-            // If To is the same as From, no conversion needed
-            return value;
-        }
-        else
-        {
-            // Use std::to_string for other conversions
-            return std::to_string(value);
-        }
-    }
+        if (str.empty()) return {};
+
+        return {std::begin(str), std::end(str)};
+    };
 
     // Specialization for converting std::string to std::wstring
     template <>

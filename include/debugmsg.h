@@ -59,6 +59,7 @@ inline void AdditionalInput(std::string& message, int counter, type input)
 {
     std::string newInput = "<" + std::to_string(counter) + ">";
     std::ostringstream os;
+    using std::operator<<;
     os << input;
     std::string replacement = os.str();
     int ref                 = sameWordCount(message, newInput);
@@ -231,8 +232,11 @@ AdditionalInput(std::string& message, int counter, const std::filesystem::path& 
 template <typename type, typename... other>
 inline void AdditionalInput(std::string& message, int counter, type input, other... rest)
 {
-    std::string newInput    = "<" + std::to_string(counter) + ">";
-    std::string replacement = (std::ostringstream() << input).str();
+    std::string newInput = "<" + std::to_string(counter) + ">";
+    std::ostringstream os;
+    using std::operator<<;
+    os << input;
+    std::string replacement = os.str();
     int ref                 = sameWordCount(message, newInput);
 
     if (ref != 0)
@@ -328,6 +332,7 @@ inline void AdditionalInput(std::wstring& message, int counter, type input)
 {
     std::wstring newInput = L"<" + std::to_wstring(counter) + L">";
     std::wostringstream os;
+    using ::operator<<; // Note: Ugly disambiguation.
     os << input;
     std::wstring replacement = os.str();
     int ref                  = sameWordCount(message, newInput);

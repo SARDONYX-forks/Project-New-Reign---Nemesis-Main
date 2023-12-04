@@ -3069,7 +3069,7 @@ void proc::animOrder(nemesis::scope blok, VecStr& blocks, AnimThreadInfo& curAni
 
     if (clearBlocks(blok, blocks, curAnimInfo))
     {
-        auto& ptr = charAnimDataInfo.find(
+        auto ptr = charAnimDataInfo.find(
             nemesis::to_lower_copy(curAnimInfo.project.substr(0, curAnimInfo.project.rfind(".txt"))));
 
         if (ptr != charAnimDataInfo.end())

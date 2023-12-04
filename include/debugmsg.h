@@ -332,7 +332,7 @@ inline void AdditionalInput(std::wstring& message, int counter, type input)
 {
     std::wstring newInput = L"<" + std::to_wstring(counter) + L">";
     std::wostringstream os;
-    using ::operator<<; // Note: Ugly disambiguation.
+    using std::operator<<; // Note: Ugly disambiguation.
     os << input;
     std::wstring replacement = os.str();
     int ref                  = sameWordCount(message, newInput);

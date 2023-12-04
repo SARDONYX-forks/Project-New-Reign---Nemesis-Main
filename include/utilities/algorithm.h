@@ -31,15 +31,25 @@ namespace nemesis
     bool iequals(const std::string& l, const std::string& r);
     bool iequals(const std::wstring& l, const std::wstring& r);
 
-    template <typename T, typename F>
-    inline T transform_to(const F& str) noexcept
+    // Generic template for most types
+    template <typename To, typename From>
+    inline To transform_to(const From& value) noexcept
     {
-        if (str.empty()) return {};
+        if constexpr (std::is_same_v<To, From>)
+        {
+            // If To is the same as From, no conversion needed
+            return value;
+        }
+        else
+        {
+            // Use std::to_string for other conversions
+            return std::to_string(value);
+        }
+    }
 
-        return {std::begin(str), std::end(str)};
-    };
-
-    inline std::wstring transform_to(const std::string& str) noexcept
+    // Specialization for converting std::string to std::wstring
+    template <>
+    inline std::wstring transform_to<std::wstring, std::string>(const std::string& str) noexcept
     {
         std::wstring wstr;
         size_t size;
@@ -48,13 +58,25 @@ namespace nemesis
         return wstr;
     }
 
-    inline std::string transform_to(const std::wstring& wstr) noexcept
+    template <>
+    inline std::string transform_to<std::string, std::wstring>(const std::wstring& wstr) noexcept
     {
         std::string str;
         size_t size;
         str.resize(wstr.length());
         wcstombs_s(&size, &str[0], str.size() + 1, wstr.c_str(), wstr.size());
         return str;
+    }
+
+    // Specialization for converting std::string to std::wstring
+    template <>
+    inline std::wstring transform_to<std::wstring, std::string_view>(const std::string_view& str) noexcept
+    {
+        std::wstring wstr;
+        size_t size;
+        wstr.resize(str.length());
+        mbstowcs_s(&size, &wstr[0], wstr.size() + 1, std::string(str).data(), str.size());
+        return wstr;
     }
 
 } // namespace nemesis

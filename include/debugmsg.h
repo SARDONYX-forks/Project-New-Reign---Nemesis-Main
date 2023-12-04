@@ -324,8 +324,9 @@ inline void AdditionalInput(std::wstring& message, int counter, const std::files
 template <typename type>
 inline void AdditionalInput(std::wstring& message, int counter, type input)
 {
-    std::wstring newInput    = L"<" + std::to_wstring(counter) + L">";
-    std::wstring replacement = (std::wostringstream() << input).str();
+    std::wstring newInput = L"<" + std::to_wstring(counter) + L">";
+    std::wostringstream os;
+    std::wstring replacement = (os << input).str();
     int ref                  = sameWordCount(message, newInput);
 
     if (ref != 0)

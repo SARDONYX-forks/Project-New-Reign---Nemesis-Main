@@ -57,8 +57,10 @@ int sameWordCount(std::wstring, std::wstring);
 template <typename type>
 inline void AdditionalInput(std::string& message, int counter, type input)
 {
-    std::string newInput    = "<" + std::to_string(counter) + ">";
-    std::string replacement = (std::ostringstream() << input).str();
+    std::string newInput = "<" + std::to_string(counter) + ">";
+    std::ostringstream os;
+    os << input;
+    std::string replacement = os.str();
     int ref                 = sameWordCount(message, newInput);
 
     if (ref != 0)
@@ -326,7 +328,8 @@ inline void AdditionalInput(std::wstring& message, int counter, type input)
 {
     std::wstring newInput = L"<" + std::to_wstring(counter) + L">";
     std::wostringstream os;
-    std::wstring replacement = (os << input).str();
+    os << input;
+    std::wstring replacement = os.str();
     int ref                  = sameWordCount(message, newInput);
 
     if (ref != 0)

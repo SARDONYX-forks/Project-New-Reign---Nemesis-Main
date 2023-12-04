@@ -35,7 +35,6 @@ jobs:
         with:
           python-version: "3.8.10" # To avoid 'libffi-7.lib' missing error
           update-environment: true
-          cache: pip
 
       - name: Set up cmake deps cache
         uses: actions/cache@v3

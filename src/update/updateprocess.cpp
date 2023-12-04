@@ -865,7 +865,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
 
                                 storeline.push_back(curline.substr(0, match.position()));
 
-                                for (auto& it = nemesis::regex_iterator(curline, vector4);
+                                for (auto it = nemesis::regex_iterator(curline, vector4);
                                      it != nemesis::regex_iterator();
                                      ++it)
                                 {
@@ -893,7 +893,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
                                         break;
                                 }
 
-                                for (auto& it = nemesis::regex_iterator(curline, vector4);
+                                for (auto it = nemesis::regex_iterator(curline, vector4);
                                      it != nemesis::regex_iterator();
                                      ++it)
                                 {

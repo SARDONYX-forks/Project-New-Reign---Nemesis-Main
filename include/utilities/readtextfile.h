@@ -1,8 +1,8 @@
 #ifndef READTEXTFILE_H_
 #define READTEXTFILE_H_
 
-#include <QtCore\QFile.h>
 #include <filesystem>
+#include <QtCore\QFile.h>
 
 struct FileReader
 {

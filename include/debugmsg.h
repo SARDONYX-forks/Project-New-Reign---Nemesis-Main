@@ -201,7 +201,7 @@ inline void AdditionalInput(std::string& message, int counter, const std::wstrin
 
 template <typename... other>
 inline void
-AdditionalInput(std::string& message, int counter, const std::filesystem::path& input, other... rest)
+AdditionalInput(std::string& message, int counter, const std::filesystem::path& input, other&&... rest)
 {
     std::string newInput    = "<" + std::to_string(counter) + ">";
     std::string replacement = input.string();
@@ -359,7 +359,7 @@ inline void AdditionalInput(std::wstring& message, int counter, const std::strin
             message.replace(message.find(newInput), newInput.size(), replacement);
         }
 
-        AdditionalInput(message, counter + 1, rest...);
+        AdditionalInput<other...>(message, counter + 1, rest...);
     }
     else
     {

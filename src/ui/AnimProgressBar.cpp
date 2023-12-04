@@ -20,12 +20,12 @@ AnimProgressBar::AnimProgressBar(QWidget* parent)
     QTimer* mTimer = new QTimer(this);
     connect(mTimer, &QTimer::timeout, this, &AnimProgressBar::ForeverLoop);
     mTimer->start(50);
-    
+
     std::thread t(std::bind(&AnimProgressBar::valueUpdate, this));
     t.detach();
 }
 
-void AnimProgressBar::valueUpdate() 
+void AnimProgressBar::valueUpdate()
 {
     try
     {
@@ -69,7 +69,7 @@ void AnimProgressBar::valueUpdate()
             }
         }
     }
-    catch (const std::exception& ex)
+    catch (const std::exception& _ex)
     {
     }
     catch (...)

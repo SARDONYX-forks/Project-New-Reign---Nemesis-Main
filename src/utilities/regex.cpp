@@ -1,19 +1,21 @@
 #include "debugmsg.h"
 
-#include "utilities/regex.h"
 #include "utilities/algorithm.h"
+#include "utilities/regex.h"
 
 namespace nemesis
 {
     regex::regex(const std::string& str)
         : str_(str)
         , reg_(str_)
-    {}
+    {
+    }
 
     regex::regex(const char* str)
         : str_(str)
         , reg_(str_)
-    {}
+    {
+    }
 
     std::string regex::to_string() const
     {
@@ -47,7 +49,7 @@ namespace nemesis
 
     bool regex_search(const std::string& line, nemesis::smatch& n_match, const regex& rgx)
     {
-        n_match     = {};
+        n_match = {};
         detail::underlying_smatch match;
         try
         {
@@ -139,7 +141,8 @@ namespace nemesis
     regex_iterator::regex_iterator(const std::string& str, const nemesis::regex& reg)
         : str_(str)
         , it_(str_.begin(), str_.end(), reg.to_regex())
-    {}
+    {
+    }
 
     regex_iterator& regex_iterator::operator++()
     {
@@ -174,7 +177,6 @@ namespace nemesis
         return &currentVal_.value();
     }
 
-    
     // =====================================================//
     //                    WIDE CHARACTERS                   //
     // =====================================================//
@@ -290,7 +292,7 @@ namespace nemesis
             match = {m};
             return true;
         }
-        catch (const detail::underlying_exception& e)
+        catch (const detail::underlying_exception& _e)
         {
         }
         return false;

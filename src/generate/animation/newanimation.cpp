@@ -9,8 +9,8 @@
 #include "generate/alternateanimation.h"
 
 #include "generate/animation/newanimation.h"
-#include "generate/animation/templatetree.h"
 #include "generate/animation/singletemplate.h"
+#include "generate/animation/templatetree.h"
 
 #pragma warning(disable : 4503)
 
@@ -33,7 +33,9 @@ string linebreakSeparator(string line, VecStr& newlines)
     return line.substr(pos);
 }
 
-bool hasOptionPicked(const vector<unordered_map<string, bool>>& groupOptionPicked, int index, const string& key)
+bool hasOptionPicked(const vector<unordered_map<string, bool>>& groupOptionPicked,
+                     int index,
+                     const string& key)
 {
     auto& opt  = groupOptionPicked[index];
     auto& pick = opt.find(key);
@@ -81,7 +83,6 @@ void NewAnimation::GetNewAnimationLine(shared_ptr<NewAnimArgs> args)
     vector<int>& stateID              = args->stateID;
     vector<int> stateCountMultiplier  = args->stateMultiplier;
     bool hasGroup                     = args->hasGroup;
-
 
     behaviorFile   = args->lowerBehaviorFile;
     newImport      = const_cast<ImportContainer*>(&args->exportID);
@@ -738,10 +739,7 @@ bool NewAnimation::andParenthesis(string condition, VecStr& storeline, int numli
     }
 }
 
-bool NewAnimation::newCondition(string condition,
-                                VecStr& storeline,
-                                int numline,
-                                AnimationUtility utility)
+bool NewAnimation::newCondition(string condition, VecStr& storeline, int numline, AnimationUtility utility)
 {
     if (condition[0] == '(')
     {
@@ -1684,12 +1682,7 @@ void NewAnimation::processing(string& line,
 
             if (position != NOT_FOUND && change.find("]", position) != NOT_FOUND)
             {
-                eventIDReplacer(change,
-                                format,
-                                behaviorFile,
-                                eventid,
-                                zeroEvent,
-                                linecount);
+                eventIDReplacer(change, format, behaviorFile, eventid, zeroEvent, linecount);
                 isChange = true;
 
                 if (error) throw nemesis::exception();
@@ -1699,12 +1692,7 @@ void NewAnimation::processing(string& line,
 
             if (position != NOT_FOUND && change.find("]", position) != NOT_FOUND)
             {
-                variableIDReplacer(change,
-                                   format,
-                                   behaviorFile,
-                                   variableid,
-                                   zeroVariable,
-                                   linecount);
+                variableIDReplacer(change, format, behaviorFile, variableid, zeroVariable, linecount);
                 isChange = true;
 
                 if (error) throw nemesis::exception();
@@ -2106,7 +2094,7 @@ void eventIDReplacer(string& line,
         string fullEventName = line.substr(nextpos, line.find("]", nextpos) - nextpos + 1);
         string eventName     = nemesis::regex_replace(
             string(fullEventName), nemesis::regex(".*eventID[[](.*?)[]].*"), string("\\1"));
-        auto& eventItr = eventid.find(eventName);
+        const auto& eventItr = eventid.find(eventName);
 
         if (eventItr == eventid.end() || (eventItr->second == 0 && eventName != firstEvent))
         {
@@ -2134,7 +2122,7 @@ void variableIDReplacer(string& line,
         string fullVarName = line.substr(nextpos, line.find("]", nextpos) - nextpos + 1);
         string varName     = nemesis::regex_replace(
             string(fullVarName), nemesis::regex(".*variableID[[](.*)[]].*"), string("\\1"));
-        auto& varItr    = variableid.find(varName);
+        const auto& varItr = variableid.find(varName);
 
         if (varItr == variableid.end() || (varItr->second == 0 && ZeroVariable != varName))
         {
@@ -2388,7 +2376,7 @@ bool clearGroupNum(string option2,
 
     if (grpopt != groupOption.end()) return isNot;
 
-    auto& pick = optionPicked.find(templine);
+    const auto& pick = optionPicked.find(templine);
 
     return isNot ? pick == optionPicked.end() : pick != optionPicked.end();
 }
@@ -2675,10 +2663,7 @@ bool NewAnimation::specialCondition(string condition,
     return true;
 }
 
-bool NewAnimation::conditionProcess(string condition,
-                                    bool isNot,
-                                    int numline,
-                                    AnimationUtility utility)
+bool NewAnimation::conditionProcess(string condition, bool isNot, int numline, AnimationUtility utility)
 {
     VecStr optionInfo;
 
@@ -2750,10 +2735,7 @@ bool NewAnimation::conditionProcess(string condition,
     return true;
 }
 
-bool NewAnimation::GetFirstCondition(string firstCondition,
-                                     VecStr optionInfo,
-                                     int numline,
-                                     bool isNot)
+bool NewAnimation::GetFirstCondition(string firstCondition, VecStr optionInfo, int numline, bool isNot)
 {
     if (optionInfo[2][0] == '^' && optionInfo[2].back() == '^')
     {
@@ -2791,8 +2773,8 @@ bool NewAnimation::GetFirstCondition(string firstCondition,
     }
     else
     {
-        auto& opt  = groupOptionPicked[stoi(optionInfo[1])];
-        auto& pick = opt.find(optionInfo[2]);
+        auto& opt        = groupOptionPicked[stoi(optionInfo[1])];
+        const auto& pick = opt.find(optionInfo[2]);
 
         if (pick != opt.end())
         {
@@ -2919,10 +2901,7 @@ void NewAnimation::GetAnimSetData(unordered_map<string, map<string, VecStr, alph
     return;
 }
 
-void NewAnimation::AnimDataLineProcess(VecStr originallines,
-                                       VecStr& newlines,
-                                       string format,
-                                       vector<int> ASD)
+void NewAnimation::AnimDataLineProcess(VecStr originallines, VecStr& newlines, string format, vector<int> ASD)
 {
     {
         VecStr emptyVS;
@@ -3732,6 +3711,8 @@ void NewAnimation::AnimDataLineProcess(AnimTemplate* originaltemplate,
 
     ID tmpId;
     ID tmpId2;
+    std::vector<int>& fixedStateID         = vector<int>();
+    std::vector<int>& stateCountMultiplier = vector<int>();
 
     AnimThreadInfo animThrInfo(filepath,
                                filename,
@@ -3751,8 +3732,8 @@ void NewAnimation::AnimDataLineProcess(AnimTemplate* originaltemplate,
                                furnitureCount,
                                tmpId,
                                tmpId2,
-                               vector<int>(),
-                               vector<int>(),
+                               fixedStateID,
+                               stateCountMultiplier,
                                order,
                                lastOrder,
                                IDExist,
@@ -3779,8 +3760,8 @@ void NewAnimation::AnimDataLineProcess(AnimTemplate* originaltemplate,
                 counter,
                 tmpId,
                 tmpId2,
-                vector<int>(),
-                vector<int>(),
+                fixedStateID,
+                stateCountMultiplier,
                 false,
                 negative,
                 nullptr);
@@ -5036,7 +5017,7 @@ void NewAnimation::OutputCheck(shared_ptr<VecStr> generatedlines,
                                                       false,
                                                       dummy))
                         {
-                            string oldcond           = animThrInfo.multiOption;
+                            string oldcond          = animThrInfo.multiOption;
                             animThrInfo.multiOption = curcond.conditions;
 
                             int size;

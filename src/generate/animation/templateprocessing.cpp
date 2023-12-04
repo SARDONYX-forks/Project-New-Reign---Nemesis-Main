@@ -3074,7 +3074,7 @@ void proc::animOrder(nemesis::scope blok, VecStr& blocks, AnimThreadInfo& curAni
 
         if (ptr != charAnimDataInfo.end())
         {
-            auto& ptr2 = ptr->second.find(
+            auto ptr2 = ptr->second.find(
                 nemesis::to_lower_copy(std::filesystem::path(animPath).filename().string()));
 
             if (ptr2 != ptr->second.end())

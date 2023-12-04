@@ -1,6 +1,6 @@
+#include "nemesisinfo.h"
 #include "Global.h"
 #include "debuglog.h"
-#include "nemesisinfo.h"
 
 #include <Windows.h>
 
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool SSE = false;
+bool SSE          = false;
 wstring stagePath = L"";
 
 void NemesisInfo::iniFileUpdate()
@@ -42,7 +42,8 @@ NemesisInfo::NemesisInfo()
         setup();
     }
     catch (nemesis::exception&)
-    {}
+    {
+    }
 }
 
 NemesisInfo::NemesisInfo(bool& exception)
@@ -79,36 +80,14 @@ void NemesisInfo::setup()
 
                     if (!nemesis::iequals(path, L"auto"))
                     {
-                        const unordered_map<wstring, std::function<void()>> variables = 
-                        {
-                            {
-                                L"maxanimation", 
-                                [&] { maxAnim = stoi(path); }
-                            },
-                            {
-                                L"first", 
-                                [&] { first = path != L"false"; }
-                            },
-                            {
-                                L"height", 
-                                [&] { height = stoi(path); }
-                            },
-                            {
-                                L"width", 
-                                [&] { width = stoi(path); }
-                            },
-                            {
-                                L"modNameWidth", 
-                                [&] { modNameWidth = stoi(path); }
-                            },
-                            {
-                                L"authorWidth",
-                                [&] { authorWidth = stoi(path); }
-                            },
-                            {
-                                L"priorityWidth", 
-                                [&] { priorityWidth = stoi(path); }
-                            },
+                        const unordered_map<wstring, std::function<void()>> variables = {
+                            {L"maxanimation", [&] { maxAnim = stoi(path); }},
+                            {L"first", [&] { first = path != L"false"; }},
+                            {L"height", [&] { height = stoi(path); }},
+                            {L"width", [&] { width = stoi(path); }},
+                            {L"modNameWidth", [&] { modNameWidth = stoi(path); }},
+                            {L"authorWidth", [&] { authorWidth = stoi(path); }},
+                            {L"priorityWidth", [&] { priorityWidth = stoi(path); }},
                         };
 
                         if (input == L"skyrimdatadirectory")
@@ -178,7 +157,7 @@ void NemesisInfo::setup()
         }
     }
 
-    namespace sf   = filesystem;
+    namespace sf    = filesystem;
     wstring curpath = sf::current_path().wstring();
     replace(curpath.begin(), curpath.end(), '/', '\\');
 
@@ -241,7 +220,7 @@ void NemesisInfo::setup()
             wchar_t value[1024];
             DWORD value_length = 1024;
 
-            LPCSTR tm;
+            // LPCSTR tm;
 
             if (SSE)
             {
@@ -332,37 +311,37 @@ const string& NemesisInfo::GetStagePathA() const
     return nemesis::transform_to<string>(stageDirectory);
 }
 
-const bool& NemesisInfo::IsFirst() const
+bool NemesisInfo::IsFirst() const
 {
     return first;
 }
 
-const uint& NemesisInfo::GetWidth() const
+uint NemesisInfo::GetWidth() const
 {
     return width;
 }
 
-const uint& NemesisInfo::GetHeight() const
+uint NemesisInfo::GetHeight() const
 {
     return height;
 }
 
-const uint& NemesisInfo::GetModNameWidth() const
+uint NemesisInfo::GetModNameWidth() const
 {
     return modNameWidth;
 }
 
-const uint& NemesisInfo::GetMaxAnim() const
+uint NemesisInfo::GetMaxAnim() const
 {
     return maxAnim;
 }
 
-const uint& NemesisInfo::GetAuthorWidth() const
+uint NemesisInfo::GetAuthorWidth() const
 {
     return authorWidth;
 }
 
-const uint& NemesisInfo::GetPriorityWidth() const
+uint NemesisInfo::GetPriorityWidth() const
 {
     return priorityWidth;
 }

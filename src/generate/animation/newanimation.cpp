@@ -37,8 +37,8 @@ bool hasOptionPicked(const vector<unordered_map<string, bool>>& groupOptionPicke
                      int index,
                      const string& key)
 {
-    auto& opt  = groupOptionPicked[index];
-    auto& pick = opt.find(key);
+    auto& opt        = groupOptionPicked[index];
+    const auto& pick = opt.find(key);
 
     return pick != opt.end();
 }
@@ -3711,8 +3711,8 @@ void NewAnimation::AnimDataLineProcess(AnimTemplate* originaltemplate,
 
     ID tmpId;
     ID tmpId2;
-    std::vector<int>& fixedStateID         = vector<int>();
-    std::vector<int>& stateCountMultiplier = vector<int>();
+    std::vector<int> fixedStateID         = vector<int>();
+    std::vector<int> stateCountMultiplier = vector<int>();
 
     AnimThreadInfo animThrInfo(filepath,
                                filename,

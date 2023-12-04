@@ -255,7 +255,7 @@ void BehaviorSub::CompilingAnimData()
             int num            = 0;
             projectList.reserve(500);
 
-            for (int i = 1; (size_t) i < catalyst.size(); ++i)
+            for (int i = 1; static_cast<size_t>(i) < catalyst.size(); ++i)
             {
                 if (catalyst[i].second.find(".txt") == NOT_FOUND)
                 {
@@ -295,7 +295,8 @@ void BehaviorSub::CompilingAnimData()
                     {
                         int next = -1;
 
-                        while ((int) l + next >= 0 && catalyst[l + next].second.find("<!--") != NOT_FOUND)
+                        while ((static_cast<int>(l) + next) >= 0
+                               && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                         {
                             --next;
                         }
@@ -311,32 +312,32 @@ void BehaviorSub::CompilingAnimData()
                         {
                             int next = 1;
 
-                            if ((uint) ((int) l + next) < catalyst.size()
+                            if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                 && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                 ++next;
 
-                            if ((uint) ((int) l + next) < catalyst.size()
+                            if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                 && isOnlyNumber(catalyst[l + next].second))
                             {
                                 ++next;
 
-                                if ((uint) ((int) l + next) < catalyst.size()
+                                if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                     && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                 {
                                     ++next;
                                 }
 
-                                if ((uint) ((int) l + next) < catalyst.size()
+                                if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                     && isOnlyNumber(catalyst[l + next].second))
                                 {
                                     int nextnext = next + 1;
 
-                                    if ((uint) ((int) l + next) < catalyst.size()
+                                    if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                         && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                         ++nextnext;
 
                                     if (catalyst[l + next].second == "0"
-                                        || (l + nextnext < catalyst.size()
+                                        || (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                             && catalyst[l + nextnext].second.find("\\") != NOT_FOUND))
                                     {
                                         newline.shrink_to_fit();

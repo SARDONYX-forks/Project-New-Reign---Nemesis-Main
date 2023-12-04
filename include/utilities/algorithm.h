@@ -71,4 +71,14 @@ namespace nemesis
         return wstr;
     }
 
+    template <>
+    inline std::string transform_to<std::string, std::wstring_view>(const std::wstring_view& wstr) noexcept
+    {
+        std::string str;
+        size_t size;
+        str.resize(wstr.length());
+        wcstombs_s(&size, &str[0], str.size() + 1, std::wstring(wstr).data(), wstr.size());
+        return str;
+    }
+
 } // namespace nemesis

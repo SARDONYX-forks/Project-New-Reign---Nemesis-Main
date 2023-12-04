@@ -41,6 +41,7 @@ jobs:
         with:
           path: ./build
           key: cmake-build-${{ runner.os }}-${{ hashFiles('**/') }}
+          restore-keys: cmake-build.${{ runner.os }}.
 
       - name: Setup & Build CMake
         shell: pwsh

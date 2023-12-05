@@ -67,6 +67,7 @@ void AdditionalInput(std::string& message, int counter, const std::string_view& 
 void AdditionalInput(std::string& message, int counter, const std::wstring& input);
 void AdditionalInput(std::string& message, int counter, const std::wstring_view& input);
 void AdditionalInput(std::string& message, int counter, const std::filesystem::path& input);
+void AdditionalInput(std::string& message, int counter, int input);
 
 template <typename type>
 inline void AdditionalInput(std::string& message, int counter, type input)
@@ -105,6 +106,13 @@ AdditionalInput(std::string& message, int counter, const std::filesystem::path& 
     AdditionalInput(message, counter + 1, rest...);
 }
 
+template <typename... other>
+inline void AdditionalInput(std::string& message, int counter, int input, other... rest)
+{
+    AdditionalInput(message, counter, input);
+    AdditionalInput(message, counter + 1, rest...);
+}
+
 template <typename type, typename... other>
 inline void AdditionalInput(std::string& message, int counter, type input, other... rest)
 {
@@ -118,6 +126,7 @@ void AdditionalInput(std::wstring& message, int counter, const char* input);
 void AdditionalInput(std::wstring& message, int counter, const std::string& input);
 void AdditionalInput(std::wstring& message, int counter, const std::string_view& input);
 void AdditionalInput(std::wstring& message, int counter, const std::filesystem::path& input);
+void AdditionalInput(std::wstring& message, int counter, int input);
 
 template <typename type>
 inline void AdditionalInput(std::wstring& message, int counter, type input)
@@ -151,6 +160,13 @@ inline void AdditionalInput(std::wstring& message, int counter, const std::strin
 template <typename... other>
 inline void
 AdditionalInput(std::wstring& message, int counter, const std::filesystem::path& input, other... rest)
+{
+    AdditionalInput(message, counter, input);
+    AdditionalInput(message, counter + 1, rest...);
+}
+
+template <typename... other>
+inline void AdditionalInput(std::wstring& message, int counter, int input, other... rest)
 {
     AdditionalInput(message, counter, input);
     AdditionalInput(message, counter + 1, rest...);

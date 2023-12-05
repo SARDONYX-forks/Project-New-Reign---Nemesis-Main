@@ -162,48 +162,6 @@ string EngLogWarning(int warningcode)
     return nemesis::transform_to<string>(EnglishLog->warninglist[warningcode]);
 }
 
-void ErrorMessage(int errorcode)
-{
-    std::scoped_lock<std::mutex> err_Lock(err_Mutex);
-
-    if (error) throw nemesis::exception();
-
-    error                 = true;
-    std::wstring errormsg = L"ERROR(" + std::to_wstring(errorcode) + L"): " + DMLogError(errorcode);
-
-    if (DMLogError(errorcode).length() == 0)
-    {
-        interMsg(
-            "CRITICAL ERROR: Error code not found. Unable to diagnose problem. Please re-install Nemesis\n");
-        return;
-    }
-
-    interMsg(errormsg + L"\n");
-    DebugLogging("ERROR(" + std::to_string(errorcode) + "): " + EngLogError(errorcode));
-    throw nemesis::exception();
-}
-
-void WarningMessage(int warningcode)
-{
-    scoped_lock<mutex> err_Lock(err_Mutex);
-
-    if (error) throw nemesis::exception();
-
-    wstring warninmsg = L"WARNING(" + to_wstring(warningcode) + L"): " + DMLogWarning(warningcode);
-
-    if (DMLogWarning(warningcode).length() == 0)
-    {
-        warninmsg
-            = L"CRITICAL ERROR: Error code not found. Unable to diagnose problem. Please re-install Nemesis";
-        interMsg(warninmsg + L"\n");
-        error = true;
-        return;
-    }
-
-    warningMsges.push_back(warninmsg + L"\n");
-    DebugLogging("WARNING(" + std::to_string(warningcode) + "): " + EngLogWarning(warningcode));
-}
-
 void InsertMessageParam(string& message, const string& newinput, const string& replacement)
 {
     int ref = sameWordCount(message, newinput);
@@ -273,6 +231,13 @@ void AdditionalInput(string& message, int counter, const filesystem::path& input
     InsertMessageParam(message, newinput, replacement);
 }
 
+void AdditionalInput(string& message, int counter, int input)
+{
+    string newinput    = "<" + to_string(counter) + ">";
+    string replacement = std::to_string(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
 void AdditionalInput(std::wstring& message, int counter, const std::wstring& input)
 {
     wstring newinput = L"<" + to_wstring(counter) + L">";
@@ -309,6 +274,13 @@ void AdditionalInput(wstring& message, int counter, const filesystem::path& inpu
 {
     wstring newinput    = L"<" + to_wstring(counter) + L">";
     wstring replacement = input.wstring();
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(wstring& message, int counter, int input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(std::to_string(input));
     InsertMessageParam(message, newinput, replacement);
 }
 

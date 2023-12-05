@@ -77,6 +77,13 @@ inline void AdditionalInput(std::string& message, int counter, type input)
 }
 
 template <typename... other>
+inline void AdditionalInput(std::string& message, int counter, const std::string& input, other... rest)
+{
+    AdditionalInput(message, counter, input);
+    AdditionalInput(message, counter + 1, rest...);
+}
+
+template <typename... other>
 inline void AdditionalInput(std::string& message, int counter, const std::wstring& input, other... rest)
 {
     AdditionalInput(message, counter, input);

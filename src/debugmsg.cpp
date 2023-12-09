@@ -284,6 +284,17 @@ void AdditionalInput(wstring& message, int counter, int input)
     InsertMessageParam(message, newinput, replacement);
 }
 
+// for ErrorMessage(3007, modcode, filepath, linecount, header)
+// AdditionalInput(errormsg, 1, rest...);
+void AdditionalInput(
+    std::wstring& message, int counter, std::string& modcode, std::string& filepath, const std::string& input)
+{
+    wstring newinput = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
 void ErrorMessage(int errorcode)
 {
     scoped_lock<mutex> err_Lock(err_Mutex);

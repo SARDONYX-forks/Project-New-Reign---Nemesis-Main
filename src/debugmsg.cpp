@@ -238,7 +238,8 @@ void AdditionalInput(string& message, int counter, int input)
     InsertMessageParam(message, newinput, replacement);
 }
 
-void AdditionalInput(string& message, int counter, string& path, const char* temp, int input, string& input)
+void AdditionalInput(
+    string& message, int counter, string& path, const char* temp, int input, string& str_input)
 {
     string newinput    = "<" + to_string(counter) + ">";
     string replacement = std::to_string(input);
@@ -301,7 +302,7 @@ void AdditionalInput(
 }
 
 void AdditionalInput(
-    std::wstring& message, int counter,const std::string& modcode, int line_count, const std::string& input)
+    std::wstring& message, int counter, const std::string& modcode, int line_count, const std::string& input)
 {
     wstring newinput    = L"<" + to_wstring(counter) + L">";
     wstring replacement = nemesis::transform_to<wstring>(input);

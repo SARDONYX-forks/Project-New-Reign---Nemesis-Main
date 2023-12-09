@@ -201,8 +201,8 @@ inline void ErrorMessage(int errorcode, other... rest)
         return;
     }
 
-    AdditionalInput(errormsg, 1, rest...);
-    AdditionalInput(englog, 1, rest...);
+    // AdditionalInput(errormsg, 1, rest...);
+    // AdditionalInput(englog, 1, rest...);
     interMsg(errormsg + L"\n");
     DebugLogging(englog);
     throw nemesis::exception();
@@ -230,8 +230,8 @@ inline void WarningMessage(int warningcode, other... rest)
         return;
     }
 
-    AdditionalInput(warninmsg, 1, rest...);
-    AdditionalInput(englog, 1, rest...);
+    // AdditionalInput(warninmsg, 1, rest...);
+    // AdditionalInput(englog, 1, rest...);
     warningMsges.push_back(warninmsg + L"\n");
     DebugLogging(englog);
 }

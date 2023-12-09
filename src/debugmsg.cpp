@@ -238,6 +238,13 @@ void AdditionalInput(string& message, int counter, int input)
     InsertMessageParam(message, newinput, replacement);
 }
 
+void AdditionalInput(string& message, int counter, string& path, const char* temp, int input, string& input)
+{
+    string newinput    = "<" + to_string(counter) + ">";
+    string replacement = std::to_string(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
 void AdditionalInput(std::wstring& message, int counter, const std::wstring& input)
 {
     wstring newinput = L"<" + to_wstring(counter) + L">";
@@ -284,12 +291,28 @@ void AdditionalInput(wstring& message, int counter, int input)
     InsertMessageParam(message, newinput, replacement);
 }
 
-// for ErrorMessage(3007, modcode, filepath, linecount, header)
-// AdditionalInput(errormsg, 1, rest...);
 void AdditionalInput(
     std::wstring& message, int counter, std::string& modcode, std::string& filepath, const std::string& input)
 {
-    wstring newinput = L"<" + to_wstring(counter) + L">";
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    std::wstring& message, int counter,const std::string& modcode, int line_count, const std::string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    std::wstring& message, int counter, std::string& modcode, const char* filepath, const std::string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
     wstring replacement = nemesis::transform_to<wstring>(input);
 
     InsertMessageParam(message, newinput, replacement);

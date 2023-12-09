@@ -39,6 +39,17 @@ namespace nemesis
         return {std::begin(str), std::end(str)};
     };
 
+    template <>
+    inline std::wstring transform_to<std::wstring, char>(const char& str) noexcept
+    {
+        std::string s = std::string(&str);
+        std::wstring wstr;
+        size_t size;
+        wstr.resize(s.length());
+        mbstowcs_s(&size, &wstr[0], wstr.size() + 1, s.c_str(), s.size());
+        return wstr;
+    }
+
     // Specialization for converting std::string to std::wstring
     template <>
     inline std::wstring transform_to<std::wstring, std::string>(const std::string& str) noexcept

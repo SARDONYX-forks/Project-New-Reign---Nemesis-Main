@@ -261,7 +261,7 @@ void AdditionalInput(std::wstring& message, int counter, const std::wstring_view
 void AdditionalInput(std::wstring& message, int counter, const char* input)
 {
     wstring newinput = L"<" + to_wstring(counter) + L">";
-    InsertMessageParam(message, newinput, nemesis::transform_to<wstring>(input));
+    InsertMessageParam(message, newinput, nemesis::transform_to<wstring>(std::string(input)));
 }
 
 void AdditionalInput(wstring& message, int counter, const string& input)

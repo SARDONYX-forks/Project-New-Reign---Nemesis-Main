@@ -2,6 +2,7 @@
 #define SINGLETEMPLATE_H_
 
 #include "utilities/linkedvar.h"
+#include "utilities/scope.h"
 
 #include "generate/animation/optionlist.h"
 #include "generate/animation/templateprocessing.h"
@@ -51,17 +52,17 @@ public:
 
 std::string getOption(std::string curline);
 
-void ProcessFunction(string change,
-                     string line,
-                     string format,
-                     string behaviorFile,
-                     string multiOption,
+void ProcessFunction(std::string change,
+                     std::string line,
+                     std::string format,
+                     std::string behaviorFile,
+                     std::string multiOption,
                      bool& isEnd,
                      int numline,
                      size_t curPos,
                      OptionList& optionlist,
-                     map<int, vector<shared_ptr<nemesis::scope>>>& lineblocks,
-                     vector<AddOnInfo>& addInfo,
+                     std::map<int, std::vector<std::shared_ptr<nemesis::scope>>>& lineblocks,
+                     std::vector<AddOnInfo>& addInfo,
                      bool& isTrueMulti,
                      bool isGroup,
                      bool isMaster,

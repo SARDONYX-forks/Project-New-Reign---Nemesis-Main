@@ -49,8 +49,8 @@ jobs:
         run: |
           New-Item -ItemType Directory ./build -ErrorAction SilentlyContinue
           Set-Location ./build
-          cmake -DCMAKE_BUILD_TYPE=Release -A Win32 ..
-          cmake --build . -j $Env:NUMBER_OF_PROCESSORS
+          cmake -A Win32 ..
+          cmake --build . -j $Env:NUMBER_OF_PROCESSORS --config Release
         continue-on-error: true # Add because cache is wasted while build fails
 
       - name: List files

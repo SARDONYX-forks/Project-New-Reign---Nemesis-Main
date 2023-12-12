@@ -250,6 +250,7 @@ set(Source_Files__utilities
     "src/utilities/scope.cpp"
     "src/utilities/stringsplit.cpp"
     "src/utilities/threadpool.cpp"
+    "src/utilities/writetextfile.cpp"
 )
 source_group("Source Files\\utilities" FILES ${Source_Files__utilities})
 

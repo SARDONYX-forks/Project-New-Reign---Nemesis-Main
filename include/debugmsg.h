@@ -51,7 +51,7 @@ namespace nemesis
 } // namespace nemesis
 
 // add new language pack
-void NewDebugMessage(DebugMsg& NewLog);
+void NewDebugMessage(DebugMsg NewLog);
 
 std::wstring DMLogError(int errorcode);
 std::wstring DMLogWarning(int warningcode);

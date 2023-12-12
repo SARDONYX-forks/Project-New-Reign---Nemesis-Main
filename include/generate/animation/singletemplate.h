@@ -13,9 +13,9 @@ struct AddOnInfo
     std::string header;
     std::string addition;
 
-	AddOnInfo() {};
-	AddOnInfo(std::string n_h, std::string n_a);
-	AddOnInfo(std::string n_h, std::string n_a, int n_om);
+    AddOnInfo(){};
+    AddOnInfo(std::string n_h, std::string n_a);
+    AddOnInfo(std::string n_h, std::string n_a, int n_om);
 };
 
 class AnimTemplate
@@ -35,11 +35,11 @@ class AnimTemplate
                  nemesis::CondVar<std::string>* generatedlines);
 
 public:
-	bool hasDuration;
-	bool isGroup = false;
-	size_t size = 0;
-	nemesis::CondVar<std::string> lines;
-	proc process;
+    bool hasDuration;
+    bool isGroup = false;
+    size_t size  = 0;
+    nemesis::CondVar<std::string> lines;
+    proc process;
 
     void ExamineTemplate(std::string n_format,
                          std::string n_file,
@@ -50,5 +50,22 @@ public:
 };
 
 std::string getOption(std::string curline);
+
+void ProcessFunction(string change,
+                     string line,
+                     string format,
+                     string behaviorFile,
+                     string multiOption,
+                     bool& isEnd,
+                     int numline,
+                     size_t curPos,
+                     OptionList& optionlist,
+                     map<int, vector<shared_ptr<nemesis::scope>>>& lineblocks,
+                     vector<AddOnInfo>& addInfo,
+                     bool& isTrueMulti,
+                     bool isGroup,
+                     bool isMaster,
+                     bool isMC,
+                     proc& process);
 
 #endif

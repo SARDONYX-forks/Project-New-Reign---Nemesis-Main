@@ -11,6 +11,8 @@ using namespace std;
 VecStr GetOptionInfo(string line, string format, string filename, int numline);
 VecStr GetOptionInfo(
     string line, string format, string masterformat, string filename, string multiOption, int numline);
+// lvalue references must be bound to variables, because this method requires &proc and cannot std::move.
+proc _dummy_proc = proc();
 void ProcessFunction(string change,
                      string line,
                      string format,
@@ -26,7 +28,7 @@ void ProcessFunction(string change,
                      bool isGroup   = false,
                      bool isMaster  = false,
                      bool isMC      = true,
-                     proc&& process = proc());
+                     proc& process = _dummy_proc);
 
 nemesis::Condt::Condt(string condition,
                       string format,

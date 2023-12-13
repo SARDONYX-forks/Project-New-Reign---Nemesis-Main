@@ -27,6 +27,8 @@ void mainAnimEventInstall(string format,
                           bool isMaster,
                           proc& process);
 
+// lvalue references must be bound to variables, because this method requires &proc and cannot std::move.
+proc _dummy_proc = proc();
 void ProcessFunction(string change,
                      string line,
                      string format,
@@ -42,7 +44,7 @@ void ProcessFunction(string change,
                      bool isGroup   = false,
                      bool isMaster  = false,
                      bool isMC      = true,
-                     proc&& process = proc());
+                     proc& process = _dummy_proc);
 
 void AnimTemplate::ExamineTemplate(
     string _format, string _file, VecStr templatelines, bool isGroup, bool isMaster, OptionList optionlist)

@@ -1,3 +1,33 @@
 {
-  "C_Cpp.formatting": "clangFormat"
+  "C_Cpp.formatting": "clangFormat",
+  "files.associations": {
+    ".editorconfig": "properties",
+    ".env": "dotenv",
+    ".eslintignore": "ignore",
+    ".eslintrc.json": "json",
+    ".gitignore": "ignore",
+    "*.asm": "assembly",
+    "*.html": "html",
+    "*.inc": "assembly",
+    "*.ipynb": "python",
+    "*.md": "markdown",
+    "*.s": "assembly",
+    "*.txt": "txt",
+    "*.vim": "viml",
+    "*CMakeLists*.txt": "cmake",
+    "Cargo.lock": "toml",
+    "LICENSE": "txt",
+    "yarn.lock": "txt",
+    "atomic": "cpp",
+    "xstring": "cpp",
+    "chrono": "cpp",
+    "filesystem": "cpp"
+  },
+  "C_Cpp.codeAnalysis.clangTidy.enabled": false
+  // "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+  //   "*",
+  //   "performance-*",
+  //   "modernize-*",
+  //   "readability-*"
+  // ]
 }

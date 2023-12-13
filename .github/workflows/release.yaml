@@ -45,12 +45,7 @@ jobs:
 
       - name: Setup & Build CMake
         shell: pwsh
-        # -A Win32: Need IA-32(32bit) mode for `hkxcmd`
-        run: |
-          New-Item -ItemType Directory ./build -ErrorAction SilentlyContinue
-          Set-Location ./build
-          cmake -A Win32 ..
-          cmake --build . -j $Env:NUMBER_OF_PROCESSORS --config Release
+        run: ./build.ps1
         continue-on-error: true # Add because cache is wasted while build fails
 
       - name: List files

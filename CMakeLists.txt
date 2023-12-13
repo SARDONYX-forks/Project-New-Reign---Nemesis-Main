@@ -5,11 +5,6 @@ project(NemesisUnlimitedBehaviorEngine LANGUAGES CXX VERSION 0.84)
 # ###############################################################################
 # VARIABLES
 # ###############################################################################
-
-# This part is the only one that should be modified by the user wanting to compile Nemesis
-option(UseLocalQt "Uses local copy of Qt instead of GitHub Action" OFF)
-set(Qt5_DIR "${PROJECT_SOURCE_DIR}/build/5.14.1/msvc2017/lib/cmake/Qt5" CACHE PATH "Qt local path")
-
 option(UseLocalBoost "Uses local copy of Boost instead of downloading it" OFF)
 set(BOOST_ROOT "C:/IT/Boost_1.72.0" CACHE PATH "Boost local path")
 

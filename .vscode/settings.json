@@ -1,4 +1,7 @@
 {
+  "[c][cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
   "C_Cpp.formatting": "clangFormat",
   "files.associations": {
     ".editorconfig": "properties",

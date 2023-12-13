@@ -88,7 +88,7 @@ void CmdGenerateInitialize(VecStr modlist, const NemesisInfo* nemesisInfo)
     }
 
     cout << "End\n";
-    getch();
+    _getch();
     exit(static_cast<int>(error));
 }
 

@@ -69,4 +69,7 @@ void ProcessFunction(std::string change,
                      bool isMC,
                      proc& process);
 
+// lvalue references must be bound to variables, because this method requires &proc and cannot std::move.
+extern proc _dummy_proc;
+
 #endif

@@ -1,10 +1,10 @@
-#include <thread>
 #include <cmath>
+#include <thread>
 
 #include "Global.h"
 
-#include <QtCore/qtimer.h>
 #include <QtConcurrent/qtconcurrentrun.h>
+#include <QtCore/qtimer.h>
 
 #include "ui/AnimProgressBar.h"
 
@@ -38,7 +38,8 @@ void AnimProgressBar::valueUpdate()
         //std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         //newValue(12574);
 
-        auto resetRaise = [&] {
+        auto resetRaise = [&]
+        {
             oldvalue = trueValue;
             base     = value();
             counter  = max;
@@ -69,9 +70,6 @@ void AnimProgressBar::valueUpdate()
             }
         }
     }
-    catch (const std::exception& _ex)
-    {
-    }
     catch (...)
     {
     }
@@ -82,14 +80,13 @@ void AnimProgressBar::valueUpdate()
 
 void AnimProgressBar::ForeverLoop()
 {
-    QString style
-        = font + "QProgressBar::chunk {background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, ";
+    QString style = font + "QProgressBar::chunk {background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, ";
     QString trueopq = QString::number(255 - opq);
-    double bRunner = aRunner + gsize;
-    double aGap    = aRunner - gap;
-    double bGap    = bRunner + gap;
+    double bRunner  = aRunner + gsize;
+    double aGap     = aRunner - gap;
+    double bGap     = bRunner + gap;
 
-    const auto BigOrEqual = [](double a, double b) { return a > b || AreDoubleSame(a, b); };
+    const auto BigOrEqual   = [](double a, double b) { return a > b || AreDoubleSame(a, b); };
     const auto SmallOrEqual = [](double a, double b) { return a < b || AreDoubleSame(a, b); };
 
     // Symbols below are used to illustrate the progress bar coordination as visual representation
@@ -122,7 +119,7 @@ void AnimProgressBar::ForeverLoop()
             // <=|S|=|E|[xx]
             // whole chunk only contains the gradient gap area
 
-            double num   = 255 - std::fmin(255, std::fabs(aGap) / gap * opq);
+            double num = 255 - std::fmin(255, std::fabs(aGap) / gap * opq);
             style.append("stop:0 hsv(%1, " + QString::number(num) + ")");
         }
         else
@@ -161,7 +158,7 @@ void AnimProgressBar::ForeverLoop()
                 // <==[x|S|x]==|E|>
                 // the progress bar's chunk is small that right end of the gradient gap is hitting the end of the progress bar chunk
 
-                double num   = 255 - std::fmin(255, (bGap - 1) / gap * opq);
+                double num = 255 - std::fmin(255, (bGap - 1) / gap * opq);
                 style.append(", stop:1 hsv(%1, " + QString::number(num) + ")");
             }
             else
@@ -186,7 +183,8 @@ void AnimProgressBar::ForeverLoop()
         // part of the left gradient is outside of the start point
 
         double anum = 255 - std::fmin(255, std::fabs(aGap) / gap * opq);
-        style.append("stop:0 hsv(%1, " + QString::number(anum) + "), stop:" + QString::number(aRunner) + " hsv(%1, " + trueopq + ")");
+        style.append("stop:0 hsv(%1, " + QString::number(anum) + "), stop:" + QString::number(aRunner)
+                     + " hsv(%1, " + trueopq + ")");
 
         if (SmallOrEqual(bRunner, 1))
         {
@@ -220,8 +218,8 @@ void AnimProgressBar::ForeverLoop()
         // ------<==[x|E|x]==>
         // only part of the opaque block is within the end point
 
-        style.append("stop:" + QString::number(aGap) + " hsv(%1), stop:" + QString::number(aRunner) + " hsv(%1, "
-                     + trueopq + "), stop:0.99995 hsv(%1, " + trueopq + "), stop:1 hsv(%1)");
+        style.append("stop:" + QString::number(aGap) + " hsv(%1), stop:" + QString::number(aRunner)
+                     + " hsv(%1, " + trueopq + "), stop:0.99995 hsv(%1, " + trueopq + "), stop:1 hsv(%1)");
     }
     else if (BigOrEqual(bGap, 1))
     {

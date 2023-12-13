@@ -6,29 +6,29 @@
 
 #include <QtConcurrent/qtconcurrentrun.h>
 
-#include "version.h"
 #include "debuglog.h"
-#include "nemesisinfo.h"
 #include "externalscript.h"
+#include "nemesisinfo.h"
+#include "version.h"
 
-#include "ui/Terminator.h"
 #include "ui/MessageHandler.h"
+#include "ui/Terminator.h"
 
-#include "utilities/renew.h"
-#include "utilities/threadpool.h"
 #include "utilities/atomiclock.h"
 #include "utilities/filechecker.h"
+#include "utilities/renew.h"
+#include "utilities/threadpool.h"
 
 #include "generate/addanims.h"
 #include "generate/behaviorcheck.h"
+#include "generate/behaviorgenerator.h"
+#include "generate/behaviorprocess.h"
+#include "generate/behaviorprocess_utility.h"
+#include "generate/behaviorsubprocess.h"
+#include "generate/generator_utility.h"
 #include "generate/installscripts.h"
 #include "generate/papyruscompile.h"
-#include "generate/behaviorprocess.h"
 #include "generate/playerexclusive.h"
-#include "generate/generator_utility.h"
-#include "generate/behaviorgenerator.h"
-#include "generate/behaviorsubprocess.h"
-#include "generate/behaviorprocess_utility.h"
 
 #include "generate/animation/registeranimation.h"
 #include "generate/animation/singletemplate.h"
@@ -177,7 +177,8 @@ void BehaviorStart::InitializeGeneration()
             if (checkThread->joinable()) checkThread->join();
         }
         catch (exception)
-        {}
+        {
+        }
 
         delete checkThread;
     }
@@ -258,10 +259,11 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
             // Create proxy new animation to link master behavior branch with sub-branch, which is used as a core
             if (BehaviorTemplate->coreTemplate[templatecode].length() > 0)
             {
-                coreModName     = "Nemesis_" + modID + "_";
-                wstring corepath = wstring(behaviorPath[nemesis::transform_to<wstring>(BehaviorTemplate->coreTemplate[templatecode])]);
+                coreModName      = "Nemesis_" + modID + "_";
+                wstring corepath = wstring(behaviorPath[nemesis::transform_to<wstring>(
+                    BehaviorTemplate->coreTemplate[templatecode])]);
                 wstring corename = GetFileName(corepath);
-                corepath        = corepath.substr(0, corepath.length() - corename.length());
+                corepath         = corepath.substr(0, corepath.length() - corename.length());
                 DebugLogging(L"Core behavior name: " + corename);
                 DebugLogging(L"Core behavior destination: " + corepath);
 
@@ -290,7 +292,7 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
                                         + nemesis::transform_to<wstring>(
                                             BehaviorTemplate->optionlist[corecode].coreBehavior)
                                         + L".hkx"))
-                            
+
                         {
                             dummy->addFilename("FNIS_" + modID + "_"
                                                + BehaviorTemplate->optionlist[corecode].coreBehavior
@@ -300,9 +302,10 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
                         {
                             dummy->addFilename(
                                 coreModName + BehaviorTemplate->optionlist[corecode].coreBehavior + ".hkx");
-                            coreModList[nemesis::transform_to<wstring>(nemesis::to_lower_copy(
-                                            BehaviorTemplate->optionlist[corecode].coreBehavior)
-                                        + ".txt")]
+                            coreModList[nemesis::transform_to<wstring>(
+                                            nemesis::to_lower_copy(
+                                                BehaviorTemplate->optionlist[corecode].coreBehavior)
+                                            + ".txt")]
                                 .push_back(nemesis::transform_to<wstring>(coreModName));
                         }
 
@@ -444,8 +447,8 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
                     newAnimVariable[templatecode + coreModName].insert(tempVariableID.begin(),
                                                                        tempVariableID.end());
 
-                    if (order != 0) 
-                    { 
+                    if (order != 0)
+                    {
                         newAnimation[templatecode].back()->setOrder(order);
                     }
                     else
@@ -957,7 +960,8 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
                 {
                     if (error) throw nemesis::exception();
 
-                    if (isCore) modID = nemesis::transform_to<string>(coreModList[lowerFileName][repeatcount]);
+                    if (isCore)
+                        modID = nemesis::transform_to<string>(coreModList[lowerFileName][repeatcount]);
 
                     bool skip            = false;
                     wstring tempfilename = lowerFileName.substr(0, lowerFileName.find_last_of(L"."));
@@ -1033,10 +1037,10 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
 
                     if (!sf::is_directory(directory + fpfile))
                     {
-                        string modID         = "";
-                        bool isCore          = false;
-                        int repeatcount      = 0;
-                        int repeat           = 1;
+                        string modID          = "";
+                        bool isCore           = false;
+                        int repeatcount       = 0;
+                        int repeat            = 1;
                         wstring lowerFileName = nemesis::to_lower_copy(fpfile);
 
                         if (coreModList.find(lowerFileName) != coreModList.end())
@@ -1051,9 +1055,11 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
                         {
                             if (error) throw nemesis::exception();
 
-                            if (isCore) modID = nemesis::transform_to<string>(coreModList[lowerFileName][repeatcount]);
+                            if (isCore)
+                                modID
+                                    = nemesis::transform_to<string>(coreModList[lowerFileName][repeatcount]);
 
-                            bool skip           = false;
+                            bool skip            = false;
                             wstring tempfilename = lowerFileName.substr(0, lowerFileName.find_last_of(L"."));
                             wstring temppath     = behaviorPath[nemesis::transform_to<wstring>(tempfilename)];
 
@@ -1117,7 +1123,7 @@ void BehaviorStart::GenerateBehavior(std::thread*& checkThread)
     catch (exception& ex)
     {
         tp.join_all();
-        
+
         for (auto& each : behaviorSubList)
         {
             delete each;
@@ -1187,7 +1193,8 @@ void BehaviorStart::milestoneStart()
 
         for (auto& file : fpfilelist)
         {
-            if (!sf::is_directory(fpdirectory + L"\\" + file) && file.find(L".txt") == file.length() - 4) ++include;
+            if (!sf::is_directory(fpdirectory + L"\\" + file) && file.find(L".txt") == file.length() - 4)
+                ++include;
         }
     }
 
@@ -1219,7 +1226,7 @@ void BehaviorStart::unregisterProcess(bool skip)
             else
             {
                 wstring msg;
-                auto diff = std::chrono::high_resolution_clock::now() - start_time;
+                auto diff   = std::chrono::high_resolution_clock::now() - start_time;
                 int seconds = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
 
                 DebugLogging("Number of animations: " + to_string(animCount));
@@ -1269,7 +1276,7 @@ void BehaviorStart::EndAttempt()
 
         try
         {
-            for (int i = 0; i < failedBehaviors.size(); i += 2)
+            for (size_t i = 0; i < failedBehaviors.size(); i += 2)
             {
                 hkxCompiler.hkxcmdProcess(failedBehaviors[i], failedBehaviors[i + 1], true);
                 DebugLogging(L"Processing behavior: " + failedBehaviors[i]
@@ -1284,18 +1291,20 @@ void BehaviorStart::EndAttempt()
 
             failedBehaviors.clear();
             behaviorCheck(this);
-            
+
             if (isFileExist(papyrusTempCompile())) sf::remove_all(papyrusTempCompile());
 
             emit progressUp();
         }
         catch (nemesis::exception&)
-        {}
+        {
+        }
         catch (...)
-        {}
+        {
+        }
 
-        if (error) 
-        { 
+        if (error)
+        {
             ClearGlobal();
         }
         else
@@ -1311,7 +1320,8 @@ void BehaviorStart::EndAttempt()
             p_terminate->exitSignal();
         }
         catch (...)
-        {}
+        {
+        }
     }
 }
 
@@ -1329,9 +1339,9 @@ void BehaviorStart::newMilestone()
 {
     Lockless lock(upFlag);
 
-    if (!error) 
+    if (!error)
     {
-        emit progressUp(); 
+        emit progressUp();
     }
 }
 

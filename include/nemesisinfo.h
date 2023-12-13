@@ -31,8 +31,8 @@ public:
 
     const std::wstring& GetDataPath() const;
     const std::wstring& GetStagePath() const;
-    const std::string& GetDataPathA() const;
-    const std::string& GetStagePathA() const;
+    const std::string GetDataPathA() const;
+    const std::string GetStagePathA() const;
     uint GetMaxAnim() const;
     bool IsFirst() const;
     uint GetWidth() const;

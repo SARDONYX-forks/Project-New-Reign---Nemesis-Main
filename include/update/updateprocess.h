@@ -14,7 +14,7 @@
 #include "generate/animation/import.h"
 
 class NemesisEngine;
-class arguPack;
+struct arguPack;
 
 typedef std::unordered_map<std::string, std::map<std::string, std::unordered_map<std::string, SetStr>>> StateIDList;
 
@@ -110,7 +110,7 @@ private:
 	size_t queuing;
 
 	std::vector<std::shared_ptr<RegisterQueue>> registeredFiles;
-	
+
 	StateIDList modStateList;				// behavior file, SM ID, state ID, list of mods
 #if MULTITHREADED_UPDATE
     std::atomic_flag stateListLock{};

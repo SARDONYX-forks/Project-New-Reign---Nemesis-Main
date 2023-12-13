@@ -60,9 +60,9 @@ void BehaviorSub::CompilingASD()
 
     VecStr projectList;
     uint projectcounter = 0;
-    uint headercounter = 0;
-    string project     = "	";
-    string header      = project;
+    uint headercounter  = 0;
+    string project      = "	";
+    string header       = project;
     unordered_map<string, map<string, VecStr, alphanum_less>> ASDPack;
     unordered_map<string, unique_ptr<AnimationDataProject>> ASDData;
 
@@ -323,7 +323,7 @@ void BehaviorSub::CompilingASD()
 
         process->newMilestone();
 
-        for (int i = num; i < storeline.size(); ++i)
+        for (size_t i = num; i < storeline.size(); ++i)
         {
             line = storeline[i].second;
 

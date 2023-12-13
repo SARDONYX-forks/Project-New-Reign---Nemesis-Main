@@ -1070,7 +1070,7 @@ bool UpdateFilesStart::AnimDataDisassemble(const wstring& path, MasterAnimData& 
             }
         }
     }
-    catch (const exception& ex)
+    catch (...)
     {
         ErrorMessage(3014);
     }

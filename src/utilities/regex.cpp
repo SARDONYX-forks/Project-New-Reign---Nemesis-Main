@@ -292,7 +292,7 @@ namespace nemesis
             match = {m};
             return true;
         }
-        catch (const detail::underlying_exception& _e)
+        catch (...)
         {
         }
         return false;

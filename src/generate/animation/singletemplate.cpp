@@ -26,8 +26,7 @@ void mainAnimEventInstall(string format,
                           bool isGroup,
                           bool isMaster,
                           proc& process);
-// lvalue references must be bound to variables.  It is unclear why the author does not use &&.
-proc _dummy_proc = proc();
+
 void ProcessFunction(string change,
                      string line,
                      string format,
@@ -40,10 +39,10 @@ void ProcessFunction(string change,
                      map<int, vector<shared_ptr<nemesis::scope>>>& lineblocks,
                      vector<AddOnInfo>& addInfo,
                      bool& isTrueMulti,
-                     bool isGroup  = false,
-                     bool isMaster = false,
-                     bool isMC     = true,
-                     proc& process = _dummy_proc);
+                     bool isGroup   = false,
+                     bool isMaster  = false,
+                     bool isMC      = true,
+                     proc&& process = proc());
 
 void AnimTemplate::ExamineTemplate(
     string _format, string _file, VecStr templatelines, bool isGroup, bool isMaster, OptionList optionlist)

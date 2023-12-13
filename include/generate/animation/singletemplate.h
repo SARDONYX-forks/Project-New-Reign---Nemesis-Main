@@ -67,6 +67,6 @@ void ProcessFunction(std::string change,
                      bool isGroup,
                      bool isMaster,
                      bool isMC,
-                     proc& process);
+                     proc&& process);
 
 #endif

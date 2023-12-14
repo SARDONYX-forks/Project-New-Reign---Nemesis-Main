@@ -7,6 +7,7 @@
         "${workspaceFolder}/build/5.15.2/msvc2019/include/QtCore",
         "${workspaceFolder}/build/5.15.2/msvc2019/include/QtGui",
         "${workspaceFolder}/build/5.15.2/msvc2019/include/QtWidgets",
+        "${workspaceFolder}/build/NemesisUnlimitedBehaviorEngine_autogen/include_Release",
         "${workspaceFolder}/build/_deps/boost-src",
         "${workspaceFolder}/build/_deps/cpython-src/Include",
         "${workspaceFolder}/external/hkxcmd",

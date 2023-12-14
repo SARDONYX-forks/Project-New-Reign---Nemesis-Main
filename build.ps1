@@ -39,5 +39,5 @@ if ($Deploy) {
   }
   else { throw "Couldn't find windeployqt.exe" }
 
-  Compress-Archive -Path './test environment' -DestinationPath './NemesisUnlimitedBehaviorEngine-x86-windows-msvc'
+  Compress-Archive -Path './test environment/*' -DestinationPath './NemesisUnlimitedBehaviorEngine-x86-windows-msvc'
 }

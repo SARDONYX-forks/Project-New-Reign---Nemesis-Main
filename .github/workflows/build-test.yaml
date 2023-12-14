@@ -45,6 +45,13 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           path: |
-            test environment/
+            build
             !build/CMakeFiles
             !build/_deps
+
+      - name: Upload Nemesis
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: NemesisUnlimitedBehaviorEngine-x86-windows
+          # It will be double-compressed, but this is to speed up the upload process.
+          path: NemesisUnlimitedBehaviorEngine-x86-windows.zip

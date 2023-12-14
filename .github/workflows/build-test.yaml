@@ -25,7 +25,7 @@ jobs:
           host: "windows"
           dir: "${{ github.workspace}}/"
           target: "desktop"
-          tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
+          tools: "tools_ifw tools_qtcreator,qt.tools.qtcreator"
           #? 5.14.2 is msvc2017, but action env support 2019, 2022 only . So we use this.
           arch: "win32_msvc2019"
           cache: true
@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           path: |
-            test environments
+            "test environments"
             !build/CMakeFiles
             !build/_deps

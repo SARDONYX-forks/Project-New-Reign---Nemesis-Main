@@ -46,7 +46,7 @@ QVariant BehaviorListModel::data(const QModelIndex& index, int role) const
     {
         return Qt::AlignCenter;
     }
-    else if (index.row() % 2 != 0 && role == Qt::BackgroundColorRole)
+    else if (index.row() % 2 != 0 && role == Qt::BackgroundRole)
     {
         return QColor(235, 235, 235);
     }

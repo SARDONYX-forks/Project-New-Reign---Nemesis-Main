@@ -1,3 +1,5 @@
+#pragma warning(disable : 4722) // Disable "destructor not return, maybe memory leak warning"
+
 #include "Global.h"
 
 #include <QApplication>
@@ -14,5 +16,4 @@ CEMsgBox::CEMsgBox(QWidget* parent)
 CEMsgBox::~CEMsgBox()
 {
     exit(1);
-    return;
 }

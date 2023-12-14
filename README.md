@@ -13,11 +13,14 @@ Thanks to all for supporting this project
 
 - Python(For aqt command.This is Unofficial Qt installer)
   - version: 3.8~3.10
-    - To avoid this error
-      [cannot open file 'libffi-7.lib'](https://discuss.python.org/t/struggling-to-build-python-on-windows-10/11031)
 
 Execute the following PowerShell command.
 
 ```powershell
 ./build.ps1
 ```
+
+# Known Errors
+
+- [cannot open file 'libffi-7.lib'](https://discuss.python.org/t/struggling-to-build-python-on-windows-10/11031)
+- Veridic template parameters overload error(in `include/debugmsg.h`)

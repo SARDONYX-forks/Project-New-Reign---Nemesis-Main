@@ -52,6 +52,6 @@ jobs:
       - name: Upload Nemesis
         uses: actions/upload-artifact@v3.1.3
         with:
-          name: NemesisUnlimitedBehaviorEngine-x86-windows
+          name: NemesisUnlimitedBehaviorEngine-x86-windows-msvc
           # It will be double-compressed, but this is to speed up the upload process.
-          path: NemesisUnlimitedBehaviorEngine-x86-windows.zip
+          path: ${{ github.workspace }}/NemesisUnlimitedBehaviorEngine-x86-windows-msvc.zip

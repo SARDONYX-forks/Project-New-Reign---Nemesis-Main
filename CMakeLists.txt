@@ -325,6 +325,9 @@ if(MSVC)
 
     # Required
     target_compile_options(${PROJECT_NAME} PRIVATE "/bigobj")
+
+    # Use /NODEFAULTLIB:library to exclude specific default libraries causing conflicts
+    target_link_options(${PROJECT_NAME} PRIVATE "/NODEFAULTLIB:LIBCMT")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE BoostNemesis PythonNemesis Qt5Nemesis hkxcmd # add_subdirectory(external/hkxcmd)

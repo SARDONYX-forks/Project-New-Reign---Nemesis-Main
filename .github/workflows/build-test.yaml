@@ -41,10 +41,14 @@ jobs:
         shell: pwsh
         run: ./build.ps1 -Verbose -Deploy
 
+      - name: Compress
+        shell: pwsh
+        run: Compress-Archive -Path './test environment' -DestinationPath './NemesisUnlimitedBehaviorEngine-x86-windows-msvc'
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3
         with:
           path: |
-            "NemesisUnlimitedBehaviorEngine-x86-windows-msvc.zip"
+            "./NemesisUnlimitedBehaviorEngine-x86-windows-msvc.zip"
             !build/CMakeFiles
             !build/_deps

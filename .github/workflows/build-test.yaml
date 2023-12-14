@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           path: |
-            "test environments"
+            "test environment"
             !build/CMakeFiles
             !build/_deps

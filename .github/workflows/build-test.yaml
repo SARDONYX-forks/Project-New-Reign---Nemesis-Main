@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install aqt(Qt install command)
+        run: pip install aqt
+
       - name: Set up cmake deps cache
         uses: actions/cache@v3
         with:

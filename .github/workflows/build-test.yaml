@@ -1,0 +1,36 @@
+name: Build Test
+
+on:
+  push:
+    branches: ["master-ci"]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # To build Cpython 3.8.2, msvc v140 VS2015 C++ is required but not included in windows-2022, so build with 2019.
+        os: [windows-2019]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up cmake deps cache
+        uses: actions/cache@v3
+        with:
+          path: ./build
+          key: cmake-build-${{ runner.os }}-${{ hashFiles('./CMakeLists.txt') }}
+          restore-keys: cmake-build.${{ runner.os }}.
+
+      - name: Setup & Build CMake
+        shell: pwsh
+        run: ./build.ps1 -Verbose -Deploy
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          path: |
+            test environments
+            !build/CMakeFiles
+            !build/_deps

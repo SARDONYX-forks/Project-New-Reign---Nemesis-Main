@@ -1,3 +1,8 @@
+param (
+  [switch]
+  $Verbose
+)
+
 #! NOTE: VS2022 gives me a syntax error when I try to compile 5.14.2. Therefore, use the one for VS2019.
 # If GitHub CI definition, then ignore.
 if (!$env:Qt5_DIR) {
@@ -11,8 +16,10 @@ if (!$env:Qt5_DIR) {
   }
 }
 
+$local:IsVerbose = if ($Verbose) { 1 } else { 0 }
+
 # -S: source path
 # -B: build path
 # -A Win32: Need IA-32(32bit) mode for `hkxcmd`
-cmake -S . -B ./build -A Win32 -D CMAKE_BUILD_TYPE=Release
+cmake -S . -B ./build -A Win32 -D CMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE="$IsVerbose"
 cmake --build ./build -j $Env:NUMBER_OF_PROCESSORS --config Release

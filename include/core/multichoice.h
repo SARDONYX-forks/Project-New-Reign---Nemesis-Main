@@ -6,6 +6,8 @@
 
 namespace nemesis
 {
+    // Forward declaration to extern predefined types in namespace.
+    struct Condition;
     struct ScopeInfo;
 
     struct MultiChoice
@@ -33,4 +35,4 @@ namespace nemesis
         void AddChoice(size_t pointA, size_t pointB, UPtr<Condition>& condition);
         const Vec<Choice>& GetChoiceList() const noexcept;
     };
-}
+} // namespace nemesis

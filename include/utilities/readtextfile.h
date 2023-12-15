@@ -3,10 +3,11 @@
 
 #include <filesystem>
 
-#include <QtCore\QFile.h>
-#include <QtCore\QTextStream.h>
+#include <QtCore\qfile.h>
+#include <QtCore\qtextStream.h>
 
 #include "utilities/conditiondetails.h"
+#include "utilities/line.h"
 
 struct FileReader
 {

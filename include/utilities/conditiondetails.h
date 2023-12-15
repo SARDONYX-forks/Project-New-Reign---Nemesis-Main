@@ -1,15 +1,15 @@
 #pragma once
 
 #include <deque>
-#include <vector>
 #include <filesystem>
+#include <vector>
 
 #include "utilities/condtype.h"
+#include "utilities/line.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
-    struct Line;
-
     struct CondDetails
     {
         using CondDetailsList = Vec<CondDetails>;
@@ -83,4 +83,4 @@ namespace nemesis
                                    const std::string&,
                                    const nemesis::Line&,
                                    std::vector<CondDetails>&);
-}
+} // namespace nemesis

@@ -5,6 +5,8 @@
 
 #include "base/file.h"
 
+#include "scope/scopeinfo.h"
+
 #include "utilities/types.h"
 #include "utilities/atomic.h"
 
@@ -87,7 +89,7 @@ namespace nemesis
         void AddAttributes();
         void AddAnimImport(const std::string& key, UPtr<nemesis::AnimImport>& animimport_ptr);
         void SetInnerExporter(nemesis::Exporter& exporter);
-        
+
         bool IsBehavior() const;
 
         std::string_view

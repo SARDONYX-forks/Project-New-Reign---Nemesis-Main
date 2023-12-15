@@ -3,9 +3,12 @@
 #include <filesystem>
 #include <string>
 
+#include "Global.h"
+
 #include "base/sharablewrapper.h"
 
 #include "utilities/readtextfile.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
@@ -40,7 +43,7 @@ namespace nemesis
         SPtr<FileReader> CreateReader(const std::filesystem::path& filename,
                                       Vec<LineType>& functionlines) const
         {
-            if (sf::is_directory(filename)) ErrorMessage(3001, filename);
+            if (std::filesystem::is_directory(filename)) ErrorMessage(3001, filename);
 
             SPtr<FileReader> filereader = std::make_shared<FileReader>(filename.wstring());
 
@@ -196,4 +199,4 @@ namespace nemesis
 
         static nemesis::File::FileType GetFileType(const std::filesystem::path& path);
     };
-}
+} // namespace nemesis

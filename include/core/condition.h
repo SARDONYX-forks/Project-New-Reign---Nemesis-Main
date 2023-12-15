@@ -6,6 +6,7 @@
 #include "core/animvarptr.h"
 #include "utilities/conditiondetails.h"
 #include "utilities/conditioninfo.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {

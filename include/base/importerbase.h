@@ -2,8 +2,10 @@
 
 #include "base/file.h"
 
-#include "utilities/regexsearch.h"
+#include "core/animvarptr.h"
+
 #include "utilities/lexersearch.h"
+#include "utilities/regexsearch.h"
 
 namespace nemesis
 {
@@ -46,4 +48,4 @@ namespace nemesis
 
         friend ProcessParser;
     };
-}
+} // namespace nemesis

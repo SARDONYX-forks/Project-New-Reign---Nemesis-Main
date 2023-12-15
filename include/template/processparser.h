@@ -2,6 +2,7 @@
 
 #include "base/importerbase.h"
 
+#include "core/animvarptr.h"
 #include "core/linkedpreprocessline.h"
 #include "core/preprocessline.h"
 #include "utilities/conditiondetails.h"

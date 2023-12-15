@@ -1,8 +1,10 @@
 #pragma once
 
+#include "core/condition.h"
 #include "core/multichoice.h"
 
 #include "utilities/process.h"
+#include "utilities/types.h"
 
 struct AnimThreadInfo;
 
@@ -32,7 +34,8 @@ namespace nemesis
         nemesis::Line Compile(nemesis::ScopeInfo& scopeinfo) const;
 
         const MultiChoice& GetMultiChoice() const noexcept;
+
     private:
         static bool IsBlockOutOfScope(const nemesis::Process& process, size_t begin, size_t end);
     };
-}
+} // namespace nemesis

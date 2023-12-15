@@ -1,3 +1,5 @@
+#pragma warning(disable : 4722) // destructor never returns, potential memory leak
+
 #include "Global.h"
 
 #include <QApplication>

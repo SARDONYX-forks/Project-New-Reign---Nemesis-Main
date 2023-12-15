@@ -1,6 +1,7 @@
 #include "core/querymanager.h"
 
 #include "utilities/animqueryfile.h"
+#include "utilities/types.h"
 
 void nemesis::QueryManager::AddFile(SPtr<const AnimQueryFile> fileptr)
 {

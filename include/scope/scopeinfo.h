@@ -37,6 +37,7 @@ namespace nemesis
     struct Condt;
     struct Exporter;
     struct HkxBehaviorFile;
+    struct MultiChoice;
     struct Option;
     struct Process;
     struct Template;

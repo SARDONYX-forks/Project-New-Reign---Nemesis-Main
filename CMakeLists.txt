@@ -24,17 +24,19 @@ add_subdirectory(external/hkxcmd)
 # ###############################################################################
 # Source groups
 # ###############################################################################
-# Header Files
-set(GLOB Header_Files "include/*.h" "include/**/*.h")
-source_group("Header Files" FILES ${Header_Files})
+# Call the PowerShell script to generate file lists if you need
+# execute_process(
+# COMMAND powershell -File ${CMAKE_SOURCE_DIR}/generate_src_group.ps1
+# WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+# )
 
-# Source Files
-set(GLOB Source_Files "src/*.cpp" "src/**/*.cpp")
-source_group("Source Files" FILES ${Source_Files})
+# Include the generated file lists
+include(${CMAKE_SOURCE_DIR}/CMake/SrcGroup.cmake)
 
-# Resources Files
-set(GLOB Resources_Files "resources/*.rc" "resources/*.qrc")
-source_group("Resources Files" FILES ${Resources_Files})
+set(Resources_Files
+    "resources/Nemesis Engine.rc"
+    "resources/NemesisEngine.qrc"
+)
 
 set(ALL_FILES
     ${Header_Files}

@@ -1,3 +1,5 @@
+#include "Global.h"
+
 #include "utilities/hkxelementsplit.h"
 #include "utilities/stringextension.h"
 

@@ -1,8 +1,8 @@
-include (FetchContent)
+include(FetchContent)
 
 if(${UseLocalBoost})
-    message("Boost: Using local copy of Boost at ${BOOST_ROOT}")
-    set(FETCHCONTENT_SOURCE_DIR_BOOST ${BOOST_ROOT})
+  message("Boost: Using local copy of Boost at ${BOOST_ROOT}")
+  set(FETCHCONTENT_SOURCE_DIR_BOOST ${BOOST_ROOT})
 endif()
 
 FetchContent_Declare(

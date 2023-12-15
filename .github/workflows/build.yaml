@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./build
-          key: cmake-build-${{ runner.os }}-${{ hashFiles('./CMakeLists.txt') }}
+          key: cmake-build-rewrite-${{ runner.os }}-${{ hashFiles('./CMakeLists.txt') }}
           restore-keys: cmake-build.${{ runner.os }}.
 
       - name: Setup & Build CMake

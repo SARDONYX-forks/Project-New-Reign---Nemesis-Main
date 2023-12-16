@@ -4,8 +4,7 @@
 #include <string>
 
 #include "Global.h"
-
-#include "base/sharablewrapper.h"
+#include "debugmsg.h"
 
 #include "utilities/readtextfile.h"
 #include "utilities/types.h"

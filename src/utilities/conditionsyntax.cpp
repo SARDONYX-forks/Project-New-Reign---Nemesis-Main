@@ -1,3 +1,4 @@
+#include "utilities/algorithm.h"
 #include "utilities/conditionsyntax.h"
 
 namespace nemesis
@@ -173,5 +174,5 @@ namespace nemesis
         {
             return "^" + CloseComment();
         }
-    }
-}
+    } // namespace syntax
+} // namespace nemesis

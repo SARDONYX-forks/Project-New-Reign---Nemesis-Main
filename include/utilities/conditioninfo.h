@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utilities/conditiondetails.h"
+#include "utilities/line.h"
 
 namespace nemesis
 {

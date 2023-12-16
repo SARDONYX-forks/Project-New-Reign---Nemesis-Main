@@ -1,17 +1,18 @@
 #pragma once
 
-#include "core/condition.h"
 #include "core/multichoice.h"
 
-#include "utilities/process.h"
 #include "utilities/types.h"
 
 struct AnimThreadInfo;
 
 namespace nemesis
 {
-    struct TemplateLine;
+    struct condition;
+    struct PreprocessLine;
+    struct Process;
     struct ScopeInfo;
+    struct TemplateLine;
 
     struct LineProcess
     {

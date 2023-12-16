@@ -1,5 +1,5 @@
-#include "utilities/lineprocess.h"
 #include "utilities/templateline.h"
+#include "utilities/lineprocess.h"
 
 nemesis::TemplateLine::TemplateLine(const nemesis::Line& line)
 {
@@ -36,7 +36,7 @@ VecStr nemesis::TemplateLine::GetByBlocks() const noexcept
 
     if (empty()) return cacheblocks;
 
-    for each (auto& ch in *this)
+    for (auto&& ch : *this)
     {
         cacheblocks.emplace_back(std::string(1, ch));
     }

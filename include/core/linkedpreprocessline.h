@@ -1,14 +1,15 @@
 #pragma once
 
-// #include "utilities/linkedvar.h"
-
 #include "core/linked.h"
+#include "core/linkedcond.h"
 #include "core/preprocessline.h"
 #include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct HkxBehaviorFile;
+    struct LineProcess;
+    struct PreprocessLine;
     struct Template;
 
     struct LinkedPreprocessLine

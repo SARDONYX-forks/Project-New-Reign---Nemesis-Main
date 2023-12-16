@@ -1,9 +1,13 @@
 #pragma once
 
+#include <functional>
+
 #include "core/Statements/Statement.h"
 
 namespace nemesis
 {
+     struct CompileState;
+
 	struct AnimationEventStatement : public nemesis::Statement
     {
     private:

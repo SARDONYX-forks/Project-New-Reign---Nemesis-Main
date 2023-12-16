@@ -75,7 +75,7 @@ void nemesis::NLine::CompileTo(DeqNstr& lines, nemesis::CompileState& state) con
 
 void nemesis::NLine::SerializeTo(DeqNstr& lines) const
 {
-    nemesis::Line value = Value ? *Value : ns::DeleteLine();
+    nemesis::Line value = Value ? *Value : nemesis::Line(ns::DeleteLine());
 
     if (ModLines.empty())
     {

@@ -33,7 +33,7 @@ void nemesis::Template::Exporter::ExportCurrentQuery(const nemesis::AnimQuery& q
     {
         scopeinfo->InsertAnim(query, &self.GetTemplateCategory());
     }
-    
+
     if (!self.IsMaster())
     {
         scopeinfo->InsertQuery(query, &self.GetTemplateCategory());
@@ -68,7 +68,7 @@ void nemesis::Template::Exporter::Export()
 
     for (auto& line : storeline)
     {
-        CheckNumElement(line);
+         nemesis::Exporter::CheckNumElement(line);
     }
 
     storeline.emplace_back(std::string());

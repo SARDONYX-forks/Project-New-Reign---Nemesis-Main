@@ -1,12 +1,12 @@
 #pragma once
 
 #include <string>
-
-#include "utilities/conditiondetails.h"
-#include "utilities/condtype.h"
+#include <string_view>
 
 namespace nemesis
 {
+    struct Line;
+
     namespace syntax
     {
         std::string DeleteLine() noexcept;

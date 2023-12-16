@@ -1,18 +1,15 @@
 #pragma once
 
-#include <atomic>
-
-#include "utilities/atomiclock.h"
-#include "utilities/conditiondetails.h"
 #include "utilities/line.h"
-#include "utilities/lineprocess.h"
-#include "utilities/linkedvar.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
+    struct File;
     struct ScopeInfo;
     struct Template;
     struct HkxBehaviorFile;
+    struct LineProcess;
 
     struct PreprocessLine : public nemesis::Line
     {

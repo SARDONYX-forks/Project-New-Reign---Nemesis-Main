@@ -1,5 +1,6 @@
 #pragma once
 
+#include "base/importerbase.h"
 #include "core/linked.h"
 #include "template/processparser.h"
 #include "utilities/conditiondetails.h"

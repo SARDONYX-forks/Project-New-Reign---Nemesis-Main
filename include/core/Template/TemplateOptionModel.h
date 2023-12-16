@@ -1,6 +1,10 @@
 #pragma once
 
+#include <filesystem>
+#include <string>
+
 #include "core/Template/TemplateOption.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
@@ -27,6 +31,8 @@ namespace nemesis
         bool HasVariable(const std::string& variable_name) const noexcept;
         bool IsArray() const noexcept;
 
-        UPtr<nemesis::TemplateOption> TryCreateOption(const std::string& expression, size_t linenum, const std::filesystem::path& filepath) const;
+        UPtr<nemesis::TemplateOption> TryCreateOption(const std::string& expression,
+                                                      size_t linenum,
+                                                      const std::filesystem::path& filepath) const;
     };
-}
+} // namespace nemesis

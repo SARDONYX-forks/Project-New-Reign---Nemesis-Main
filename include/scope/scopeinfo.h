@@ -14,22 +14,15 @@ conditions that will create another nested scope and so on
 */
 #pragma once
 
-#include "core/animimport.h"
-#include "core/condition.h"
-#include "core/multichoice.h"
+#include <functional>
 
 #include "scope/layers.h"
-#include "scope/stateidmanager.h"
 
-#include "utilities/conditiondetails.h"
 #include "utilities/noncopyable.h"
-#include "utilities/templatecategory.h"
-
-#include "hkx/HkxEvent.h"
-#include "hkx/HkxVariable.h"
 
 namespace nemesis
 {
+    struct AnimImport;
     struct AnimQuery;
     struct AnimQueryFile;
     struct AnimVarPtr;
@@ -37,9 +30,12 @@ namespace nemesis
     struct Condt;
     struct Exporter;
     struct HkxBehaviorFile;
-    struct MultiChoice;
+    struct HkxEvent;
+    struct HkxVariable;
+    struct MultiChoice::Choice;
     struct Option;
     struct Process;
+    struct StateIdManager;
     struct Template;
     struct TemplateCategory;
 
@@ -61,7 +57,7 @@ namespace nemesis
             virtual ~ScopeIterator() {}
             virtual bool IsEnd() = 0;
             virtual void Next()  = 0;
-        };
+        }
 
         template <typename T>
         struct TempScopeLayer : public NonCopyableStruct, public TemporaryScope

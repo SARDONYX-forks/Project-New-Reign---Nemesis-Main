@@ -3,34 +3,42 @@
 #include "core/linked.h"
 #include "utilities/conditiondetails.h"
 
-namespace nemesis {
-namespace animsetdata {
-template <typename T>
-struct LinkedData : nemesis::Linked<T, nemesis::animsetdata::LinkedData<T>> {
-  using LinkedCondition =
-      nemesis::LinkedCond<T, nemesis::animsetdata::LinkedData<T>>;
+namespace nemesis
+{
+    template <typename _Ty, typename _LnkTy>
+    struct Linked;
 
- public:
-  LinkedData() = default;
-  LinkedData(const nemesis::Line& line) {
-    throw std::runtime_error("Invalid LinkedData constructor");
-  }
+    namespace animsetdata
+    {
+        template <typename T>
+        struct LinkedData : nemesis::Linked<T, nemesis::animsetdata::LinkedData<T>>
+        {
+            using LinkedCondition = nemesis::LinkedCond<T, nemesis::animsetdata::LinkedData<T>>;
 
-  void SetRawDataTo(VecNstr& lines) const {
-    auto templines = raw->GetLines();
-    lines.insert(lines.end(), templines.begin(), templines.end());
-  }
+        public:
+            LinkedData() = default;
+            LinkedData(const nemesis::Line& line)
+            {
+                throw std::runtime_error("Invalid LinkedData constructor");
+            }
 
-  void SetNewConditionedDataTo(VecNstr& lines, const nemesis::Line& newline,
-                               const LinkedCondition& cond) const override {
-    throw std::runtime_error(
-        "animsetdata::LinkedData does not support SetNewConditionedDataTo");
-  }
+            void SetRawDataTo(VecNstr& lines) const
+            {
+                auto templines = raw->GetLines();
+                lines.insert(lines.end(), templines.begin(), templines.end());
+            }
 
-  void SetRawConditionedDataTo(VecNstr& lines) const override {
-    throw std::runtime_error(
-        "animsetdata::LinkedState does not support SetRawConditionedDataTo");
-  }
-};
-}  // namespace animsetdata
-}  // namespace nemesis
+            void SetNewConditionedDataTo(VecNstr& lines,
+                                         const nemesis::Line& newline,
+                                         const LinkedCondition& cond) const override
+            {
+                throw std::runtime_error("animsetdata::LinkedData does not support SetNewConditionedDataTo");
+            }
+
+            void SetRawConditionedDataTo(VecNstr& lines) const override
+            {
+                throw std::runtime_error("animsetdata::LinkedState does not support SetRawConditionedDataTo");
+            }
+        };
+    } // namespace animsetdata
+} // namespace nemesis

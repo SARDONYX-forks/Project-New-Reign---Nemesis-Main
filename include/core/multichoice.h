@@ -2,11 +2,8 @@
 
 #include "utilities/types.h"
 
-#include "core/condition.h"
-
 namespace nemesis
 {
-    // Forward declaration to extern predefined types in namespace.
     struct Condition;
     struct ScopeInfo;
 

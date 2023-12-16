@@ -1,7 +1,7 @@
 #pragma once
 
 #include "utilities/StringMatchTrie.h"
-#include "utilities/conditiondetails.h"
+#include "utilities/line.h" // Forward declaration cannot be used because struct `Token::Value` has ownership of the `Line`
 #include "utilities/types.h"
 
 namespace nemesis

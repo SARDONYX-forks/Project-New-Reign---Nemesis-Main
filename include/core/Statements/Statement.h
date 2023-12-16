@@ -1,8 +1,8 @@
 #pragma once
 
 #include <filesystem>
+#include <functional>
 
-#include "utilities/conditiondetails.h"
 #include "utilities/types.h"
 
 namespace nemesis

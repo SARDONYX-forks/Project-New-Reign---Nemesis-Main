@@ -1,8 +1,8 @@
-#include "core/LineModifier/SubTemplateModifier.h"
-
-#include "core/Statements/SubTemplateStatement.h"
+#include "Global.h"
 
 #include "core/CompileState.h"
+#include "core/LineModifier/SubTemplateModifier.h"
+#include "core/Statements/SubTemplateStatement.h"
 
 nemesis::SubTemplateModifier::SubTemplateModifier(size_t begin,
                                                   size_t end,

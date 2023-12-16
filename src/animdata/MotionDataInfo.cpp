@@ -10,7 +10,7 @@ void nemesis::animdata::MotionDataInfo::CompileTo(DeqNstr& lines, nemesis::Compi
     auto element_ptr = &lines.emplace_back("");
     size_t size      = lines.size();
 
-    for each (auto& coordination in CoordinationData)
+    for (const auto& coordination : CoordinationData)
     {
         coordination->CompileTo(lines, state);
     }
@@ -19,7 +19,7 @@ void nemesis::animdata::MotionDataInfo::CompileTo(DeqNstr& lines, nemesis::Compi
     element_ptr    = &lines.emplace_back("");
     size           = lines.size();
 
-    for each (auto& rotation in RotationData)
+    for (const auto& rotation : RotationData)
     {
         rotation->CompileTo(lines, state);
     }
@@ -35,7 +35,7 @@ void nemesis::animdata::MotionDataInfo::SerializeTo(DeqNstr& lines) const
     auto element_ptr = &lines.emplace_back("");
     size_t size      = lines.size();
 
-    for each (auto& coordination in CoordinationData)
+    for (const auto& coordination : CoordinationData)
     {
         coordination->SerializeTo(lines);
     }
@@ -44,7 +44,7 @@ void nemesis::animdata::MotionDataInfo::SerializeTo(DeqNstr& lines) const
     element_ptr    = &lines.emplace_back("");
     size           = lines.size();
 
-    for each (auto& rotation in RotationData)
+    for (const auto& rotation : RotationData)
     {
         rotation->SerializeTo(lines);
     }

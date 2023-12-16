@@ -1,24 +1,23 @@
 #pragma once
 
 #include <filesystem>
-#include <QtCore\qvarlengtharray.h>
-
-#include "types.h"
+#include <QtCore/qvarlengtharray.h>
 
 #include "base/sharablewrapper.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
     struct ScopeInfo;
     struct ConditionInfo;
 
-	struct Line
+    struct Line
     {
         using RawChar  = char;
-        using WRawType  = std::wstring;
+        using WRawType = std::wstring;
         using RawType  = std::string;
         using ViewType = std::string_view;
-        using QType = QString;
+        using QType    = QString;
 
     protected:
         RawType base;
@@ -58,7 +57,7 @@ namespace nemesis
         Line(const RawType& _ch, const std::filesystem::path& filepath) noexcept;
         Line(const RawType& _ch, size_t linenum, const std::filesystem::path& filepath) noexcept;
 
-        operator RawType &() noexcept;
+        operator RawType&() noexcept;
         operator RawType() const noexcept;
         RawChar& operator[](size_t index) noexcept;
         const RawChar& operator[](size_t index) const noexcept;
@@ -105,7 +104,7 @@ namespace nemesis
         nemesis::Line& append(const RawType& str);
         nemesis::Line& append(const QType& str);
         nemesis::Line& append(const nemesis::Line& line);
-        
+
         nemesis::Line& insert(size_t pos, const RawChar* str);
         nemesis::Line& insert(size_t pos, const RawType& str);
         nemesis::Line& insert(size_t pos, const QType& str);
@@ -146,11 +145,11 @@ namespace nemesis
 
     struct Wline
     {
-        using RawChar = wchar_t;
-        using RawType = std::wstring;
+        using RawChar  = wchar_t;
+        using RawType  = std::wstring;
         using ARawType = std::string;
         using ViewType = std::wstring_view;
-        using QType = QString;
+        using QType    = QString;
 
     protected:
         RawType base;
@@ -234,7 +233,7 @@ namespace nemesis
         nemesis::Wline& append(const RawType& str);
         nemesis::Wline& append(const QType& str);
         nemesis::Wline& append(const nemesis::Wline& line);
-        
+
         nemesis::Wline& insert(size_t pos, const RawChar* str);
         nemesis::Wline& insert(size_t pos, const RawType& str);
         nemesis::Wline& insert(size_t pos, const QType& str);
@@ -259,4 +258,4 @@ namespace nemesis
     private:
         void SetLineNumber(size_t linenum);
     };
-}
+} // namespace nemesis

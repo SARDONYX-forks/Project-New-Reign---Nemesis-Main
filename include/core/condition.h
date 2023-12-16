@@ -2,17 +2,18 @@
 
 #include <regex>
 
-#include "base/file.h"
-#include "core/animvarptr.h"
 #include "utilities/conditiondetails.h"
 #include "utilities/conditioninfo.h"
+#include "utilities/line.h"
 #include "utilities/types.h"
 
 namespace nemesis
 {
+    struct AnimVarPtr;
+    struct CompileState;
+    struct File;
     struct ScopeInfo;
     struct Template;
-    struct CompileState;
 
     struct Condition : std::enable_shared_from_this<nemesis::Condition>
     {
@@ -55,8 +56,8 @@ namespace nemesis
 
         private:
             bool negative = false;
-            UPtr<nemesis::AnimVarPtr> varA;
-            UPtr<nemesis::AnimVarPtr> varB;
+            UPtr<AnimVarPtr> varA;
+            UPtr<AnimVarPtr> varB;
             Vec<UPtr<nemesis::Condition>> and_conditions;
             Vec<UPtr<nemesis::Condition>> or_conditions;
 

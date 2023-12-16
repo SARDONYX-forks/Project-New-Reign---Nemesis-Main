@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/modinfo.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {

@@ -9,6 +9,8 @@
 
 namespace nemesis
 {
+    struct ScopeInfo;
+
     template <typename _Ty, typename _LnkTy>
     struct Linked
     {
@@ -133,7 +135,7 @@ namespace nemesis
 
             if (!HasCondition()) return Vec<const _Ty*>{&CompileCurrentData(scopeinfo)};
 
-            for (auto& condition : conditions)
+            for (const auto& condition : conditions)
             {
                 scopeinfo.SetCurrentCondition(condition->GetCondition());
 
@@ -286,7 +288,8 @@ namespace nemesis
                 mod_list_list.emplace_back();
                 auto& mod_lines = mod_list_list.back();
                 cond->GetRawDataList(mod_lines, &_LnkTy::GetRawData);
-                nemesis::Line mline = mod_lines.empty() ? nemesis::syntax::DeleteLine() : mod_lines.front();
+                nemesis::Line mline
+                    = mod_lines.empty() ? nemesis::Line(nemesis::syntax::DeleteLine()) : mod_lines.front();
                 SetNewConditionedDataTo(lines, mline, *cond);
             }
 

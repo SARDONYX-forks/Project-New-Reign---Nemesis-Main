@@ -1,7 +1,5 @@
 #pragma once
 
-#include "base/file.h"
-
 #include "core/animvalue.h"
 
 #include "utilities/alphanum.hpp"
@@ -10,13 +8,14 @@
 
 namespace nemesis
 {
-    struct TemplateCategory;
-    struct ScopeInfo;
-    struct OptionModel;
+    struct File;
     struct HkxBehaviorFile;
+    struct OptionModel;
     struct OptionModelList;
+    struct ScopeInfo;
+    struct TemplateCategory;
 
-    struct AnimVarPtr : public AnimValue
+    struct AnimVarPtr : public nemesis::AnimValue
     {
         struct Parser;
 

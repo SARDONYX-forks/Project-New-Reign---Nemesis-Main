@@ -1,4 +1,5 @@
 #include "utilities/threadpool.h"
+#include "debugmsg.h"
 
 using namespace std;
 
@@ -44,22 +45,24 @@ nemesis::ThreadPool::~ThreadPool()
 
 void nemesis::ThreadPool::newWorker()
 {
-    workers.emplace_back([&] {
-        for (;;)
+    workers.emplace_back(
+        [&]
         {
-            function<void()> task;
-
+            for (;;)
             {
-                unique_lock<mutex> lock(queue_mutex);
-                condition.wait(lock, [&] { return error || abort || sync || !tasks.empty(); });
+                function<void()> task;
 
-                if (error || abort || tasks.empty()) return;
+                {
+                    unique_lock<mutex> lock(queue_mutex);
+                    condition.wait(lock, [&] { return error || abort || sync || !tasks.empty(); });
 
-                task = tasks.front();
-                tasks.pop();
+                    if (error || abort || tasks.empty()) return;
+
+                    task = tasks.front();
+                    tasks.pop();
+                }
+
+                task();
             }
-
-            task();
-        }
-    });
+        });
 }

@@ -3,28 +3,25 @@
 #include <regex>
 #include <chrono>
 
-#include "base/file.h"
-
-#include "scope/scopeinfo.h"
-
 #include "utilities/types.h"
 #include "utilities/atomic.h"
 
-#include "hkx/HkxVariableList.h"
-#include "hkx/HkxAttributeList.h"
-#include "hkx/HkxEventList.h"
-#include "hkx/numelement.h"
-
-#include "core/animimport.h"
-
 namespace nemesis
 {
-    struct Process;
+    struct AnimImport;
     struct AnimQuery;
-    struct ScopeInfo;
-    struct TemplateCategory;
-    struct Template;
     struct AnimTemplate;
+    struct File;
+    struct HkxAttributeList;
+    struct HkxEvent;
+    struct HkxEventList;
+    struct HkxVariable;
+    struct HkxVariableList;
+    struct NumElement;
+    struct Process;
+    struct ScopeInfo;
+    struct Template;
+    struct TemplateCategory;
 
 	struct Exporter
     {

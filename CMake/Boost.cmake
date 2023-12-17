@@ -1,13 +1,13 @@
-include (FetchContent)
+include(FetchContent)
 
 if(${UseLocalBoost})
-    message("Boost: Using local copy of Boost at ${BOOST_ROOT}")
-    set(FETCHCONTENT_SOURCE_DIR_BOOST ${BOOST_ROOT})
+  message("Boost: Using local copy of Boost at ${BOOST_ROOT}")
+  set(FETCHCONTENT_SOURCE_DIR_BOOST ${BOOST_ROOT})
 endif()
 
 FetchContent_Declare(
   BoostCMake
-  GIT_REPOSITORY https://github.com/Guekka/boost-cmake.git
+  GIT_REPOSITORY https://github.com/Orphis/boost-cmake.git
 )
 
 FetchContent_MakeAvailable(BoostCMake)

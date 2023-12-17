@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
-
-#include "utilities/condtype.h"
+#include <string_view>
 
 namespace nemesis
 {
+    struct Line;
+
     namespace syntax
     {
         std::string DeleteLine() noexcept;
@@ -55,5 +56,5 @@ namespace nemesis
         std::string EndIf() noexcept;
 
         std::string EndSyntax() noexcept;
-    }
-}
+    } // namespace syntax
+} // namespace nemesis

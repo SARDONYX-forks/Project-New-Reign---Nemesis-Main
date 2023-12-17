@@ -1,6 +1,6 @@
+#include "nemesisinfo.h"
 #include "Global.h"
 #include "debuglog.h"
-#include "nemesisinfo.h"
 
 #include <Windows.h>
 
@@ -13,7 +13,7 @@
 using namespace std;
 namespace sf = filesystem;
 
-bool SSE = false;
+bool SSE          = false;
 wstring stagePath = L"";
 sf::path CurrentExePath;
 sf::path CurrentExeDirectory;
@@ -43,7 +43,7 @@ void NemesisInfo::setup()
 
     if (!forceDirectory && nemesis::iequals(nmpath, curpath)) ErrorMessage(6010, curpath, nmpath);
 
-    stageDirectory = !stagePath.empty() ? (stagePath + L"\\") : dataPath;
+    stageDirectory = !stagePath.empty() ? sf::path(stagePath + L"\\") : dataPath;
     iniFileUpdate();
 }
 
@@ -373,7 +373,8 @@ NemesisInfo* NemesisInfo::GetInstance()
 {
     if (nemesisinfo) return nemesisinfo;
 
-    while (lock.test_and_set());
+    while (lock.test_and_set())
+        ;
 
     if (nemesisinfo) return nemesisinfo;
 

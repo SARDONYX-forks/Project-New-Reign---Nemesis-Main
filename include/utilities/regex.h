@@ -1,7 +1,7 @@
 #pragma once
 
-#include <regex>
 #include <optional>
+#include <regex>
 
 #include "Global.h"
 
@@ -12,19 +12,20 @@ namespace nemesis
 
     namespace detail
     {
-        using underlying_regex      = std::regex;
-        using underlying_smatch     = std::smatch;
-        using underlying_iterator   = std::sregex_iterator;
-        using underlying_exception  = std::regex_error;
+        using underlying_regex     = std::regex;
+        using underlying_smatch    = std::smatch;
+        using underlying_iterator  = std::sregex_iterator;
+        using underlying_exception = std::regex_error;
 
-        using underlying_wregex     = std::wregex;
-        using underlying_wsmatch    = std::wsmatch;
-        using underlying_witerator  = std::wsregex_iterator;
+        using underlying_wregex    = std::wregex;
+        using underlying_wsmatch   = std::wsmatch;
+        using underlying_witerator = std::wsregex_iterator;
 
 #define FWD(val) std::forward<decltype(val)>(val)
-        auto underlying_regex_search  = [](auto&&... args) { return std::regex_search(FWD(args)...); };
-        auto underlying_regex_match   = [](auto&&... args) { return std::regex_match(FWD(args)...); };
-        auto underlying_regex_replace = [](auto&&... args) { return std::regex_replace(FWD(args)...); };
+        inline auto underlying_regex_search = [](auto&&... args) { return std::regex_search(FWD(args)...); };
+        inline auto underlying_regex_match  = [](auto&&... args) { return std::regex_match(FWD(args)...); };
+        inline auto underlying_regex_replace
+            = [](auto&&... args) { return std::regex_replace(FWD(args)...); };
 #undef FWD
     } // namespace detail
 
@@ -54,7 +55,8 @@ namespace nemesis
 
         smatch(const detail::underlying_smatch& match)
             : match_(match)
-        {}
+        {
+        }
 
         std::string operator[](size_t number) const;
         std::string str(size_t number = 0) const;
@@ -166,7 +168,8 @@ namespace nemesis
     bool wregex_match(const std::wstring& line, nemesis::wsmatch& match, const nemesis::wregex& rgx);
     bool wregex_match(const std::wstring& line, const nemesis::wregex& rgx);
 
-    std::wstring wregex_replace(const std::wstring& line, const nemesis::wregex& rgx, const std::wstring& replace);
+    std::wstring
+    wregex_replace(const std::wstring& line, const nemesis::wregex& rgx, const std::wstring& replace);
 
     bool wregex_search(const nemesis::Wline& line, nemesis::wsmatch& match, const nemesis::wregex& rgx);
 

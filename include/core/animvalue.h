@@ -4,8 +4,10 @@
 
 namespace nemesis
 {
-	struct AnimValue
+    struct ScopeInfo;
+
+    struct AnimValue
     {
-        virtual std::string GetResult(nemesis::ScopeInfo& scopeinfo) const = 0;
+        virtual std::string GetResult(ScopeInfo& scopeinfo) const = 0;
     };
 }

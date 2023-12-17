@@ -1,14 +1,15 @@
 #pragma once
 
-#include "base/file.h"
+#include "core/animvarptr.h"
 
-#include "utilities/regexsearch.h"
-#include "utilities/lexersearch.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
-    struct ProcessParser;
+    class regex;
+    struct File;
     struct LexerSearch;
+    struct ProcessParser;
     struct RegexSearch;
 
     struct ImporterBase
@@ -44,6 +45,6 @@ namespace nemesis
             return file;
         }
 
-        friend ProcessParser;
+        friend nemesis::ProcessParser;
     };
-}
+} // namespace nemesis

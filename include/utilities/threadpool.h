@@ -11,6 +11,8 @@
 #include <vector>
 #include <queue>
 
+#include "Global.h"
+
 namespace nemesis
 {
     class ThreadPool

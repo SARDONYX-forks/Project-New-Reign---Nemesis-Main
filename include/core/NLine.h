@@ -3,12 +3,13 @@
 #include "core/NObject.h"
 
 #include "core/LineModifier/LineModifier.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct ModLine;
 
-	struct NLine : public nemesis::NObject
+    struct NLine : public nemesis::NObject
     {
     protected:
         UPtr<nemesis::Line> Value;
@@ -38,4 +39,4 @@ namespace nemesis
                                 nemesis::SemanticManager& manager,
                                 const nemesis::Line& line);
     };
-}
+} // namespace nemesis

@@ -1,12 +1,19 @@
 #pragma once
 
-#include "core/AnimationRequest.h"
+#include <functional>
+
 #include "core/SubTemplateRequest.h"
-#include "core/AnimationRequestRepository.h"
+#include "utilities/conditiondetails.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
-	struct CompileState
+    struct AnimationRequest;
+    struct AnimationRequestCollection;
+    struct AnimationRequestRepository;
+    struct TemplateOption;
+
+    struct CompileState
     {
     private:
         VecStr SelectedMods;
@@ -55,15 +62,15 @@ namespace nemesis
         void DequeCurrentRequest(const std::string& group);
         const nemesis::AnimationRequest* GetCurrentRequest(const std::string& group) const;
 
-        void QueueChildRequestList(const std::string& group, const Vec<const nemesis::AnimationRequest*>& requests);
+        void QueueChildRequestList(const std::string& group,
+                                   const Vec<const nemesis::AnimationRequest*>& requests);
         void DequeChildRequestList(const std::string& group);
         const Vec<const nemesis::AnimationRequest*>& GetChildRequestList(const std::string& group) const;
 
         void QueueCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                          const std::string& key,
                                          const std::string& value);
-        void DequeCurrentRequestMapValue(const nemesis::AnimationRequest* request,
-                                         const std::string& key);
+        void DequeCurrentRequestMapValue(const nemesis::AnimationRequest* request, const std::string& key);
         const std::string* GetCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                                      const std::string& key) const;
 
@@ -76,11 +83,10 @@ namespace nemesis
         void QueueRequestOption(const nemesis::AnimationRequest* request,
                                 const std::string& option_name,
                                 const nemesis::TemplateOption* option);
-        void DequeueRequestOption(const nemesis::AnimationRequest* request,
-                                  const std::string& option_name);
+        void DequeueRequestOption(const nemesis::AnimationRequest* request, const std::string& option_name);
         const nemesis::TemplateOption* GetCurrentRequestOption(const nemesis::AnimationRequest* request,
                                                                const std::string& option_name) const;
-        
+
         void QueueOption(const std::string& option_name, const nemesis::TemplateOption* option);
         void DequeueOption(const std::string& option_name);
         const nemesis::TemplateOption* GetCurrentOption(const std::string& option_name) const;
@@ -111,7 +117,7 @@ namespace nemesis
 
         const std::string& GetVariableID(const std::string& name);
         const std::string& AddVariableName(const std::string& name);
-        
+
         const std::string& GetAttributeID(const std::string& name) const;
         const std::string& AddAttributeName(const std::string& name);
 
@@ -124,4 +130,4 @@ namespace nemesis
         void AddCounter(const std::string& name, int* counter);
         void RemoveCounter(const std::string& name);
     };
-}
+} // namespace nemesis

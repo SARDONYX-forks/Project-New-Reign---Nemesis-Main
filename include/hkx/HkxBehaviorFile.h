@@ -1,15 +1,16 @@
 #pragma once
 
-#include "base/file.h"
 #include "base/exporter.h"
+#include "base/file.h"
 #include "base/importer.h"
 
 #include "core/linkedpreprocessline.h"
 
+#include "utilities/animqueryfile.h"
+#include "utilities/animtemplate.h"
+#include "utilities/conditiondetails.h"
 #include "utilities/linkedvar.h"
 #include "utilities/modpriority.h"
-#include "utilities/animtemplate.h"
-#include "utilities/animqueryfile.h"
 
 #include "generate/hkxcompiler.h"
 
@@ -54,7 +55,7 @@ namespace nemesis
 
             Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator
             insert(Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator itr,
-                        SPtr<nemesis::LinkedPreprocessLine> value);
+                   SPtr<nemesis::LinkedPreprocessLine> value);
 
             void push_back(SPtr<nemesis::LinkedPreprocessLine> lnkline_ptr);
         };
@@ -81,8 +82,8 @@ namespace nemesis
             std::string smachineid;
             std::string nodeclass;
 
-            int bonenum    = 0;
-            int oribone    = 0;
+            int bonenum = 0;
+            int oribone = 0;
             std::string rigfile;
 
             bool findnewnodezone = true;
@@ -125,7 +126,7 @@ namespace nemesis
             void PrepareStateIdRegex();
             void PrepareNodeIdRegex();
             void PrepareAnimObjRegex();
-            
+
             void PrepareAllLexers();
             void PrepareLexer(const std::string& keyword, const std::string& classname, RtnFunc callback);
             void PrepareVariableLexer(const nemesis::TemplateCategory* templtclass);
@@ -157,7 +158,7 @@ namespace nemesis
             using funcptr = void (nemesis::HkxBehaviorFile::Parser::*)(const std::string&);
 
         private:
-            funcptr cachestate = &nemesis::HkxBehaviorFile::Parser::TryCacheStateNodeId;
+            funcptr cachestate        = &nemesis::HkxBehaviorFile::Parser::TryCacheStateNodeId;
             funcptr cachestatemachine = &nemesis::HkxBehaviorFile::Parser::TryCacheStateMachineNodeId;
 
             static const nemesis::regex statergx_id;
@@ -194,8 +195,8 @@ namespace nemesis
 
             size_t eventcounter = 0;
             size_t varcounter   = 0;
-            bool isdata       = false;
-            bool isevent      = true;
+            bool isdata         = false;
+            bool isevent        = true;
 
             const nemesis::HkxBehaviorFile& GetSelf();
 
@@ -232,11 +233,11 @@ namespace nemesis
         };
 
         using VecAnimQuery = Vec<const nemesis::AnimQuery*>;
-        
+
         nemesis::Line rootnode;
         UMap<std::string, size_t> stateids;
-        UMap<std::string, size_t> topstate;           // state machine node id
-        UMap<std::string, VecStr> statelinks;       // state machine node id, template node id list
+        UMap<std::string, size_t> topstate;   // state machine node id
+        UMap<std::string, VecStr> statelinks; // state machine node id, template node id list
         const nemesis::AnimTemplate* animtemplate = nullptr;
 
         nemesis::Atomic<size_t> topnodeid = 0;
@@ -271,10 +272,10 @@ namespace nemesis
         void PatchNode(nemesis::HkxBehaviorFile::Node& node, const nemesis::Patch& patch);
 
         SPtr<nemesis::LinkedPreprocessLine> CreateCondLine(const nemesis::Patch& patch);
-        SPtr<nemesis::LinkedPreprocessLine> CreateCondLine(const nemesis::Line& condition,
-                                                           nemesis::CondType type, const nemesis::File& file);
-        SPtr<nemesis::LinkedPreprocessLine> CreateCondLine(const std::string& condition,
-                                                           nemesis::CondType type, const nemesis::File& file);
+        SPtr<nemesis::LinkedPreprocessLine>
+        CreateCondLine(const nemesis::Line& condition, nemesis::CondType type, const nemesis::File& file);
+        SPtr<nemesis::LinkedPreprocessLine>
+        CreateCondLine(const std::string& condition, nemesis::CondType type, const nemesis::File& file);
 
     public:
         std::wstring GetBehaviorName() const;
@@ -313,7 +314,7 @@ namespace nemesis
 
         static SPtr<nemesis::HkxBehaviorFile> File(const std::filesystem::path& filepath);
         static SPtr<nemesis::HkxBehaviorFile> ReadPatchedFile(const std::filesystem::path& filepath,
-                                                          const VecStr& behaviorpriority);
+                                                              const VecStr& behaviorpriority);
 
         //static void AddFileLines();
 
@@ -325,4 +326,4 @@ namespace nemesis
 
         friend struct StateIdManager;
     };
-}
+} // namespace nemesis

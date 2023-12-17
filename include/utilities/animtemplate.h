@@ -9,9 +9,10 @@ THE DESIGN PHILOSOPHY OF ANIM TEMPLATE
 
 */
 
+#include "utilities/animqueryfile.h"
+#include "utilities/conditiondetails.h"
 #include "utilities/template.h"
 #include "utilities/templatecategory.h"
-#include "utilities/animqueryfile.h"
 
 namespace nemesis
 {
@@ -19,7 +20,7 @@ namespace nemesis
     struct TemplateCategory;
     struct HkxBehaviorFile;
 
-	struct AnimTemplate
+    struct AnimTemplate
     {
         using AnimQueryPtr = SPtr<nemesis::AnimQuery>;
 
@@ -31,8 +32,9 @@ namespace nemesis
             SPtr<nemesis::AnimQueryFile> querylist;
 
             void ParseQuery(const nemesis::Line& query);
-            nemesis::AnimTemplate::AnimQueryPtr
-            CreateQuery(const nemesis::Line& query, const std::string& classname, const nemesis::smatch& matches);
+            nemesis::AnimTemplate::AnimQueryPtr CreateQuery(const nemesis::Line& query,
+                                                            const std::string& classname,
+                                                            const nemesis::smatch& matches);
 
             static std::string GetTranslation(const nemesis::smatch& matches);
 
@@ -73,4 +75,4 @@ namespace nemesis
         SPtr<const nemesis::Template> GetImport(const std::string importname) const;
         VecSPtr<const nemesis::Template> GetBehaviorTemplateList(const std::wstring behaviorname) const;
     };
-}
+} // namespace nemesis

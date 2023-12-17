@@ -1,4 +1,10 @@
+#include <stdexcept>
+
+#include "Global.h"
+
 #include "core/modinfomanager.h"
+
+#include "utilities/algorithm.h"
 
 void nemesis::ModInfoManager::ReadAllInfo()
 {

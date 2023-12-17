@@ -1,3 +1,5 @@
+#include "Global.h"
+
 #include "core/Statements/MathStatement.h"
 
 #include "core/LineModifier/LineModifier.h"
@@ -74,7 +76,7 @@ std::string nemesis::MathStatement::Serialize() const
 std::string nemesis::MathStatement::GetValue(nemesis::CompileState& state) const
 {
     std::string result, equation = GetEquationFunction(state);
-    
+
     if (nemesis::calculate(equation, result)) return result;
 
     throw std::runtime_error("Unsupported math equation (Equation: " + equation

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+#include "utilities/types.h"
+
 namespace nemesis
 {
     struct TemplateOptionModel;

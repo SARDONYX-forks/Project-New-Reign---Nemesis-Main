@@ -2,10 +2,9 @@
 
 #include "utilities/types.h"
 
-#include "core/condition.h"
-
 namespace nemesis
 {
+    struct Condition;
     struct ScopeInfo;
 
     struct MultiChoice
@@ -33,4 +32,4 @@ namespace nemesis
         void AddChoice(size_t pointA, size_t pointB, UPtr<Condition>& condition);
         const Vec<Choice>& GetChoiceList() const noexcept;
     };
-}
+} // namespace nemesis

@@ -2,10 +2,12 @@
 
 #include "core/condition.h"
 
-#include "utilities/line.h"
-#include "utilities/conditions.h"
-#include "utilities/conditioninfo.h"
 #include "utilities/conditiondetails.h"
+#include "utilities/conditioninfo.h"
+#include "utilities/conditions.h"
+#include "utilities/condtype.h"
+#include "utilities/line.h"
+#include "utilities/types.h"
 
 #include "scope/scopeinfo.h"
 
@@ -14,25 +16,30 @@ namespace nemesis
     struct ScopeInfo;
     struct CondDetails;
 
-	template<typename Type>
-	struct CondVar;
+    template <typename Type>
+    struct CondVar;
 
-	template<typename Type>
-	struct LinkedVar
-	{
-		bool preCompile;
-		bool hasProcess;
-		size_t linecount;
+    template <typename Type>
+    struct LinkedVar
+    {
+        bool preCompile;
+        bool hasProcess;
+        size_t linecount;
         SPtr<Type> raw;
         VecStr lineblocks;
 
         Vec<nemesis::CondVar<Type>> nestedcond;
 
-		LinkedVar() : preCompile(true), hasProcess(false), linecount(0)
+        LinkedVar()
+            : preCompile(true)
+            , hasProcess(false)
+            , linecount(0)
         {
-		}
+        }
 
-		LinkedVar(const Type& _raw) : preCompile(true), hasProcess(false)
+        LinkedVar(const Type& _raw)
+            : preCompile(true)
+            , hasProcess(false)
         {
             if constexpr (std::is_same_v<Type, nemesis::Line>)
             {
@@ -43,16 +50,22 @@ namespace nemesis
 
             raw       = std::make_shared<Type>(_raw);
             linecount = 0;
-		}
+        }
 
-		LinkedVar(const Type& _raw, size_t num) : preCompile(true), hasProcess(false), linecount(num)
-		{
+        LinkedVar(const Type& _raw, size_t num)
+            : preCompile(true)
+            , hasProcess(false)
+            , linecount(num)
+        {
             raw = std::make_shared<Type>(_raw);
-		}
+        }
 
-		LinkedVar(const Type& _raw, bool process, size_t num) : preCompile(true), hasProcess(process), linecount(num)
-		{
-			if (!process)
+        LinkedVar(const Type& _raw, bool process, size_t num)
+            : preCompile(true)
+            , hasProcess(process)
+            , linecount(num)
+        {
+            if (!process)
             {
                 raw = std::make_shared<Type>(_raw);
                 return;
@@ -64,37 +77,37 @@ namespace nemesis
             {
                 lineblocks.emplace_back(std::string(1, ch));
             }
-		}
+        }
 
-		LinkedVar(const nemesis::CondVar<Type>& cond)
+        LinkedVar(const nemesis::CondVar<Type>& cond)
             : preCompile(true)
             , hasProcess(false)
             , linecount(0)
-		{
-			nestedcond.emplace_back(cond);
-		}
+        {
+            nestedcond.emplace_back(cond);
+        }
 
-		LinkedVar(const nemesis::CondVar<Type>& cond, size_t num)
+        LinkedVar(const nemesis::CondVar<Type>& cond, size_t num)
             : preCompile(true)
             , hasProcess(false)
             , linecount(num)
-		{
-			nestedcond.emplace_back(cond);
-		}
+        {
+            nestedcond.emplace_back(cond);
+        }
 
         LinkedVar(const nemesis::LinkedVar<Type>& linkedvalue) = default;
 
-		nemesis::CondVar<Type>& addCond()
-		{
-			nestedcond.emplace_back(nemesis::CondVar<Type>());
-			return nestedcond.back();
-		}
+        nemesis::CondVar<Type>& addCond()
+        {
+            nestedcond.emplace_back(nemesis::CondVar<Type>());
+            return nestedcond.back();
+        }
 
-		nemesis::CondVar<Type>& addCond(const CondType& type)
-		{
+        nemesis::CondVar<Type>& addCond(const CondType& type)
+        {
             nestedcond.emplace_back(nemesis::CondVar<Type>(type));
-			return nestedcond.back();
-		}
+            return nestedcond.back();
+        }
 
         nemesis::CondVar<Type>& addCond(const std::string& condition, const CondType& type)
         {
@@ -102,15 +115,15 @@ namespace nemesis
             return nestedcond.back();
         }
 
-		nemesis::CondVar<Type>& addCond(const CondVar<Type>& cond)
-		{
-			nestedcond.emplace_back(cond);
-			return nestedcond.back();
-		}
+        nemesis::CondVar<Type>& addCond(const CondVar<Type>& cond)
+        {
+            nestedcond.emplace_back(cond);
+            return nestedcond.back();
+        }
 
         nemesis::CondVar<Type>& addCond(const nemesis::LinkedVar<Type>& nestraw,
-                               const nemesis::CondDetails& conditions,
-                               size_t linecount = 0)
+                                        const nemesis::CondDetails& conditions,
+                                        size_t linecount = 0)
         {
             nestedcond.emplace_back(nemesis::CondVar<Type>(nestraw, conditions));
             nestedcond.back().rawlist.back().linecount = linecount;
@@ -118,32 +131,34 @@ namespace nemesis
         }
 
         nemesis::CondVar<Type>& addCond(const nemesis::LinkedVar<Type>& nestraw,
-                               const std::string& conditions,
-                               const CondType& type,
-                               size_t linecount = 0)
+                                        const std::string& conditions,
+                                        const CondType& type,
+                                        size_t linecount = 0)
         {
             nestedcond.emplace_back(nemesis::CondVar<Type>(nestraw, conditions, type));
             nestedcond.back().rawlist.back().linecount = linecount;
             return nestedcond.back();
         }
 
-		nemesis::CondVar<Type>& addCond(const nemesis::LinkedVar<Type>& nestraw)
-		{
-			nestedcond.emplace_back(nestraw);
-			return nestedcond.back();
-		}
-
-		nemesis::CondVar<Type>& backCond()
-		{
-			return nestedcond.back();
-		}
-
-		std::string data()
+        nemesis::CondVar<Type>& addCond(const nemesis::LinkedVar<Type>& nestraw)
         {
-            if (!raw) {
+            nestedcond.emplace_back(nestraw);
+            return nestedcond.back();
+        }
+
+        nemesis::CondVar<Type>& backCond()
+        {
+            return nestedcond.back();
+        }
+
+        std::string data()
+        {
+            if (!raw)
+            {
                 std::string l;
 
-                for (const auto& c : lineblocks) {
+                for (const auto& c : lineblocks)
+                {
                     l.append(c);
                 }
 
@@ -154,47 +169,49 @@ namespace nemesis
         }
 
         SPtr<Type> operator=(const Type& _raw)
-		{
+        {
             return raw = std::make_shared<Type>(_raw);
-		}
+        }
 
-		SPtr<Type> operator+(const Type& _raw)
-		{
+        SPtr<Type> operator+(const Type& _raw)
+        {
             return std::make_shared<Type>(*raw + _raw);
-		}
+        }
 
-		bool operator==(const Type& _raw)
-		{
+        bool operator==(const Type& _raw)
+        {
             if (preCompile) return data() == _raw;
-                
+
             std::string l;
 
-            for (const auto& c : lineblocks) {
+            for (const auto& c : lineblocks)
+            {
                 l.append(c);
             }
 
             return l == _raw;
-		}
+        }
 
-		bool operator!=(const Type& _raw)
-		{
+        bool operator!=(const Type& _raw)
+        {
             if (preCompile) return data() != _raw;
 
             std::string l;
 
-            for (const auto& c : lineblocks) {
+            for (const auto& c : lineblocks)
+            {
                 l.append(c);
             }
 
             return l != _raw;
-		}
+        }
 
-        inline bool LinkedVar<Type>::HasCondition() const
+        inline bool HasCondition() const
         {
             return !nestedcond.empty();
         }
-        
-        virtual bool LinkedVar<Type>::HasProcess() const
+
+        virtual bool HasProcess() const
         {
             return !lineblocks.empty();
         }
@@ -203,8 +220,8 @@ namespace nemesis
         {
             return *raw;
         }
-        
-        template<typename _Ty>
+
+        template <typename _Ty>
         _Ty Process(nemesis::ScopeInfo& scopeinfo) const
         {
             return static_cast<_Ty>(Process(scopeinfo));
@@ -246,7 +263,7 @@ namespace nemesis
             return Vec<Type>();
         }
 
-        template<typename _Ty>
+        template <typename _Ty>
         Vec<_Ty> CompileToList(nemesis::ScopeInfo& scopeinfo) const
         {
             if (!HasCondition()) return Vec<_Ty>{Process<_Ty>(scopeinfo)};
@@ -292,23 +309,23 @@ namespace nemesis
         {
             return raw.get();
         }
-	};
+    };
 
-	template<typename Type>
-	struct CondVar
-	{
+    template <typename Type>
+    struct CondVar
+    {
         nemesis::CondType conditionType;
-		bool isMulti = false;
-		bool isOrder = false;
-		size_t curnum = 0;
-		size_t linenum;
-		std::string conditions;
+        bool isMulti  = false;
+        bool isOrder  = false;
+        size_t curnum = 0;
+        size_t linenum;
+        std::string conditions;
         SPtr<nemesis::Condition> condition;
         SPtr<nemesis::Condt> next;
-		Vec<nemesis::LinkedVar<Type>> rawlist;
+        Vec<nemesis::LinkedVar<Type>> rawlist;
 
     public:
-		CondVar() = default;
+        CondVar() = default;
 
         CondVar(nemesis::CondType condtype)
         {
@@ -372,9 +389,9 @@ namespace nemesis
             conditionType = condtype;
         }
 
-		CondVar(const nemesis::LinkedVar<Type>& _raw)
-		{
-			rawlist.emplace_back(_raw);
+        CondVar(const nemesis::LinkedVar<Type>& _raw)
+        {
+            rawlist.emplace_back(_raw);
         }
 
         CondVar(const nemesis::LinkedVar<Type>& _raw, const nemesis::CondDetails& _condition)
@@ -391,28 +408,28 @@ namespace nemesis
             conditionType = conditioninfo.GetType();
         }
 
-		CondVar(const nemesis::LinkedVar<Type>& _raw, std::string _conditions, nemesis::CondType condtype)
-		{
+        CondVar(const nemesis::LinkedVar<Type>& _raw, std::string _conditions, nemesis::CondType condtype)
+        {
             rawlist.emplace_back(_raw);
             conditions    = _conditions;
             conditionType = condtype;
-		}
+        }
 
-		CondVar(const nemesis::LinkedVar<Type>& _raw,
+        CondVar(const nemesis::LinkedVar<Type>& _raw,
                 std::string_view _conditions,
                 nemesis::CondType condtype)
-		{
+        {
             rawlist.emplace_back(_raw);
             conditions    = _conditions;
             conditionType = condtype;
-		}
-        
-		CondVar(nemesis::CondType condtype, SPtr<nemesis::Condition> condition_ptr)
-		{
+        }
+
+        CondVar(nemesis::CondType condtype, SPtr<nemesis::Condition> condition_ptr)
+        {
             conditions    = condition_ptr->GetExpression();
             conditionType = condtype;
             condition     = condition_ptr;
-		}
+        }
 
         bool IsTrue(nemesis::ScopeInfo& scopeinfo) const
         {
@@ -442,7 +459,7 @@ namespace nemesis
             return list;
         }
 
-        template<typename _Ty>
+        template <typename _Ty>
         Vec<_Ty> CompileList(nemesis::ScopeInfo& scopeinfo) const
         {
             Vec<_Ty> list;
@@ -455,7 +472,7 @@ namespace nemesis
 
             return list;
         }
-	};
+    };
 
     using LinkedString  = nemesis::LinkedVar<std::string>;
     using LinkedWstring = nemesis::LinkedVar<std::wstring>;
@@ -463,7 +480,6 @@ namespace nemesis
     nemesis::LinkedString ToLinkedString(const nemesis::Line& line);
     nemesis::LinkedWstring ToLinkedWstring(const nemesis::Wline& line);
 } // namespace nemesis
-
 
 void combineLines(std::string& last, VecStr& temp, VecStr& combined);
 SPtr<VecStr> getLinkedLines(const nemesis::LinkedVar<std::string>& linkedline);

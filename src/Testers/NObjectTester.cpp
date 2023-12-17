@@ -1,20 +1,21 @@
 #include "Testers/NObjectTester.h"
 
-#include "core/NLine.h"
-#include "core/ModLine.h"
-#include "core/IfObject.h"
+#include "core/AnimationRequest.h"
+#include "core/AnimationRequestRepository.h"
+#include "core/CollectionObject.h"
 #include "core/CompileState.h"
 #include "core/ForEachObject.h"
-#include "core/CollectionObject.h"
+#include "core/IfObject.h"
+#include "core/ModLine.h"
+#include "core/NLine.h"
 #include "core/SemanticManager.h"
-#include "core/AnimationRequest.h"
 
 #include "core/Template/TemplateClass.h"
 
 void nemesis::NObjectTester::Run()
 {
-    nemesis::TemplateClass templt_class(
-        "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
+    nemesis::TemplateClass templt_class("E:\\C++\\Project New Reign - Nemesis\\test "
+                                        "environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
     UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("ta", 0);
@@ -24,7 +25,7 @@ void nemesis::NObjectTester::Run()
     request->AddOption(std::move(option));
 
     auto model2  = templt_class.GetModel("o");
-    auto option2  = model2->TryCreateOption("o", 2, "file.txt");
+    auto option2 = model2->TryCreateOption("o", 2, "file.txt");
     request->AddOption(std::move(option2));
 
     auto request_ptr = request.get();

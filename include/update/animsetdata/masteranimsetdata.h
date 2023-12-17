@@ -1,6 +1,8 @@
 #pragma once
 
+#include "base/file.h"
 #include "update/animsetdata/projectanimsetdata.h"
+#include "utilities/conditiondetails.h"
 
 struct MasterAnimSetData
 {
@@ -68,7 +70,6 @@ private:
         const VecNstr& storeline;
         SPtr<nemesis::ConditionInfo> tobedeleted;
 
-
     public:
         Parser(MasterAnimSetData& base, const VecNstr& storeline) noexcept;
 
@@ -114,11 +115,14 @@ public:
 
     ProjectAnimSetDataPtr add(const nemesis::Line& line);
     ProjectAnimSetDataPtr add(const ProjectName& name, size_t num);
-    ProjectAnimSetDataPtr add(const ProjectName& name, size_t num, const std::string& condition, nemesis::CondType type);
+    ProjectAnimSetDataPtr
+    add(const ProjectName& name, size_t num, const std::string& condition, nemesis::CondType type);
     ProjectAnimSetDataPtr add(const ProjectName& name, size_t num, const nemesis::CondDetails& condition);
     ProjectAnimSetDataPtr add(const ProjectName& name, const VecNstr& storeline);
-    ProjectAnimSetDataPtr add(const ProjectName& name, const VecNstr& storeline, const nemesis::CondDetails& condition);
-    ProjectAnimSetDataPtr add(const ProjectName& name, size_t num, const nemesis::ConditionInfo& conditioninfo);
+    ProjectAnimSetDataPtr
+    add(const ProjectName& name, const VecNstr& storeline, const nemesis::CondDetails& condition);
+    ProjectAnimSetDataPtr
+    add(const ProjectName& name, size_t num, const nemesis::ConditionInfo& conditioninfo);
 
     void projectListUpdate(const std::string& modcode,
                            const std::filesystem::path& filepath,

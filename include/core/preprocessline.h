@@ -1,24 +1,22 @@
 #pragma once
 
-#include <atomic>
-
 #include "utilities/line.h"
-#include "utilities/linkedvar.h"
-#include "utilities/atomiclock.h"
-#include "utilities/lineprocess.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
+    struct File;
     struct ScopeInfo;
     struct Template;
     struct HkxBehaviorFile;
+    struct LineProcess;
 
     struct PreprocessLine : public nemesis::Line
     {
     private:
-        SPtr<nemesis::LineProcess> processptr = nullptr;
-        const nemesis::File* file             = nullptr;
-        const nemesis::Template* templateptr = nullptr;
+        SPtr<nemesis::LineProcess> processptr     = nullptr;
+        const nemesis::File* file                 = nullptr;
+        const nemesis::Template* templateptr      = nullptr;
         const nemesis::HkxBehaviorFile* pbehavior = nullptr;
         VecStr cacheblocks;
 
@@ -42,4 +40,4 @@ namespace nemesis
         nemesis::Line Process(nemesis::ScopeInfo& scopeinfo) const;
         //VecNstr CondiitonOutput(nemesis::ScopeInfo& scopeinf) const;
     };
-}
+} // namespace nemesis

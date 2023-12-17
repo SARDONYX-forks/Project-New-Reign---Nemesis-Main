@@ -1,12 +1,15 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "core/Template/TemplateOption.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
-	struct AnimationRequest
+    struct AnimationRequest
     {
     private:
         Vec<UPtr<nemesis::TemplateOption>> Options;
@@ -53,4 +56,4 @@ namespace nemesis
 
         const Vec<nemesis::AnimationRequest*>& GetParents() const noexcept;
     };
-}
+} // namespace nemesis

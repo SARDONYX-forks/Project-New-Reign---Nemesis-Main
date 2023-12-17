@@ -9,8 +9,8 @@
 
 #include "externalscript.h"
 
-#include "generate/generator_utility.h"
 #include "generate/alternateanimation.h"
+#include "generate/generator_utility.h"
 
 #include "utilities/algorithm.h"
 
@@ -98,13 +98,14 @@ void BatchScriptThread(const wstring& filename, const filesystem::path& filepath
         if (hidden)
         {
             QProcess* p = new QProcess();
-            p->start(QString::fromStdWString(filepath));
+            p->start(QString::fromStdWString(filepath), QStringList());
             p->waitForFinished();
             delete p;
         }
         else
         {
-            if (QProcess::execute(QString::fromStdWString(filepath)) != 0) WarningMessage(1023, filepath);
+            if (QProcess::execute(QString::fromStdWString(filepath), QStringList()) != 0)
+                WarningMessage(1023, filepath);
         }
     }
     catch (const exception& ex)

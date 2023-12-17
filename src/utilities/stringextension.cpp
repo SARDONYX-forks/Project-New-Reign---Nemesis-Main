@@ -1,5 +1,10 @@
-#include "utilities/stringextension.h"
+#include <iosfwd>
+#include <iterator>
 
+#include "Global.h"
+
+#include "utilities/algorithm.h"
+#include "utilities/stringextension.h"
 
 size_t GetNewPosition_NC(const std::string& _ch, const std::string& oldvalue)
 {
@@ -17,7 +22,7 @@ std::string StringTrim(const std::string& str, const std::string& whitespace)
 
     if (strBegin == NOT_FOUND) return "";
 
-    auto strEnd   = str.find_last_not_of(whitespace);
+    auto strEnd = str.find_last_not_of(whitespace);
     return str.substr(strBegin, strEnd - strBegin + 1);
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/animvarptr.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
@@ -40,4 +41,4 @@ namespace nemesis
         }
     };
 
-}
+} // namespace nemesis

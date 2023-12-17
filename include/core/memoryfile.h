@@ -1,10 +1,11 @@
 #pragma once
 
 #include "base/file.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
-	struct MemoryFile
+    struct MemoryFile
     {
     private:
         VecNstr contents;
@@ -16,7 +17,7 @@ namespace nemesis
 
         void Read();
         VecNstr GetLines() const noexcept;
-        
+
         void Clear();
 
         void Write(const VecStr& lines);
@@ -31,12 +32,12 @@ namespace nemesis
         void Append(const std::string_view& vline);
         void Append(const nemesis::Line& line);
 
-        //void InsertAt(size_t pos, const VecStr& lines);
-        //void InsertAt(size_t pos, const VecNstr& lines);
-        //void InsertAt(size_t pos, const std::string& line);
-        //void InsertAt(size_t pos, const std::string_view& line);
-        //void InsertAt(size_t pos, const nemesis::Line& line);
+        // void InsertAt(size_t pos, const VecStr& lines);
+        // void InsertAt(size_t pos, const VecNstr& lines);
+        // void InsertAt(size_t pos, const std::string& line);
+        // void InsertAt(size_t pos, const std::string_view& line);
+        // void InsertAt(size_t pos, const nemesis::Line& line);
 
         void Save() const;
     };
-}
+} // namespace nemesis

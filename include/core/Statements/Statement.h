@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <functional>
 
 #include "utilities/types.h"
 
@@ -12,7 +13,7 @@ namespace nemesis
     struct TemplateClass;
     struct SemanticManager;
 
-	struct Statement
+    struct Statement
     {
     protected:
         std::string Expression;
@@ -37,4 +38,4 @@ namespace nemesis
 
         static VecStr SplitComponents(const std::string& value);
     };
-}
+} // namespace nemesis

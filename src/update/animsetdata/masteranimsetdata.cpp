@@ -1,8 +1,10 @@
 #include "Global.h"
 
-#include "utilities/writetextfile.h"
+#include "base/file.h"
+
 #include "utilities/conditionscope.h"
 #include "utilities/conditionsyntax.h"
+#include "utilities/writetextfile.h"
 
 #include "update/animsetdata/masteranimsetdata.h"
 
@@ -10,15 +12,16 @@ using namespace std;
 
 namespace sf = std::filesystem;
 
-MasterAnimSetData::ModPatch::Project::AnimSetData::AnimSetData(const std::string& code, const std::filesystem::path& path)
+MasterAnimSetData::ModPatch::Project::AnimSetData::AnimSetData(const std::string& code,
+                                                               const std::filesystem::path& path)
     : file(path)
 {
-    name = nemesis::to_lower_copy(path.filename().string());
+    name       = nemesis::to_lower_copy(path.filename().string());
     size_t pos = name.find(nemesis::to_lower_copy(code) + "$");
 
     if (pos != 0) return;
 
-    name = name.substr(pos + code.length() + 1);
+    name  = name.substr(pos + code.length() + 1);
     isnew = true;
 }
 
@@ -112,7 +115,7 @@ void MasterAnimSetData::Parser::SetPath(const sf::path& path) noexcept
 
 void MasterAnimSetData::Parser::ImportProject()
 {
-    index    = 0;
+    index = 0;
 
     //bool original = false;
     //deque<nemesis::Line>* edits;
@@ -159,7 +162,6 @@ void MasterAnimSetData::Parser::ImportProject()
                 break;
             }
         }
-
 
         //if (condfunc(path, format, line, condtype))
         //{
@@ -290,7 +292,7 @@ MasterAnimSetData::ModPatcher::ModPatcher(MasterAnimSetData& master_asd,
 {
     AddHeaderModPatch();
 
-    for (auto& project: patch.projectlist)
+    for (auto& project : patch.projectlist)
     {
         AddProjectModPatch(project);
     }
@@ -391,7 +393,8 @@ SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name,
     return curcond.rawlist.back().raw;
 }
 
-SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name, size_t num, const nemesis::CondDetails& condition)
+SPtr<ProjectAnimSetData>
+MasterAnimSetData::add(const ProjectName& name, size_t num, const nemesis::CondDetails& condition)
 {
     return add(name, num, condition.condition, condition.type);
 }
@@ -409,8 +412,8 @@ SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name, const V
 }
 
 SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name,
-                                                 const VecNstr& storeline,
-                                                 const nemesis::CondDetails& condition)
+                                                const VecNstr& storeline,
+                                                const nemesis::CondDetails& condition)
 {
     auto proj = find(name, condition.condition);
 
@@ -423,7 +426,8 @@ SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name,
     return curcond.rawlist.back().raw;
 }
 
-SPtr<ProjectAnimSetData> MasterAnimSetData::add(const ProjectName& name, size_t num, const nemesis::ConditionInfo& conditioninfo)
+SPtr<ProjectAnimSetData>
+MasterAnimSetData::add(const ProjectName& name, size_t num, const nemesis::ConditionInfo& conditioninfo)
 {
     return add(name, num, conditioninfo.GetCondition(), conditioninfo.GetType());
 }
@@ -483,8 +487,7 @@ void MasterAnimSetData::ReadTemplateLines(VecStr& lines)
     getlines(lines);
 }
 
-void MasterAnimSetData::AddModPatch(Vec<nemesis::File>& corefiles,
-                                                  const MasterAnimSetData::ModPatch& patch)
+void MasterAnimSetData::AddModPatch(Vec<nemesis::File>& corefiles, const MasterAnimSetData::ModPatch& patch)
 {
     ModPatcher patcher(*this, corefiles, patch);
 }

@@ -1,5 +1,6 @@
 #include "core/Statements/RequestIndexStatement.h"
 
+#include "core/AnimationRequest.h"
 #include "core/CompileState.h"
 #include "core/SemanticManager.h"
 

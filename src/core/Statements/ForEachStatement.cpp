@@ -1,3 +1,4 @@
+#include "core/AnimationRequestCollection.h"
 #include "core/CompileState.h"
 #include "core/SemanticManager.h"
 
@@ -5,10 +6,10 @@
 
 #include "core/Template/TemplateClass.h"
 
+#include "utilities/conditionsyntax.h"
 #include "utilities/line.h"
 #include "utilities/regex.h"
 #include "utilities/templatecategory.h"
-#include "utilities/conditionsyntax.h"
 
 void nemesis::ForEachStatement::ParseComponents(nemesis::SemanticManager& manager)
 {
@@ -52,7 +53,7 @@ void nemesis::ForEachStatement::ParseComponents(nemesis::SemanticManager& manage
                             std::string group = template_name + "_1";
                             Vec<const nemesis::AnimationRequest*> anim_requests;
 
-                            for (auto& request: requests)
+                            for (auto& request : requests)
                             {
                                 anim_requests.emplace_back(request.get());
                             }
@@ -60,7 +61,6 @@ void nemesis::ForEachStatement::ParseComponents(nemesis::SemanticManager& manage
                             state.QueueChildRequestList(group, anim_requests);
                             action();
                             state.DequeChildRequestList(group);
-
                         };
                         return;
                     }
@@ -133,7 +133,7 @@ void nemesis::ForEachStatement::ParseComponents(nemesis::SemanticManager& manage
                 return;
             }
 
-            OptionName = &Components.front();
+            OptionName      = &Components.front();
             ForEachFunction = [this](nemesis::CompileState& state, std::function<void()> action)
             {
                 auto request  = state.GetBaseRequest();
@@ -179,7 +179,7 @@ void nemesis::ForEachStatement::ParseComponents(nemesis::SemanticManager& manage
 
             auto get_request = GetTargetRequest(*template_class, manager);
 
-            OptionName = &Components[2];
+            OptionName      = &Components[2];
             ForEachFunction = [this, get_request](nemesis::CompileState& state, std::function<void()> action)
             {
                 auto request  = (*get_request)(state);
@@ -236,8 +236,7 @@ nemesis::ForEachStatement::ForEachStatement(const std::string& expression,
     ParseComponents(manager);
 }
 
-nemesis::ForEachStatement::ForEachStatement(const nemesis::Line& line,
-                                            nemesis::SemanticManager& manager)
+nemesis::ForEachStatement::ForEachStatement(const nemesis::Line& line, nemesis::SemanticManager& manager)
     : nemesis::Statement(line)
 {
     ParseComponents(manager);

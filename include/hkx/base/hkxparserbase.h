@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/importer.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -47,9 +48,9 @@ namespace nemesis
         static constexpr std::string_view digit1_ele     = "\t\t\t\t1.";
 
         static constexpr std::string_view vec4_prefix = "\t\t\t\t(";
-        static constexpr std::string_view vec4_suffix   = ")";
+        static constexpr std::string_view vec4_suffix = ")";
 
         static constexpr std::string_view hkxvec_prefix = "\">(";
         static constexpr std::string_view hkxvec_suffix = ")</hkparam>";
     };
-}
+} // namespace nemesis

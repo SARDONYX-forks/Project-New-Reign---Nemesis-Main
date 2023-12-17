@@ -2,17 +2,18 @@
 
 #include <regex>
 
-#include "base/file.h"
-
-#include "core/animvarptr.h"
-
+#include "utilities/conditiondetails.h"
 #include "utilities/conditioninfo.h"
+#include "utilities/line.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
+    struct AnimVarPtr;
+    struct CompileState;
+    struct File;
     struct ScopeInfo;
     struct Template;
-    struct CompileState;
 
     struct Condition : std::enable_shared_from_this<nemesis::Condition>
     {
@@ -48,15 +49,15 @@ namespace nemesis
         {
             enum struct ErrorType
             {
-                NONE = 0,
+                NONE             = 0,
                 UNCLOSED_BRACKET = 1180,
-                SYNTAX_ERROR = 1223
+                SYNTAX_ERROR     = 1223
             };
 
         private:
             bool negative = false;
-            UPtr<nemesis::AnimVarPtr> varA;
-            UPtr<nemesis::AnimVarPtr> varB;
+            UPtr<AnimVarPtr> varA;
+            UPtr<AnimVarPtr> varB;
             Vec<UPtr<nemesis::Condition>> and_conditions;
             Vec<UPtr<nemesis::Condition>> or_conditions;
 
@@ -94,7 +95,10 @@ namespace nemesis
         CondType type;
 
     public:
-        Condition(const std::string& expression, const nemesis::Line& line, const nemesis::File& file, CondType type);
+        Condition(const std::string& expression,
+                  const nemesis::Line& line,
+                  const nemesis::File& file,
+                  CondType type);
         Condition(const Lexer::Iter& tokens, Condition& condition);
 
         const nemesis::AnimVarPtr& GetVariableA() const;
@@ -113,4 +117,4 @@ namespace nemesis
         bool IsOrTrue(nemesis::ScopeInfo& scopeinfo) const;
         void TrimCondition(std::string& condition);
     };
-}
+} // namespace nemesis

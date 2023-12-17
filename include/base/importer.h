@@ -1,16 +1,17 @@
 #pragma once
 
+#include "base/importerbase.h"
 #include "core/linked.h"
-
+#include "template/processparser.h"
+#include "utilities/conditiondetails.h"
+#include "utilities/conditionscope.h"
 #include "utilities/linkedvar.h"
 #include "utilities/modpriority.h"
-#include "utilities/conditionscope.h"
-
-#include "template/processparser.h"
+#include "utilities/regexsearch.h"
 
 namespace nemesis
 {
-    template<typename _LnkTy>
+    template <typename _LnkTy>
     struct Importer : public nemesis::ImporterBase
     {
         const std::string ignore = "SERIALIZE_IGNORED";
@@ -44,9 +45,7 @@ namespace nemesis
         {
         }
 
-        virtual void PostAddLineProcess(_LnkTy& linkedline)
-        {
-        }
+        virtual void PostAddLineProcess(_LnkTy& linkedline) {}
 
         virtual void AddLinkedLine(SPtr<_LnkTy> linkedline)
         {
@@ -88,7 +87,7 @@ namespace nemesis
             if (!priorities) ErrorMessage(1224, file.GetFilePath(), conditioninfo->GetLineNumber());
 
             openmodcondinfo = conditioninfo;
-            success = priorities->Contains(conditioninfo->GetCondition());
+            success         = priorities->Contains(conditioninfo->GetCondition());
         }
 
         void ModCloseCondition(const nemesis::ConditionInfo* tobedeleted)
@@ -96,7 +95,7 @@ namespace nemesis
             if (openmodcondinfo != tobedeleted) return;
 
             openmodcondinfo = nullptr;
-            success = true;
+            success         = true;
         }
 
         void LowerOriginal(const nemesis::Line& line, const nemesis::ConditionInfo* conditioninfo)
@@ -180,9 +179,7 @@ namespace nemesis
             }
         }
 
-        virtual void TryCacheData(const nemesis::Line& line, const nemesis::ConditionInfo* conditioninfo)
-        {
-        }
+        virtual void TryCacheData(const nemesis::Line& line, const nemesis::ConditionInfo* conditioninfo) {}
 
         void LevelUpScope()
         {
@@ -208,7 +205,7 @@ namespace nemesis
             linked->AddCondition(*conditioninfo, file);
             stream.back() = &linked->GetLastCondition().GetDataList();
         }
-        
+
         virtual void RemoveConditionScope()
         {
             if (cscope->GetToBeDeleted().GetType() != nemesis::CondType::ORIGINAL)
@@ -261,7 +258,8 @@ namespace nemesis
             auto& curlist = stream.back();
             SPtr<_LnkTy> linked;
 
-            if (curlist->empty() || curlist->back()->GetRawPtr() || curlist->back()->GetCondition(0).GetType() != nemesis::CondType::ASTERISK)
+            if (curlist->empty() || curlist->back()->GetRawPtr()
+                || curlist->back()->GetCondition(0).GetType() != nemesis::CondType::ASTERISK)
             {
                 linked = std::make_shared<_LnkTy>();
                 AddLinkedLine(linked);
@@ -348,7 +346,7 @@ namespace nemesis
 
                 auto conditioninfo = cscope->TryGetConditionInfo(line);
 
-                if (!HasConditionMet(line, conditioninfo.get())) return;    // will be removed
+                if (!HasConditionMet(line, conditioninfo.get())) return; // will be removed
 
                 TryCacheData(line, conditioninfo.get());
 
@@ -386,7 +384,7 @@ namespace nemesis
         virtual void ReadFile(const std::filesystem::path& filepath)
         {
             DebugLogging(L"Parsing behavior: " + filepath.wstring());
-            this->cscope   = std::make_unique<nemesis::ConditionScope>("Base", filepath);
+            this->cscope = std::make_unique<nemesis::ConditionScope>("Base", filepath);
         }
 
         virtual void ParseFile()

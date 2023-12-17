@@ -1,3 +1,5 @@
+#include "Global.h"
+
 #include "core/EmptyObject.h"
 
 #include "utilities/conditionsyntax.h"

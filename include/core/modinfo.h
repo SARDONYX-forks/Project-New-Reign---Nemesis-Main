@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -30,4 +31,4 @@ namespace nemesis
         std::string GetModCodeA() const noexcept;
         bool IsHidden() const noexcept;
     };
-}
+} // namespace nemesis

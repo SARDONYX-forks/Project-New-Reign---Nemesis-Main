@@ -1,15 +1,16 @@
 #pragma once
 
-#include "utilities/types.h"
+#include "utilities/conditiondetails.h"
 #include "utilities/conditioninfo.h"
 #include "utilities/conditionscope.h"
+#include "utilities/types.h"
 
 #include "Parser/ParsableObject.h"
 
 namespace nemesis
 {
-    template<typename _ParObjTy, typename _Itr>
-	struct ScopeMachine
+    template <typename _ParObjTy, typename _Itr>
+    struct ScopeMachine
     {
         struct Scope
         {
@@ -74,7 +75,7 @@ namespace nemesis
         {
             ConditionScope cscope(modcode, "");
             auto condinfo = cscope.TryGetConditionInfo(*itr);
-            
+
             if (condinfo->GetType() == nemesis::CondType::NONE)
             {
                 success = false;
@@ -85,7 +86,6 @@ namespace nemesis
 
             while (!cscope.Empty())
             {
-
             }
         }
 
@@ -94,7 +94,7 @@ namespace nemesis
             return success;
         }
 
-        size_t Size() const  noexcept
+        size_t Size() const noexcept
         {
             return scopes.size();
         }
@@ -108,8 +108,9 @@ namespace nemesis
         {
             return scopes.at(index);
         }
-        
+
         static_assert(std::_Is_iterator_v<_Itr>, "Non-iterator type is passed to _Itr");
-        static_assert(std::is_base_of_v<ParsableObject, _ParObjTy>, "Non-ParsableObject is passed to _ParObjTy");
+        static_assert(std::is_base_of_v<ParsableObject, _ParObjTy>,
+                      "Non-ParsableObject is passed to _ParObjTy");
     };
-}
+} // namespace nemesis

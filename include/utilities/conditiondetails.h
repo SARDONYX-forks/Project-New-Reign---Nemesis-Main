@@ -1,8 +1,8 @@
 #pragma once
 
 #include <deque>
-#include <vector>
 #include <filesystem>
+#include <vector>
 
 #include "utilities/condtype.h"
 
@@ -12,7 +12,7 @@ namespace nemesis
 
     struct CondDetails
     {
-        using CondDetailsList = Vec<CondDetails>;
+        using CondDetailsList = std::vector<CondDetails>;
 
         CondType type;
         std::string condition;
@@ -79,8 +79,6 @@ namespace nemesis
         };
     };
 
-    using CondCheckFunc = bool (*)(const std::filesystem::path&,
-                                   const std::string&,
-                                   const nemesis::Line&,
-                                   std::vector<CondDetails>&);
-}
+    using CondCheckFunc
+        = bool (*)(const std::filesystem::path&, const std::string&, const nemesis::Line&, std::vector<CondDetails>&);
+} // namespace nemesis

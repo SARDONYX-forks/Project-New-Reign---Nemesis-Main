@@ -3,20 +3,24 @@
 #include "nemesisinfo.h"
 
 #include "hkx/HkxBehaviorFile.h"
+#include "hkx/HkxEventList.h"
+#include "hkx/HkxVariableList.h"
 
-#include "core/querymanager.h"
+#include "core/animimport.h"
 #include "core/linkedpreprocessline.h"
+#include "core/querymanager.h"
 
 #include "update/patch.h"
 
 #include "utilities/atomic.h"
 #include "utilities/conditionscope.h"
 #include "utilities/conditionsyntax.h"
+#include "utilities/lexersearch.h"
 #include "utilities/lineprocess.h"
 #include "utilities/readtextfile.h"
 #include "utilities/regex.h"
-#include "utilities/template.h"
 #include "utilities/stringextension.h"
+#include "utilities/template.h"
 
 #include "template/processparser.h"
 
@@ -26,13 +30,15 @@ namespace ns = nemesis::syntax;
 
 using HB = nemesis::HkxBehaviorFile;
 
+const nemesis::regex nemesis::HkxBehaviorFile::Parser::statergx_id(
+    "<hkobject name=\"(.+?)\" class=\"hkbStateMachineStateInfo\"");
 const nemesis::regex
-    nemesis::HkxBehaviorFile::Parser::statergx_id("<hkobject name=\"(.+?)\" class=\"hkbStateMachineStateInfo\"");
-const nemesis::regex nemesis::HkxBehaviorFile::Parser::statergx("<hkparam name=\"stateId\">([0-9]+)<\\/hkparam>");
+    nemesis::HkxBehaviorFile::Parser::statergx("<hkparam name=\"stateId\">([0-9]+)<\\/hkparam>");
 
 const nemesis::regex
     nemesis::HkxBehaviorFile::Parser::smachinergx_id("<hkobject name=\"(.+?)\" class=\"hkbStateMachine\"");
-const nemesis::regex nemesis::HkxBehaviorFile::Parser::smachinergx_list("[\\s\\t]+(#[^\\s\\t]+?)(?=$|[\\s\\t])");
+const nemesis::regex
+    nemesis::HkxBehaviorFile::Parser::smachinergx_list("[\\s\\t]+(#[^\\s\\t]+?)(?=$|[\\s\\t])");
 
 const USet<string> nemesis::HkxBehaviorFile::Exporter::dataclasses
     = {"hkbBehaviorGraphStringData", "hkbVariableValueSet", "hkbBehaviorGraphData", "hkRootLevelContainer"};
@@ -51,7 +57,7 @@ nemesis::LinkedPreprocessLine* nemesis::HkxBehaviorFile::Node::operator[](size_t
 
 size_t nemesis::HkxBehaviorFile::Node::size() const
 {
-    size_t s = 0;
+    size_t s  = 0;
     auto itr1 = begin();
     auto itr2 = end();
 
@@ -68,19 +74,20 @@ Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator nemesis::HkxBehaviorFile::Nod
 {
     if (!start) return Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator();
 
-    return std::find_if(list->begin(), list->end(), [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr) {
-        return line_ptr.get() == start;
-    });
+    return std::find_if(list->begin(),
+                        list->end(),
+                        [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr)
+                        { return line_ptr.get() == start; });
 }
 
 Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator nemesis::HkxBehaviorFile::Node::end()
 {
     if (!ending) return Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator();
 
-    auto itr
-        = std::find_if(list->begin(), list->end(), [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr) {
-              return line_ptr.get() == ending;
-          });
+    auto itr = std::find_if(list->begin(),
+                            list->end(),
+                            [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr)
+                            { return line_ptr.get() == ending; });
 
     if (itr == list->end()) return itr;
 
@@ -91,19 +98,20 @@ Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator nemesis::HkxBehaviorFil
 {
     if (!start) return Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator();
 
-    return std::find_if(list->begin(), list->end(), [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr) {
-        return line_ptr.get() == start;
-    });
+    return std::find_if(list->begin(),
+                        list->end(),
+                        [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr)
+                        { return line_ptr.get() == start; });
 }
 
 Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator nemesis::HkxBehaviorFile::Node::end() const
 {
     if (!ending) return Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator();
 
-    auto itr
-        = std::find_if(list->begin(), list->end(), [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr) {
-              return line_ptr.get() == ending;
-          });
+    auto itr = std::find_if(list->begin(),
+                            list->end(),
+                            [&](const SPtr<nemesis::LinkedPreprocessLine>& line_ptr)
+                            { return line_ptr.get() == ending; });
 
     if (itr == list->end()) return itr;
 
@@ -112,7 +120,7 @@ Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator nemesis::HkxBehaviorFil
 
 Vec<SPtr<nemesis::LinkedPreprocessLine>>::iterator
 nemesis::HkxBehaviorFile::Node::insert(Vec<SPtr<nemesis::LinkedPreprocessLine>>::const_iterator itr,
-                                   SPtr<nemesis::LinkedPreprocessLine> value)
+                                       SPtr<nemesis::LinkedPreprocessLine> value)
 {
     return list->insert(itr, value);
 }
@@ -150,7 +158,7 @@ bool nemesis::HkxBehaviorFile::Parser::TrySetNewNodeZone()
 
     if (Exporter::IsDataClass(classname)) return false;
 
-    findnewnodezone = false;
+    findnewnodezone      = false;
     hostref.newnode_zone = stream.front()->back().get();
     return true;
 }
@@ -217,7 +225,7 @@ void nemesis::HkxBehaviorFile::Parser::TryCacheStateMachineInfo(const std::strin
 }
 
 void nemesis::HkxBehaviorFile::Parser::TryCacheTemplateSMInfo(const std::string& line,
-                                                          const nemesis::ConditionInfo* conditioninfo)
+                                                              const nemesis::ConditionInfo* conditioninfo)
 {
     if (!state_active) return;
 
@@ -302,7 +310,7 @@ void nemesis::HkxBehaviorFile::Parser::BonePatch(const sf::path& rigfile, int or
         }
 
         fclose(bonefile);
-        size_t pos        = line.find("NPC Root [Root]");
+        size_t pos = line.find("NPC Root [Root]");
 
         if (pos != NOT_FOUND && pos > 64)
         {
@@ -514,27 +522,32 @@ void nemesis::HkxBehaviorFile::Parser::PrepareAllLexers()
 
         std::string classname = templtclass->GetName().ToString();
 
-        PrepareLexer("main_anim_event", classname, [templtclass](nemesis::ScopeInfo& scopeinfo) {
-            return std::string(scopeinfo.GetAnim(templtclass)->GetAnimationName());
-        });
-        PrepareLexer("FilePath", classname, [templtclass](nemesis::ScopeInfo& scopeinfo) {
-            return scopeinfo.GetAnim(templtclass)->GetAnimPath().string();
-        });
-        PrepareLexer("Index", classname, [templtclass](nemesis::ScopeInfo& scopeinfo) {
-            return std::to_string(scopeinfo.GetAnim(templtclass)->GetBehaviorIndex());
-        });
-        PrepareLexer("GroupIndex", classname, [templtclass](nemesis::ScopeInfo& scopeinfo) {
-            return std::to_string(scopeinfo.GetAnim(templtclass)->GetIndex());
-        });
-        PrepareLexer("ArrayIndex", classname, [templtclass](nemesis::ScopeInfo& scopeinfo) {
-            return std::to_string(scopeinfo.GetAnim(templtclass)->GetArrayIndex());
-        });
+        PrepareLexer("main_anim_event",
+                     classname,
+                     [templtclass](nemesis::ScopeInfo& scopeinfo)
+                     { return std::string(scopeinfo.GetAnim(templtclass)->GetAnimationName()); });
+        PrepareLexer("FilePath",
+                     classname,
+                     [templtclass](nemesis::ScopeInfo& scopeinfo)
+                     { return scopeinfo.GetAnim(templtclass)->GetAnimPath().string(); });
+        PrepareLexer("Index",
+                     classname,
+                     [templtclass](nemesis::ScopeInfo& scopeinfo)
+                     { return std::to_string(scopeinfo.GetAnim(templtclass)->GetBehaviorIndex()); });
+        PrepareLexer("GroupIndex",
+                     classname,
+                     [templtclass](nemesis::ScopeInfo& scopeinfo)
+                     { return std::to_string(scopeinfo.GetAnim(templtclass)->GetIndex()); });
+        PrepareLexer("ArrayIndex",
+                     classname,
+                     [templtclass](nemesis::ScopeInfo& scopeinfo)
+                     { return std::to_string(scopeinfo.GetAnim(templtclass)->GetArrayIndex()); });
     }
 }
 
 void nemesis::HkxBehaviorFile::Parser::PrepareLexer(const std::string& keyword,
-                                                const std::string& classname,
-                                                RtnFunc callback)
+                                                    const std::string& classname,
+                                                    RtnFunc callback)
 {
     auto uptr = std::make_unique<LexerSearch>(keyword);
     uptr->AddLexer(classname, callback);
@@ -632,7 +645,7 @@ void nemesis::HkxBehaviorFile::Parser::ReadFile(const std::filesystem::path& fil
 }
 
 void nemesis::HkxBehaviorFile::Parser::TryCacheData(const nemesis::Line& line,
-                                                const nemesis::ConditionInfo* conditioninfo)
+                                                    const nemesis::ConditionInfo* conditioninfo)
 {
     ParseProcesses(line);
 
@@ -748,10 +761,9 @@ void nemesis::HkxBehaviorFile::Exporter::CompileBehavior(VecNstr& datalines, Vec
     std::string classname;
     auto& self = GetSelf();
 
-    auto bhvfunc  = [&](const nemesis::Line& line) {
-        behaviorlines.emplace_back(line);
-    };
-    auto datafunc = [&](const nemesis::Line& line) {
+    auto bhvfunc  = [&](const nemesis::Line& line) { behaviorlines.emplace_back(line); };
+    auto datafunc = [&](const nemesis::Line& line)
+    {
         ProcessDataLine(line);
 
         if (!isdata && line.find(eventelem) != NOT_FOUND) isdata = true;
@@ -866,7 +878,8 @@ const nemesis::AnimTemplate* nemesis::HkxBehaviorFile::Exporter::GetAnimTemplate
     return GetSelf().GetAnimTemplate();
 }
 
-const nemesis::TemplateCategory* nemesis::HkxBehaviorFile::Exporter::GetTemplateCategory(const std::string& name)
+const nemesis::TemplateCategory*
+nemesis::HkxBehaviorFile::Exporter::GetTemplateCategory(const std::string& name)
 {
     return GetAnimTemplate()->GetClass(name);
 }
@@ -965,11 +978,10 @@ nemesis::HkxBehaviorFile::Node* nemesis::HkxBehaviorFile::TryGetNodeExist(const 
 
 void nemesis::HkxBehaviorFile::AddNewNode(const nemesis::Patch& patch)
 {
-    auto itr = std::find_if(
-        lines.begin(), lines.end(), [&](const SPtr<nemesis::LinkedPreprocessLine>& linkedline)
-        {
-              return linkedline.get() == newnode_zone;
-        });
+    auto itr = std::find_if(lines.begin(),
+                            lines.end(),
+                            [&](const SPtr<nemesis::LinkedPreprocessLine>& linkedline)
+                            { return linkedline.get() == newnode_zone; });
     itr--;
     auto contents = patch.contents;
     auto& node    = node_map[patch.GetFilePath().stem().string()];
@@ -1098,8 +1110,8 @@ SPtr<nemesis::LinkedPreprocessLine> nemesis::HkxBehaviorFile::CreateCondLine(con
 }
 
 SPtr<nemesis::LinkedPreprocessLine> nemesis::HkxBehaviorFile::CreateCondLine(const nemesis::Line& condition,
-                                                                         nemesis::CondType type,
-                                                                         const nemesis::File& file)
+                                                                             nemesis::CondType type,
+                                                                             const nemesis::File& file)
 {
     auto cond_line = std::make_shared<nemesis::LinkedPreprocessLine>();
     ConditionInfo condinfo;
@@ -1109,8 +1121,8 @@ SPtr<nemesis::LinkedPreprocessLine> nemesis::HkxBehaviorFile::CreateCondLine(con
 }
 
 SPtr<nemesis::LinkedPreprocessLine> nemesis::HkxBehaviorFile::CreateCondLine(const std::string& condition,
-                                                                         nemesis::CondType type,
-                                                                         const nemesis::File& file)
+                                                                             nemesis::CondType type,
+                                                                             const nemesis::File& file)
 {
     nemesis::Line nline(condition, file.GetFilePath());
     return CreateCondLine(nline, type, file);
@@ -1209,7 +1221,7 @@ void nemesis::HkxBehaviorFile::AddQueries(const QueryManager& query_manager)
 }
 
 void nemesis::HkxBehaviorFile::AddQueriesByFile(const nemesis::AnimQueryFile& queryfile,
-                                            USet<const nemesis::Template*>& templateset)
+                                                USet<const nemesis::Template*>& templateset)
 {
     for (auto& query : queryfile.GetList())
     {
@@ -1306,7 +1318,7 @@ void nemesis::HkxBehaviorFile::SaveAs(const sf::path& outputpath, bool compile)
     if (!outstream.is_open()) ErrorMessage(1025, outputpath);
 
     VecNstr contents;
-    
+
     if (compile)
     {
         CompileBehavior(contents);

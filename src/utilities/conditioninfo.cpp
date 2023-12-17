@@ -1,6 +1,8 @@
-#include "utilities/condtype.h"
+#include "debugmsg.h"
+
 #include "utilities/conditioninfo.h"
 #include "utilities/conditionsyntax.h"
+#include "utilities/condtype.h"
 
 namespace ns = nemesis::syntax;
 
@@ -48,7 +50,7 @@ bool nemesis::ConditionInfo::IsSuccess() const noexcept
 std::string& nemesis::ConditionInfo::operator=(const std::string& line)
 {
     refline = nullptr;
-    type = nemesis::ParseConditionType(line);
+    type    = nemesis::ParseConditionType(line);
 
     switch (type)
     {
@@ -95,7 +97,7 @@ std::string& nemesis::ConditionInfo::operator=(const std::string& line)
         {
             condition.clear();
             size_t point = line.rfind(ns::Spaces() + ns::LowerOriginal());
-            nemesis::Line nline(refline ? refline->substr(0, point) : line.substr(0, point));
+            nemesis::Line nline(refline ? refline->substr(0, point) : nemesis::Line(line.substr(0, point)));
             contents.emplace_back(nline);
         }
         default:
@@ -139,7 +141,7 @@ void nemesis::ConditionInfo::Pop_Back()
     contents.pop_back();
 }
 
-void nemesis::ConditionInfo::SetCondition(const std::string& condition, nemesis::CondType type) 
+void nemesis::ConditionInfo::SetCondition(const std::string& condition, nemesis::CondType type)
 {
     this->condition = condition;
     this->type      = type;

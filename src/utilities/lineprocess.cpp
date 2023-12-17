@@ -1,4 +1,5 @@
 #include "utilities/lineprocess.h"
+#include "utilities/process.h"
 
 #include "core/preprocessline.h"
 
@@ -14,7 +15,7 @@ void nemesis::LineProcess::BlockScopeValidation(const nemesis::Process& process)
     for (auto& blockGroup : blockGroupBySize)
     {
         for (auto& block : blockGroup.second)
-        { 
+        {
             if (!IsBlockOutOfScope(*block, begin, end)) continue;
 
             ErrorMessage(1193, block->GetFormat(), block->GetBehaviorFile(), plinkedline->GetLineNumber());

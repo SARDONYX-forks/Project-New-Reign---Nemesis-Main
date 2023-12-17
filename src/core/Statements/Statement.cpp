@@ -1,5 +1,6 @@
 #include "core/Statements/Statement.h"
 
+#include "core/AnimationRequestCollection.h"
 #include "core/CompileState.h"
 
 #include "utilities/regex.h"
@@ -70,8 +71,7 @@ nemesis::Statement::GetTargetRequest(const nemesis::TemplateClass& template_clas
     size_t num = stoi(match.str(1));
     nemesis::smatch fmatch;
 
-    if (nemesis::regex_match(
-            FilePath.stem().string(), fmatch, "^" + template_name + "_([1-9]+)$"))
+    if (nemesis::regex_match(FilePath.stem().string(), fmatch, "^" + template_name + "_([1-9]+)$"))
     {
         size_t fnum = std::stoi(fmatch.str(1));
 
@@ -114,7 +114,7 @@ nemesis::Statement::GetTargetRequest(const nemesis::TemplateClass& template_clas
                 if (!parents.empty()) return parents.back()->GetRequests()[index];
 
                 const nemesis::AnimationRequest* ptr
-                    = state.GetRequests(request->GetTemplateName())[index].get(); 
+                    = state.GetRequests(request->GetTemplateName())[index].get();
                 return ptr;
             });
     }

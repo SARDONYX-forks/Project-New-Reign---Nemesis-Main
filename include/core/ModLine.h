@@ -3,6 +3,7 @@
 #include "core/NLine.h"
 
 #include "core/Statements/ModCodeStatement.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -42,4 +43,4 @@ namespace nemesis
         static bool MatchOriginal(const std::string& line);
         static bool MatchClose(const std::string& line);
     };
-}
+} // namespace nemesis

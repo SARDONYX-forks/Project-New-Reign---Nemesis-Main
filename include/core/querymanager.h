@@ -1,12 +1,17 @@
 #pragma once
 
+#include "utilities/animquery.h"
+#include "utilities/animqueryfile.h"
+#include "utilities/templatecategory.h"
+#include "utilities/types.h"
+
 namespace nemesis
 {
     struct AnimQuery;
     struct AnimQueryFile;
     struct TemplateCategory;
 
-	struct QueryManager
+    struct QueryManager
     {
     private:
         Vec<SPtr<const AnimQueryFile>> filelist;
@@ -19,4 +24,4 @@ namespace nemesis
         const Vec<const AnimQuery*>* GetQueryList(const TemplateCategory* templtclass) const;
         const Vec<const AnimQueryFile*>& GetFileList() const noexcept;
     };
-}
+} // namespace nemesis

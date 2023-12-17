@@ -1,13 +1,14 @@
 #pragma once
 
 #include "core/Statements/ConditionalStatement.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct CompileState;
     struct Template;
 
-	struct IfStatement : public nemesis::ConditionalStatement
+    struct IfStatement : public nemesis::ConditionalStatement
     {
     protected:
         bool Negative = false;
@@ -23,4 +24,4 @@ namespace nemesis
 
         bool IsTrue(nemesis::CompileState& state) const override;
     };
-}
+} // namespace nemesis

@@ -1,3 +1,5 @@
+#include "Global.h"
+
 #include "core/Statements/CompositeStatement.h"
 
 #include "core/LineModifier/LineModifier.h"

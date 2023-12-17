@@ -3,8 +3,11 @@
 
 #include <filesystem>
 
-#include <QtCore\QFile.h>
-#include <QtCore\QTextStream.h>
+#include <QtCore\qfile.h>
+#include <QtCore\qtextStream.h>
+
+#include "utilities/conditiondetails.h"
+#include "utilities/line.h"
 
 struct FileReader
 {
@@ -79,7 +82,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(QString& line)
     {
         ++linenum;
@@ -97,7 +100,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(nemesis::Line& line)
     {
         ++linenum;
@@ -116,7 +119,7 @@ struct FileReader
 
         return true;
     }
-    
+
     inline bool GetLines(nemesis::Line& line, nemesis::SharableWrapper<std::filesystem::path>* path_ptr)
     {
         ++linenum;

@@ -1,11 +1,18 @@
 #pragma once
 
+#include <string>
+#include <string_view>
+
+#include "base/exporter.h"
+#include "utilities/template.h"
+#include "utilities/types.h"
+
 namespace nemesis
 {
     struct Template;
     struct Exporter;
 
-	struct AnimImport
+    struct AnimImport
     {
     private:
         std::string id;
@@ -25,4 +32,4 @@ namespace nemesis
 
         void GetLines(VecNstr& buffer, nemesis::Exporter& exptr);
     };
-}
+} // namespace nemesis

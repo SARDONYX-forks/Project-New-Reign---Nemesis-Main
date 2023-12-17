@@ -58,7 +58,8 @@ void nemesis::animdata::LinkedProject::GetRawName(VecNstr& lines) const
         mod_list_list.emplace_back();
         auto& mod_lines = mod_list_list.back();
         cond->GetRawDataList(mod_lines, this_func);
-        nemesis::Line mline = mod_lines.empty() ? nemesis::syntax::DeleteLine() : mod_lines.front();
+        nemesis::Line mline
+            = mod_lines.empty() ? nemesis::Line(nemesis::syntax::DeleteLine()) : mod_lines.front();
         mline += nemesis::syntax::Spaces() + nemesis::syntax::Aster(cond->GetExpression());
         lines.emplace_back(mline);
     }
@@ -77,7 +78,7 @@ void nemesis::animdata::LinkedProject::GetRawName(VecNstr& lines) const
     }
 }
 
-void nemesis::animdata::LinkedProject::SetRawDataTo(VecNstr& lines) const 
+void nemesis::animdata::LinkedProject::SetRawDataTo(VecNstr& lines) const
 {
     auto rawlines = raw->GetLines();
     lines.insert(lines.end(), rawlines.begin(), rawlines.end());

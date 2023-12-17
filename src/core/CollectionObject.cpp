@@ -1,7 +1,7 @@
+#include "core/CollectionObject.h"
+#include "core/CompileState.h"
 #include "core/NLine.h"
 #include "core/condition.h"
-#include "core/CompileState.h"
-#include "core/CollectionObject.h"
 
 #include "core/Statements/ConditionalStatement.h"
 
@@ -36,7 +36,7 @@ void nemesis::CollectionObject::ObjectMatcher::MatchAndUpdate(Vec<UPtr<nemesis::
         throw std::runtime_error("Failed to update node. Missing data or node ID mismatched");
     }
 
-    BaseIndex = 0;
+    BaseIndex              = 0;
     size_t new_index_begin = 0;
 
     for (size_t i = 0; i < objects.size(); i++)
@@ -78,7 +78,7 @@ void nemesis::CollectionObject::ObjectMatcher::MatchAndUpdate(Vec<UPtr<nemesis::
 
 void nemesis::CollectionObject::CompileTo(DeqNstr& lines, nemesis::CompileState& state) const
 {
-    for each (auto& object in Objects)
+    for (auto& object : Objects)
     {
         object->CompileTo(lines, state);
     }
@@ -86,7 +86,7 @@ void nemesis::CollectionObject::CompileTo(DeqNstr& lines, nemesis::CompileState&
 
 void nemesis::CollectionObject::SerializeTo(DeqNstr& lines) const
 {
-    for each (auto& object in Objects)
+    for (auto& object : Objects)
     {
         object->SerializeTo(lines);
     }

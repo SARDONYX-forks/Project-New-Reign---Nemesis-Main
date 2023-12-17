@@ -8,7 +8,7 @@
 #include "core/ModLine.h"
 #include "core/NObjectParser.h"
 
-#include "../../Test/StopWatch.h"
+// #include "../../Test/StopWatch.h"
 
 namespace ns = nemesis::syntax;
 
@@ -162,8 +162,8 @@ UPtr<nemesis::NObject> nemesis::HkxNode::ParseHkxNode(nemesis::LineStream& strea
                                          + std::to_string(token_value.GetLineNumber())
                                          + ", File: " + token_value.GetFilePath().string() + ")");
             }
-            
-            hkx_node->NodeId = match[1];
+
+            hkx_node->NodeId    = match[1];
             hkx_node->ClassName = match[2];
 
             for (; !IsNodeEnd(stream, start); ++stream)
@@ -268,7 +268,7 @@ UPtr<nemesis::NObject> nemesis::HkxNode::ParseHkxNode(nemesis::LineStream& strea
                     = ntoken.Type != nemesis::LineStream::TokenType::MOD_OPEN
                           ? nemesis::NObjectParser::ParseHkxObjects(stream, manager)
                           : nemesis::NObjectParser::ParseHkxModObjects(stream, manager);
-                
+
                 for (auto& object : objects)
                 {
                     col_ptr->AddObject(std::move(object));
@@ -294,7 +294,7 @@ UPtr<nemesis::HkxNode> nemesis::HkxNode::ParseHkxNodeFromFile(const std::filesys
 }
 
 UPtr<nemesis::HkxNode> nemesis::HkxNode::ParseHkxNodeFromFile(const std::filesystem::path& filepath,
-                                                      const nemesis::TemplateClass* template_class)
+                                                              const nemesis::TemplateClass* template_class)
 {
     nemesis::SemanticManager manager;
     manager.SetCurrentTemplateClass(template_class);
@@ -302,7 +302,7 @@ UPtr<nemesis::HkxNode> nemesis::HkxNode::ParseHkxNodeFromFile(const std::filesys
 }
 
 UPtr<nemesis::HkxNode> nemesis::HkxNode::ParseHkxNodeFromFile(const std::filesystem::path& filepath,
-                                                      nemesis::SemanticManager& manager)
+                                                              nemesis::SemanticManager& manager)
 {
     VecNstr lines;
     GetFileLines(filepath, lines);

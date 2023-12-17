@@ -1,7 +1,8 @@
 #pragma once
 
-#include "utilities/types.h"
 #include "utilities/StringMatchTrie.h"
+#include "utilities/line.h" // Forward declaration cannot be used because struct `Token::Value` has ownership of the `Line`
+#include "utilities/types.h"
 
 namespace nemesis
 {
@@ -65,4 +66,4 @@ namespace nemesis
 
         bool IsEoF() const noexcept;
     };
-}
+} // namespace nemesis

@@ -1,12 +1,13 @@
 #pragma once
 
 #include "core/linked.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     namespace animsetdata
     {
-        template<typename T>
+        template <typename T>
         struct LinkedData : nemesis::Linked<T, nemesis::animsetdata::LinkedData<T>>
         {
             using LinkedCondition = nemesis::LinkedCond<T, nemesis::animsetdata::LinkedData<T>>;
@@ -20,7 +21,7 @@ namespace nemesis
 
             void SetRawDataTo(VecNstr& lines) const
             {
-                auto templines = raw->GetLines();
+                auto templines = this->raw->GetLines();
                 lines.insert(lines.end(), templines.begin(), templines.end());
             }
 
@@ -36,5 +37,5 @@ namespace nemesis
                 throw std::runtime_error("animsetdata::LinkedState does not support SetRawConditionedDataTo");
             }
         };
-    }
-}
+    } // namespace animsetdata
+} // namespace nemesis

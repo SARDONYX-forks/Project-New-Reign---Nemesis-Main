@@ -1,17 +1,19 @@
 #pragma once
 
-//#include "utilities/linkedvar.h"
-
 #include "core/linked.h"
-
+#include "core/linkedcond.h"
 #include "core/preprocessline.h"
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
     struct HkxBehaviorFile;
+    struct Line;
+    struct LineProcess;
+    struct PreprocessLine;
     struct Template;
 
-	struct LinkedPreprocessLine
+    struct LinkedPreprocessLine
         : public nemesis::Linked<nemesis::PreprocessLine, nemesis::LinkedPreprocessLine>
     {
         using LinkedCondition = nemesis::LinkedCond<nemesis::PreprocessLine, nemesis::LinkedPreprocessLine>;
@@ -34,4 +36,4 @@ namespace nemesis
 
         VecNstr GetProcessedLines(nemesis::ScopeInfo& scopeinfo) const;
     };
-}
+} // namespace nemesis

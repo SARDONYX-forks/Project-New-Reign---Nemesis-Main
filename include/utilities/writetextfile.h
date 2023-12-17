@@ -9,6 +9,7 @@
 #include <string>
 
 #include "utilities/atomiclock.h"
+#include "utilities/types.h"
 
 class FileWriter
 {
@@ -30,7 +31,7 @@ public:
     void LockFreeWrite(const wchar_t* line);
     void LockFreeWrite(const std::string& line);
     void LockFreeWrite(const std::wstring& line);
-    
+
     void LockFreeWriteLine(const char* line);
     void LockFreeWriteLine(const wchar_t* line);
     void LockFreeWriteLine(const std::string& line);

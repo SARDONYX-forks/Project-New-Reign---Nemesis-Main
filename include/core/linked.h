@@ -1,12 +1,15 @@
 #pragma once
 
-#include "utilities/types.h"
-#include "utilities/conditionsyntax.h"
-
+#include "core/condition.h"
 #include "core/linkedcond.h"
+#include "utilities/conditiondetails.h"
+#include "utilities/conditionsyntax.h"
+#include "utilities/types.h"
 
 namespace nemesis
 {
+    struct ScopeInfo;
+
     template <typename _Ty, typename _LnkTy>
     struct Linked
     {
@@ -35,12 +38,12 @@ namespace nemesis
         {
             conditions.emplace_back(std::make_shared<LinkedCondition>(conditioninfo, file));
         }
-        
+
         void AddCondition(SPtr<nemesis::Condition> condition)
         {
             conditions.emplace_back(std::make_shared<LinkedCondition>(condition));
         }
-        
+
         void AddCondition(LinkedCondition& linkedcond)
         {
             try
@@ -52,7 +55,7 @@ namespace nemesis
                 conditions.emplace_back(std::make_shared<LinkedCondition>(linkedcond));
             }
         }
-        
+
         void AddCondition(const LinkedCondition& linkedcond)
         {
             conditions.emplace_back(std::make_shared<LinkedCondition>(linkedcond));
@@ -87,7 +90,7 @@ namespace nemesis
         {
             return raw.get();
         }
-        
+
         const _Ty* GetRawPtr() const
         {
             return raw.get();
@@ -103,7 +106,7 @@ namespace nemesis
             return *raw;
         }
 
-        template<typename _SpcTy>
+        template <typename _SpcTy>
         _SpcTy CompileCurrentData(nemesis::ScopeInfo& scopeinfo) const
         {
             return static_cast<_SpcTy>(CompileCurrentData(scopeinfo));
@@ -115,7 +118,8 @@ namespace nemesis
 
             if constexpr (std::is_base_of_v<std::string, _Ty>) return static_cast<std::string>(*raw);
 
-            throw std::runtime_error("Invalid raw to string return value, use override to get a valid return value");
+            throw std::runtime_error("Invalid raw to string return value, use override to get a valid "
+                                     "return value");
         }
 
         Vec<const _Ty*> GetCompiledData(nemesis::ScopeInfo& scopeinfo) const
@@ -130,7 +134,7 @@ namespace nemesis
 
             if (!HasCondition()) return Vec<const _Ty*>{&CompileCurrentData(scopeinfo)};
 
-            for (auto& condition : conditions)
+            for (const auto& condition : conditions)
             {
                 scopeinfo.SetCurrentCondition(condition->GetCondition());
 
@@ -213,20 +217,22 @@ namespace nemesis
         {
             lines.emplace_back(RawToString());
         }
-        
+
         virtual void SetNewDataTo(VecNstr& lines, const LinkedCondition& cond) const
         {
             lines.emplace_back(nemesis::syntax::ModCode(cond.GetExpression()));
             cond.GetRawDataList(lines, &_LnkTy::GetRawData);
             lines.emplace_back(nemesis::syntax::Close());
         }
-        
-        virtual void SetNewConditionedDataTo(VecNstr& lines, const nemesis::Line& newline, const LinkedCondition& cond) const
+
+        virtual void SetNewConditionedDataTo(VecNstr& lines,
+                                             const nemesis::Line& newline,
+                                             const LinkedCondition& cond) const
         {
             lines.emplace_back(newline + nemesis::syntax::Spaces()
                                + nemesis::syntax::Aster(cond.GetExpression()));
         }
-        
+
         virtual void SetRawConditionedDataTo(VecNstr& lines) const
         {
             lines.emplace_back(RawToString() + nemesis::syntax::Spaces() + nemesis::syntax::LowerOriginal());
@@ -281,7 +287,8 @@ namespace nemesis
                 mod_list_list.emplace_back();
                 auto& mod_lines = mod_list_list.back();
                 cond->GetRawDataList(mod_lines, &_LnkTy::GetRawData);
-                nemesis::Line mline = mod_lines.empty() ? nemesis::syntax::DeleteLine() : mod_lines.front();
+                nemesis::Line mline
+                    = mod_lines.empty() ? nemesis::Line(nemesis::syntax::DeleteLine()) : mod_lines.front();
                 SetNewConditionedDataTo(lines, mline, *cond);
             }
 
@@ -299,4 +306,4 @@ namespace nemesis
             }
         }
     };
-}
+} // namespace nemesis

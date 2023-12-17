@@ -1,5 +1,6 @@
 #include "Testers/HkxBehaviorTester.h"
 
+#include "core/AnimationRequestRepository.h"
 #include "core/CompileState.h"
 #include "core/SemanticManager.h"
 

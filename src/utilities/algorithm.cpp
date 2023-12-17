@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
 #include <string>
 #include <random>
 #include <sstream>
@@ -253,7 +254,7 @@ namespace nemesis
     {
         return to_lower_copy(data).find(to_lower_copy(key), off);
     }
-    
+
     size_t risearch(const std::string& data, const std::string& key, size_t off)
     {
         return to_lower_copy(data).rfind(to_lower_copy(key), off);
@@ -299,7 +300,7 @@ namespace nemesis
     std::string transform_to(const std::wstring& str) noexcept
     {
         // Note[1]
-        return std::filesystem::_Convert_wide_to_narrow<char_traits<char>>(
+        return std::filesystem::_Convert_wide_to_narrow_replace_chars<char_traits<char>>(
             __std_fs_code_page(), str, allocator<char>());
     }
 
@@ -312,7 +313,7 @@ namespace nemesis
     std::string transform_to(const wchar_t* str) noexcept
     {
         // Note[1]
-        return std::filesystem::_Convert_wide_to_narrow<char_traits<char>>(
+        return std::filesystem::_Convert_wide_to_narrow_replace_chars<char_traits<char>>(
             __std_fs_code_page(), str, allocator<char>());
     }
 

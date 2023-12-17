@@ -2,12 +2,14 @@
 
 #include "base/importer.h"
 
-#include "core/preprocessline.h"
 #include "core/linkedpreprocessline.h"
+#include "core/preprocessline.h"
 
 #include "template/processparser.h"
 
 #include "hkx/base/hkxparserbase.h"
+
+#include "utilities/conditiondetails.h"
 
 namespace nemesis
 {
@@ -55,4 +57,4 @@ namespace nemesis
 
         friend nemesis::HkxBehaviorFile;
     };
-}
+} // namespace nemesis

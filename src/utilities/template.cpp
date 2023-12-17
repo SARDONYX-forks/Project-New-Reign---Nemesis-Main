@@ -4,10 +4,11 @@
 
 #include "template/processparser.h"
 
+#include "utilities/animquery.h"
+#include "utilities/lexersearch.h"
+#include "utilities/lineprocess.h"
 #include "utilities/process.h"
 #include "utilities/template.h"
-#include "utilities/animquery.h"
-#include "utilities/lineprocess.h"
 #include "utilities/templatecategory.h"
 
 using namespace std;
@@ -33,7 +34,7 @@ void nemesis::Template::Exporter::ExportCurrentQuery(const nemesis::AnimQuery& q
     {
         scopeinfo->InsertAnim(query, &self.GetTemplateCategory());
     }
-    
+
     if (!self.IsMaster())
     {
         scopeinfo->InsertQuery(query, &self.GetTemplateCategory());
@@ -68,7 +69,7 @@ void nemesis::Template::Exporter::Export()
 
     for (auto& line : storeline)
     {
-        CheckNumElement(line);
+        nemesis::Exporter::CheckNumElement(line);
     }
 
     storeline.emplace_back(std::string());
@@ -141,21 +142,21 @@ void nemesis::Template::Parser::PrepareAllLexers()
     PrepareVariableLexer();
 
     auto templtclass = &rTemplate.GetTemplateCategory();
-    PrepareLexer("main_anim_event", [templtclass](nemesis::ScopeInfo& scopeinfo) {
-        return std::string(scopeinfo.GetAnim(templtclass)->GetAnimationName());
-    });
-    PrepareLexer("FilePath", [templtclass](nemesis::ScopeInfo& scopeinfo) {
-        return scopeinfo.GetAnim(templtclass)->GetAnimPath().string();
-    });
-    PrepareLexer("Index", [templtclass](nemesis::ScopeInfo& scopeinfo) {
-        return std::to_string(scopeinfo.GetAnim(templtclass)->GetBehaviorIndex());
-    });
-    PrepareLexer("GroupIndex", [templtclass](nemesis::ScopeInfo& scopeinfo) {
-        return std::to_string(scopeinfo.GetAnim(templtclass)->GetIndex());
-    });
-    PrepareLexer("ArrayIndex", [templtclass](nemesis::ScopeInfo& scopeinfo) {
-        return std::to_string(scopeinfo.GetAnim(templtclass)->GetArrayIndex());
-    });
+    PrepareLexer("main_anim_event",
+                 [templtclass](nemesis::ScopeInfo& scopeinfo)
+                 { return std::string(scopeinfo.GetAnim(templtclass)->GetAnimationName()); });
+    PrepareLexer("FilePath",
+                 [templtclass](nemesis::ScopeInfo& scopeinfo)
+                 { return scopeinfo.GetAnim(templtclass)->GetAnimPath().string(); });
+    PrepareLexer("Index",
+                 [templtclass](nemesis::ScopeInfo& scopeinfo)
+                 { return std::to_string(scopeinfo.GetAnim(templtclass)->GetBehaviorIndex()); });
+    PrepareLexer("GroupIndex",
+                 [templtclass](nemesis::ScopeInfo& scopeinfo)
+                 { return std::to_string(scopeinfo.GetAnim(templtclass)->GetIndex()); });
+    PrepareLexer("ArrayIndex",
+                 [templtclass](nemesis::ScopeInfo& scopeinfo)
+                 { return std::to_string(scopeinfo.GetAnim(templtclass)->GetArrayIndex()); });
 }
 
 void nemesis::Template::Parser::PrepareVariableLexer()
@@ -168,7 +169,7 @@ void nemesis::Template::Parser::PrepareVariableLexer()
 
         for (auto& varptr : option->GetVariablesList())
         {
-            auto varname   = varptr->GetName();
+            auto varname = varptr->GetName();
             varlexer_list.emplace_back(std::make_pair(varname,
                                                       nemesis::AnimVarPtr::Lexer(std::string(classname),
                                                                                  std::string(optname),
@@ -208,11 +209,12 @@ void nemesis::Template::Parser::TryCacheData(const nemesis::Line& line,
 
 void nemesis::Template::Parser::AddConditionScope(const nemesis::ConditionInfo* conditioninfo)
 {
-    size_t linenum = conditioninfo->GetLineNumber();
+    size_t linenum    = conditioninfo->GetLineNumber();
     auto filepath_ptr = std::make_shared<nemesis::SharableWrapper<std::filesystem::path>>(file.GetFilePath());
     nemesis::Line conditionstr(conditioninfo->GetCondition(), linenum, filepath_ptr);
-    auto condptr    = std::make_shared<nemesis::Condition>(conditionstr, conditionstr, rTemplate, conditioninfo->GetType());
-    auto condvar   = nemesis::CondVar<nemesis::PreprocessLine>(conditioninfo->GetType(), condptr);
+    auto condptr = std::make_shared<nemesis::Condition>(
+        conditionstr, conditionstr, rTemplate, conditioninfo->GetType());
+    auto condvar    = nemesis::CondVar<nemesis::PreprocessLine>(conditioninfo->GetType(), condptr);
     condvar.linenum = linenum;
     SPtr<nemesis::LinkedPreprocessLine> linkedline;
     linkedline->AddCondition(*conditioninfo, file);
@@ -290,7 +292,7 @@ void nemesis::Template::SetTemplateType()
 nemesis::Template::Template(const nemesis::TemplateCategory& templtclass) noexcept
 {
     pTemplateCategory = &templtclass;
-    classname      = templtclass.GetName();
+    classname         = templtclass.GetName();
 }
 
 bool nemesis::Template::IsGroup() const noexcept
@@ -398,7 +400,7 @@ SPtr<nemesis::Template> nemesis::Template::CreateImport(const std::filesystem::p
 {
     SPtr<Template> tempptr(new Template());
     tempptr->classname = GetImporterStr();
-    tempptr->type = FileType::IMPORT;
+    tempptr->type      = FileType::IMPORT;
     tempptr->ReadFile(filepath);
     return tempptr;
 }

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "utilities/linkedvar.h"
+#include "utilities/conditiondetails.h"
 #include "utilities/conditionscope.h"
+#include "utilities/linkedvar.h"
 
 namespace nemesis
 {
     struct HkxBehaviorFile;
 
-	struct HkxNodeObject
+    struct HkxNodeObject
     {
     private:
         struct Exporter

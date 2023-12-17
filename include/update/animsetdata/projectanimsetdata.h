@@ -1,15 +1,16 @@
 #pragma once
 
-#include <map>
 #include <filesystem>
+#include <map>
 
 #include "utilities/alphanum.hpp"
 
 #include "update/animsetdata/animsetdata.h"
+#include "utilities/conditiondetails.h"
 
 struct ProjectAnimSetData
 {
-    using ModCode = std::string;
+    using ModCode     = std::string;
     using ProjectName = std::string;
 
 private:

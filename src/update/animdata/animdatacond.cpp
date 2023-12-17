@@ -2,8 +2,10 @@
 
 #include "Global.h"
 
-#include "utilities/writetextfile.h"
+#include "base/file.h"
+
 #include "utilities/conditionsyntax.h"
+#include "utilities/writetextfile.h"
 
 #include "update/animdata/animdatacond.h"
 
@@ -56,13 +58,15 @@ void MasterAnimData::ModPatch::AddProject(const std::string& code, const std::fi
     read_directory(projdir, uniquecodelist);
     auto headerpath = projdir / MasterAnimData::header_file;
     auto& project   = projectlist.emplace_back(projdir);
-    
+
     if (sf::exists(headerpath))
     {
         project.AddHeader(headerpath);
-        auto itr = std::remove_if(uniquecodelist.begin(), uniquecodelist.end(), [&](std::string& uniquecode) {
-            return nemesis::iequals(uniquecode, MasterAnimData::header_file.data());
-        });
+        auto itr = std::remove_if(uniquecodelist.begin(),
+                                  uniquecodelist.end(),
+                                  [&](std::string& uniquecode) {
+                                      return nemesis::iequals(uniquecode, MasterAnimData::header_file.data());
+                                  });
         uniquecodelist.erase(itr, uniquecodelist.end());
     }
 
@@ -79,9 +83,10 @@ MasterAnimData::ModPatch::ModPatch(const std::string& code, const std::filesyste
     if (sf::exists(headerdir))
     {
         AddHeader(code, headerdir);
-        auto itr = std::remove_if(projfiles.begin(), projfiles.end(), [&](const std::string& projfile) {
-            return nemesis::iequals(projfile, MasterAnimData::header_str.data());
-        });
+        auto itr = std::remove_if(projfiles.begin(),
+                                  projfiles.end(),
+                                  [&](const std::string& projfile)
+                                  { return nemesis::iequals(projfile, MasterAnimData::header_str.data()); });
         projfiles.erase(itr, projfiles.end());
     }
 
@@ -108,7 +113,8 @@ void MasterAnimData::ModPatcher::AddProject(const ModPatch::Project& project)
 {
     if (error) throw nemesis::exception();
 
-    if (!master_ad.contains(project.name)) ErrorMessage(3011, MasterAnimData::header_file, project.name, patch.code);
+    if (!master_ad.contains(project.name))
+        ErrorMessage(3011, MasterAnimData::header_file, project.name, patch.code);
 
     AddProjectHeader(project);
     AddUniqueCodes(project);
@@ -121,7 +127,7 @@ void MasterAnimData::ModPatcher::AddProjectHeader(const ModPatch::Project& proje
     auto projindex = master_ad.getIndex(project.name);
     auto& proj     = master_ad.projectlist[projindex];
 
-    auto& path = *project.header;
+    auto& path    = *project.header;
     VecNstr lines = path.GetLines();
 
     corefiles.emplace_back(path);
@@ -206,7 +212,8 @@ void MasterAnimData::getprojectlines(const ProjectData& proj, VecStr& output, Ve
         output2.push_back(input);
     };
 
-    auto cancloseif = [&](const nemesis::CondVar<LinkedProjPair>& linkedpair, size_t index) -> bool {
+    auto cancloseif = [&](const nemesis::CondVar<LinkedProjPair>& linkedpair, size_t index) -> bool
+    {
         if (&linkedpair != &proj.nestedcond.back())
         {
             switch (proj.nestedcond[index + 1].conditionType)
@@ -228,8 +235,8 @@ void MasterAnimData::getprojectlines(const ProjectData& proj, VecStr& output, Ve
         {
             case nemesis::CondType::MOD_CODE:
             {
-                modcodelist.emplace_back(
-                    make_pair<const string*, const nemesis::CondVar<LinkedProjPair>*>(&cond.conditions, &cond));
+                modcodelist.emplace_back(make_pair<const string*, const nemesis::CondVar<LinkedProjPair>*>(
+                    &cond.conditions, &cond));
                 break;
             }
             case nemesis::CondType::FOREACH:
@@ -325,8 +332,8 @@ void MasterAnimData::getprojectlines(const ProjectData& proj, VecStr& output, Ve
                 {
                     if (i >= each.second.size())
                     {
-                        string constr = each.first == "original" ? ns::LowerOriginal()
-                                                                 : ns::Aster(each.first);
+                        string constr
+                            = each.first == "original" ? ns::LowerOriginal() : ns::Aster(each.first);
                         output.push_back(ns::DeleteLine() + ns::Spaces() + constr);
                     }
                     else
@@ -442,7 +449,7 @@ MasterAnimData::ProjectPtr MasterAnimData::add(const ProjectName& projName,
     curcond.rawlist.back().linecount   = 0;
     curcond.rawlist.back().raw->first  = projName;
     curcond.rawlist.back().raw->second = make_shared<AnimDataProject_Condt>(storeline);
-    return curcond.rawlist.back().raw->second;    
+    return curcond.rawlist.back().raw->second;
 }
 
 void MasterAnimData::projectListUpdate(const ModCode& modcode,
@@ -490,7 +497,7 @@ void MasterAnimData::UpdateBaseProjectList(const ModCode& modcode, const std::fi
         if (!edited)
         {
             auto pos = line.find(ns::ModCode());
-            edited = pos != NOT_FOUND && line.find(ns::EndModCodeSyntax(), pos) != NOT_FOUND;
+            edited   = pos != NOT_FOUND && line.find(ns::EndModCodeSyntax(), pos) != NOT_FOUND;
         }
         else if (line.find(ns::ModOriginal()) != NOT_FOUND)
         {
@@ -716,7 +723,8 @@ void MasterAnimData::AddModPatch(Vec<nemesis::File>& corefiles, const MasterAnim
 //    }
 //}
 
-MasterAnimData::ProjectPtr MasterAnimData::GetConditionedProject(ProjectData& project, const std::string& code)
+MasterAnimData::ProjectPtr MasterAnimData::GetConditionedProject(ProjectData& project,
+                                                                 const std::string& code)
 {
     for (auto& cond : project.nestedcond)
     {

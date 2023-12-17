@@ -1,5 +1,10 @@
+#include <iosfwd>
 #include <QString>
 #include <QtCore/QProcess>
+
+#include "Global.h"
+
+#include "ui/MessageHandler.h"
 
 #include "utilities/lastupdate.h"
 

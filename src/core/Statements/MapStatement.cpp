@@ -1,5 +1,8 @@
+#include "Global.h"
+
 #include "core/Statements/MapStatement.h"
 
+#include "core/AnimationRequest.h"
 #include "core/CompileState.h"
 #include "core/SemanticManager.h"
 
@@ -124,7 +127,7 @@ nemesis::MapStatement::MapStatement(const std::string& expression,
     {
         case 2:
         {
-            const std::string& key  = Components.back();
+            const std::string& key = Components.back();
 
             GetValueFunction = [&key](nemesis::CompileState& state)
             {
@@ -153,8 +156,8 @@ nemesis::MapStatement::MapStatement(const std::string& expression,
         {
             const std::string& key = Components[3];
 
-            auto template_class    = manager.GetCurrentTemplateClass();
-            auto get_request       = GetTargetRequest(*template_class, manager);
+            auto template_class = manager.GetCurrentTemplateClass();
+            auto get_request    = GetTargetRequest(*template_class, manager);
 
             GetValueFunction = [&key, get_request](nemesis::CompileState& state)
             {
@@ -172,8 +175,8 @@ nemesis::MapStatement::MapStatement(const std::string& expression,
             const std::string& index_str = Components[3];
             const std::string& key       = Components.back();
 
-            auto template_class    = manager.GetCurrentTemplateClass();
-            auto get_request       = GetTargetRequest(*template_class, manager);
+            auto template_class = manager.GetCurrentTemplateClass();
+            auto get_request    = GetTargetRequest(*template_class, manager);
 
             if (SetupGetValueFunction(get_request, key, index_str, manager)) return;
 

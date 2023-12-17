@@ -8,6 +8,7 @@
 namespace nemesis
 {
     struct HkxBehaviorFile;
+    struct Line;
     struct LineProcess;
     struct PreprocessLine;
     struct Template;

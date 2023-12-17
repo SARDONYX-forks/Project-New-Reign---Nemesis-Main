@@ -5,9 +5,6 @@
 
 namespace nemesis
 {
-    template <typename _Ty, typename _LnkTy>
-    struct Linked;
-
     namespace animsetdata
     {
         template <typename T>
@@ -24,7 +21,7 @@ namespace nemesis
 
             void SetRawDataTo(VecNstr& lines) const
             {
-                auto templines = raw->GetLines();
+                auto templines = this->raw->GetLines();
                 lines.insert(lines.end(), templines.begin(), templines.end());
             }
 

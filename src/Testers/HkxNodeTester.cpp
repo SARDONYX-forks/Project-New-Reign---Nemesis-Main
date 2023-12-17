@@ -1,13 +1,14 @@
 #include "Testers/HkxNodeTester.h"
 
-#include "core/NLine.h"
-#include "core/ModLine.h"
-#include "core/IfObject.h"
+#include "core/AnimationRequest.h"
+#include "core/AnimationRequestRepository.h"
+#include "core/CollectionObject.h"
 #include "core/CompileState.h"
 #include "core/ForEachObject.h"
-#include "core/CollectionObject.h"
+#include "core/IfObject.h"
+#include "core/ModLine.h"
+#include "core/NLine.h"
 #include "core/SemanticManager.h"
-#include "core/AnimationRequest.h"
 
 #include "core/Template/TemplateClass.h"
 
@@ -15,8 +16,8 @@
 
 void nemesis::HkxNodeTester::Run()
 {
-    nemesis::TemplateClass templt_class(
-        "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
+    nemesis::TemplateClass templt_class("E:\\C++\\Project New Reign - Nemesis\\test "
+                                        "environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
     UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("ta", 0);
@@ -65,8 +66,7 @@ void nemesis::HkxNodeTester::Run()
     lines.emplace_back("				</hkobject>", 14, filepath);
     lines.emplace_back("<!-- CLOSE -->", 15, filepath);
 
-    lines.emplace_back(
-        "			</hkparam>      <!-- END_COUNTER_D4 -->", 16, filepath);
+    lines.emplace_back("			</hkparam>      <!-- END_COUNTER_D4 -->", 16, filepath);
     lines.emplace_back("		</hkobject>", 17, filepath);
     lines.emplace_back("", 18, filepath);
     lines.emplace_back("<!-- ENDIF -->", 19, filepath);

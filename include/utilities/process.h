@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utilities/regex.h"
-
+#include "base/file.h"
 #include "core/animvarptr.h"
+#include "utilities/regex.h"
 
 namespace nemesis
 {
@@ -38,7 +38,8 @@ namespace nemesis
         void ExeNextAnimFromScope(VecStr& blocks, nemesis::ScopeInfo& scopeinfo, funcptr func) const;
         void ExeBackAnimFromScope(VecStr& blocks, nemesis::ScopeInfo& scopeinfo, funcptr func) const;
         void ExeLastAnimFromScope(VecStr& blocks, nemesis::ScopeInfo& scopeinfo, funcptr func) const;
-        void ExeNumAnimFromScope(size_t num, VecStr& blocks, nemesis::ScopeInfo& scopeinfo, funcptr func) const;
+        void
+        ExeNumAnimFromScope(size_t num, VecStr& blocks, nemesis::ScopeInfo& scopeinfo, funcptr func) const;
 
     public:
         ~Process();
@@ -52,7 +53,7 @@ namespace nemesis
         void SetFixedVarInt(const Vec<int>& fixedvarintlist) noexcept;
 
         void Compile(VecStr& blocks, nemesis::ScopeInfo& scopeinfo);
-        
+
         bool IsInFailedRange(nemesis::ScopeInfo& scopeinfo) const;
         void ClearMultiChoice(nemesis::ScopeInfo& scopeinfo) const;
 
@@ -303,4 +304,4 @@ namespace nemesis
     private:
         const static nemesis::regex elementrgx;
     };
-}
+} // namespace nemesis

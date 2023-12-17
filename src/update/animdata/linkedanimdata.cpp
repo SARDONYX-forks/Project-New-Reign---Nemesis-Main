@@ -58,16 +58,18 @@ void nemesis::LinkedAnimData::_GetRawHeaderData(VecNstr& rawdata) const
         mod_rawdata_list.emplace_back();
         auto& mod_rawdata = mod_rawdata_list.back();
         cond->GetRawDataList(mod_rawdata, this_func);
-        nemesis::Line mline = mod_rawdata.empty() ? nemesis::syntax::DeleteLine() : mod_rawdata.front();
+        nemesis::Line mline
+            = mod_rawdata.empty() ? nemesis::Line(nemesis::syntax::DeleteLine()) : mod_rawdata.front();
         mline += nemesis::syntax::Spaces() + nemesis::syntax::Aster(cond->GetExpression());
         rawdata.emplace_back(mline);
     }
 
     VecNstr mlines;
     raw->base.GetRawData(mlines);
-    std::for_each(mlines.begin(), mlines.end(), [&](nemesis::Line& line) {
-        line.append(nemesis::syntax::Spaces() + nemesis::syntax::LowerOriginal());
-    });
+    std::for_each(mlines.begin(),
+                  mlines.end(),
+                  [&](nemesis::Line& line)
+                  { line.append(nemesis::syntax::Spaces() + nemesis::syntax::LowerOriginal()); });
     rawdata.insert(rawdata.end(), mlines.begin(), mlines.end());
 
     for (size_t i = 0; i < mod_rawdata_list.size(); ++i)
@@ -140,16 +142,18 @@ void nemesis::LinkedAnimData::_GetRawBaseData(VecNstr& rawdata) const
         mod_rawdata_list.emplace_back();
         auto& mod_rawdata = mod_rawdata_list.back();
         cond->GetRawDataList(mod_rawdata, this_func);
-        nemesis::Line mline = mod_rawdata.empty() ? nemesis::syntax::DeleteLine() : mod_rawdata.front();
+        nemesis::Line mline
+            = mod_rawdata.empty() ? nemesis::Line(nemesis::syntax::DeleteLine()) : mod_rawdata.front();
         mline += nemesis::syntax::Spaces() + nemesis::syntax::Aster(cond->GetExpression());
         rawdata.emplace_back(mline);
     }
 
     VecNstr mlines;
     raw->base.GetRawData(mlines);
-    std::for_each(mlines.begin(), mlines.end(), [&](nemesis::Line& line) {
-        line.append(nemesis::syntax::Spaces() + nemesis::syntax::LowerOriginal());
-    });
+    std::for_each(mlines.begin(),
+                  mlines.end(),
+                  [&](nemesis::Line& line)
+                  { line.append(nemesis::syntax::Spaces() + nemesis::syntax::LowerOriginal()); });
     rawdata.insert(rawdata.end(), mlines.begin(), mlines.end());
 
     for (size_t i = 0; i < mod_rawdata_list.size(); ++i)

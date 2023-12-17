@@ -2,9 +2,9 @@
 
 #include "base/file.h"
 
-#include "utilities/types.h"
-#include "utilities/condtype.h"
 #include "utilities/conditioninfo.h"
+#include "utilities/condtype.h"
+#include "utilities/types.h"
 
 #include "core/condition.h"
 
@@ -12,6 +12,8 @@
 
 namespace nemesis
 {
+    struct Condition;
+
     template <typename _Ty, typename _LnkTy>
     struct LinkedCond : std::enable_shared_from_this<LinkedCond<_Ty, _LnkTy>>
     {
@@ -27,7 +29,7 @@ namespace nemesis
             : condition(condition)
         {
         }
-        
+
         LinkedCond(const nemesis::ConditionInfo& conditioninfo, const nemesis::File& file)
         {
             condition = std::make_shared<nemesis::Condition>(
@@ -61,9 +63,7 @@ namespace nemesis
             return condition->IsTrue(scopeinfo);
         }
 
-        VecNstr CompileLines(nemesis::ScopeInfo& scopeinfo) const
-        {
-        }
+        VecNstr CompileLines(nemesis::ScopeInfo& scopeinfo) const {}
 
         Vec<const _Ty*> CompileDataList(nemesis::ScopeInfo& scopeinfo) const
         {
@@ -100,4 +100,4 @@ namespace nemesis
             }
         }
     };
-}
+} // namespace nemesis

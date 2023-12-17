@@ -1,8 +1,9 @@
 #include "animsetdata/animsetdata-project.h"
+#include "utilities/alphanum.hpp"
 
 nemesis::animsetdata::Project::Project(const VecNstr& lines) {}
 
-nemesis::animsetdata::Project::Project(const Project& project) noexcept 
+nemesis::animsetdata::Project::Project(const Project& project) noexcept
     : name(project.name)
     , states(project.states)
 {
@@ -27,7 +28,7 @@ VecNstr nemesis::animsetdata::Project::GetLines() const
     {
         state.GetRawName(lines);
     }
-    
+
     for (auto& state : states)
     {
         state.GetRawData(lines);

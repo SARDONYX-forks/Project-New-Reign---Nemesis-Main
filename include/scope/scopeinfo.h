@@ -16,8 +16,8 @@ conditions that will create another nested scope and so on
 
 #include <functional>
 
+#include "core/multichoice.h"
 #include "scope/layers.h"
-
 #include "utilities/noncopyable.h"
 
 namespace nemesis
@@ -57,12 +57,11 @@ namespace nemesis
             virtual ~ScopeIterator() {}
             virtual bool IsEnd() = 0;
             virtual void Next()  = 0;
-        }
+        };
 
         template <typename T>
         struct TempScopeLayer : public NonCopyableStruct, public TemporaryScope
         {
-        private:
         public:
             TempScopeLayer(const SPtr<T>& tempvalue, ScopeInfo& scopeinfo)
             {

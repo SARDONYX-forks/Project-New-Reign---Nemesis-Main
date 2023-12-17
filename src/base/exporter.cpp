@@ -1,6 +1,14 @@
+#include "core/animimport.h"
+
 #include "base/exporter.h"
 
+#include "hkx/HkxAttribute.h"
+#include "hkx/HkxAttributeList.h"
 #include "hkx/HkxBehaviorFile.h"
+#include "hkx/HkxEvent.h"
+#include "hkx/HkxEventList.h"
+#include "hkx/HkxVariableList.h"
+#include "hkx/numelement.h"
 
 #include "utilities/animquery.h"
 

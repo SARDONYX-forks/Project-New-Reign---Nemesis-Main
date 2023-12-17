@@ -1,6 +1,9 @@
 #include "template/processparser.h"
 
+#include "utilities/lexersearch.h"
 #include "utilities/lineprocess.h"
+#include "utilities/process.h"
+#include "utilities/regexsearch.h"
 #include "utilities/templatecategory.h"
 
 const std::string relativename = "relativeToEndOfClip";
@@ -253,8 +256,7 @@ void nemesis::ProcessParser::AutoEndAnim()
 
     if (lineptr->find(timename) != NOT_FOUND)
     {
-        for (nemesis::regex_iterator itr(*lineptr, time_rgx); itr != nemesis::regex_iterator();
-             ++itr)
+        for (nemesis::regex_iterator itr(*lineptr, time_rgx); itr != nemesis::regex_iterator(); ++itr)
         {
             auto process = GenerateProcess(Position(itr, 1), &nemesis::Process::LocalNegative);
             StageProcess(process);
@@ -265,8 +267,7 @@ void nemesis::ProcessParser::AutoEndAnim()
 
     if (lineptr->find(relativename) == NOT_FOUND) return;
 
-    for (nemesis::regex_iterator itr(*lineptr, relative_rgx); itr != nemesis::regex_iterator();
-         ++itr)
+    for (nemesis::regex_iterator itr(*lineptr, relative_rgx); itr != nemesis::regex_iterator(); ++itr)
     {
         importer.bEnding = false;
         auto process     = GenerateProcess(Position(itr, 1), &nemesis::Process::RelativeNegative);
@@ -293,7 +294,7 @@ void nemesis::ProcessParser::AutoIdUpdate()
 
         for (nemesis::regex_iterator itr(*lineptr, rgx_search.GetRegex()); itr != end; ++itr)
         {
-            auto pos = itr->position(0);
+            auto pos     = itr->position(0);
             auto process = GenerateProcess(Position(itr), &nemesis::Process::IDRegisAnim);
             process->SetFixedVar(VecStr{
                 itr->str(1), itr->str(0).replace(itr->position(1) - pos, itr->str(1).length(), "NID")});
@@ -344,7 +345,7 @@ void nemesis::ProcessParser::NodeIdRegister()
 
     if (parser && parser->rTemplate.IsImport())
     {
-        rgx       = import_rgx;
+        rgx = import_rgx;
         //group_rgx = groupimport_rgx;
     }
     else
@@ -429,14 +430,14 @@ void nemesis::ProcessParser::TryRegisterMultiChoice()
 
     for (nemesis::regex_iterator itr(*lineptr, multichoice_rgx); itr != end; ++itr)
     {
-        auto pos       = itr->position(2);
+        auto pos = itr->position(2);
         auto condition
             = std::make_unique<Condition>(itr->str(1), *lineptr, importer.GetFile(), CondType::MULTI_CHOICE);
         lineprocessptr->AddChoice(pos, pos + itr->str(2).length(), condition);
     }
 
     auto process = GenerateProcess(0, 0, &nemesis::Process::MultiChoicePre);
-    process = GenerateProcess(0, -1, &nemesis::Process::MultiChoicePost);
+    process      = GenerateProcess(0, -1, &nemesis::Process::MultiChoicePost);
     process->SetFixedVarInt(Vec<int>{mc_pos, static_cast<int>(mc_pos + mc_syntax.length())});
     StageProcess(process);
 }
@@ -557,7 +558,7 @@ void nemesis::ProcessParser::TryAnimVarProcessor(const std::string& syntax, Func
         if (begin == NOT_FOUND) continue;
 
         begin += itr->position(2);
-        size_t counter   = 1;
+        size_t counter = 1;
         int end        = 0;
         int eventbegin = begin + syntax.length() + 1;
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "base/file.h"
 #include "update/animsetdata/projectanimsetdata.h"
 #include "utilities/conditiondetails.h"
 

@@ -1,29 +1,26 @@
 #include "core/animvarptr.h"
 
 #include "utilities/option.h"
-#include "utilities/templatecategory.h"
 #include "utilities/stringextension.h"
+#include "utilities/templatecategory.h"
 
 #include "hkx/HkxBehaviorFile.h"
 
 #include "scope/scopeinfo.h"
+#include "scope/stateidmanager.h"
 
 #include "update/patch.h"
 
-const UMap<char, nemesis::AnimVarPtr::AnimIndex::Order> nemesis::AnimVarPtr::AnimIndex::orderparser
-{
+const UMap<char, nemesis::AnimVarPtr::AnimIndex::Order> nemesis::AnimVarPtr::AnimIndex::orderparser{
     {'L', nemesis::AnimVarPtr::AnimIndex::LAST},
     {'N', nemesis::AnimVarPtr::AnimIndex::NEXT},
-    {'B', nemesis::AnimVarPtr::AnimIndex::BACK}
-};
+    {'B', nemesis::AnimVarPtr::AnimIndex::BACK}};
 
-const nemesis::AnimVarPtr::Parser::funcptr nemesis::AnimVarPtr::Parser::base_functions[] =
-{
-    &nemesis::AnimVarPtr::Parser::TryPopulateFromOption,
-    &nemesis::AnimVarPtr::Parser::TestCustomSelector,
-    &nemesis::AnimVarPtr::Parser::TryAddAnimObject,
-    &nemesis::AnimVarPtr::Parser::TryAddStateId
-};
+const nemesis::AnimVarPtr::Parser::funcptr nemesis::AnimVarPtr::Parser::base_functions[]
+    = {&nemesis::AnimVarPtr::Parser::TryPopulateFromOption,
+       &nemesis::AnimVarPtr::Parser::TestCustomSelector,
+       &nemesis::AnimVarPtr::Parser::TryAddAnimObject,
+       &nemesis::AnimVarPtr::Parser::TryAddStateId};
 
 const std::regex nemesis::AnimVarPtr::lexing_rgx("(\\]\\[|\\[|\\])");
 const std::sregex_token_iterator nemesis::AnimVarPtr::end;
@@ -169,7 +166,7 @@ nemesis::AnimVarPtr::Lexer::Iterator& nemesis::AnimVarPtr::Lexer::Iterator::oper
         end = true;
         return *this;
     }
-    
+
     line.erase(pos, match.length());
     end = false;
     return *this;
@@ -210,7 +207,7 @@ bool nemesis::AnimVarPtr::Lexer::TokenizeOnce(const std::string& line,
 
 bool nemesis::AnimVarPtr::Lexer::TokenizeOnce(const std::string& line, Iterator& itr) const
 {
-    size_t pos = line.find("$");
+    size_t pos  = line.find("$");
     size_t pos2 = line.find("$", pos + 1);
 
     while (pos != NOT_FOUND && pos2 != NOT_FOUND)
@@ -237,8 +234,7 @@ nemesis::AnimVarPtr::Lexer::Iterator nemesis::AnimVarPtr::Lexer::TokenizeString(
     return Iterator(*this, line);
 }
 
-nemesis::AnimVarPtr::Parser::Parser(DeqStr& components,
-                                    size_t linenum, const nemesis::File& fileref)
+nemesis::AnimVarPtr::Parser::Parser(DeqStr& components, size_t linenum, const nemesis::File& fileref)
     : components(components)
     , fileref(fileref)
 {
@@ -263,7 +259,7 @@ nemesis::AnimVarPtr::Parser::Parser(const std::string& expression,
     : components(_components)
     , fileref(fileref)
 {
-    animvar_ptr = target;
+    animvar_ptr                 = target;
     animvar_ptr->raw_expression = expression;
     components
         = DeqStr(std::sregex_token_iterator(expression.begin(), expression.end(), lexing_rgx, -1), end);
@@ -321,8 +317,8 @@ bool nemesis::AnimVarPtr::Parser::TryPopulateAsModPatch()
 
 void nemesis::AnimVarPtr::Parser::SetupTemplateCategory()
 {
-    const nemesis::Template* templatefile = dynamic_cast<const nemesis::Template*>(&fileref);
-    const nemesis::HkxBehaviorFile* behavior  = nullptr;
+    const nemesis::Template* templatefile    = dynamic_cast<const nemesis::Template*>(&fileref);
+    const nemesis::HkxBehaviorFile* behavior = nullptr;
 
     if (templatefile)
     {
@@ -470,7 +466,7 @@ void nemesis::AnimVarPtr::Parser::PopulateFromOption(const nemesis::OptionModelL
 
     if (value.empty() || !model.Contains(value)) throw ErrorType::UNKNOWN_OPTION;
 
-    animvar_ptr->option = std::make_unique<std::string>(value);
+    animvar_ptr->option         = std::make_unique<std::string>(value);
     animvar_ptr->opt_result_ptr = &nemesis::AnimVarPtr::GetResultFromOption;
     components.pop_front();
 
@@ -696,8 +692,7 @@ std::string nemesis::AnimVarPtr::GetResultFromNoGroup(nemesis::ScopeInfo& scopei
 std::string nemesis::AnimVarPtr::GetResultFromAnim(nemesis::ScopeInfo& scopeinfo) const
 {
     std::string rtn;
-    scopeinfo.ExeTempNumAnim(
-        GetAnim(scopeinfo), templateclass, [&]() { rtn = GetFromOption(scopeinfo); });
+    scopeinfo.ExeTempNumAnim(GetAnim(scopeinfo), templateclass, [&]() { rtn = GetFromOption(scopeinfo); });
     return rtn;
 }
 
@@ -774,8 +769,7 @@ std::string nemesis::AnimVarPtr::GetFromOptionIndex(nemesis::ScopeInfo& scopeinf
     return (this->*opt_index_result_ptr)(scopeinfo);
 }
 
-nemesis::AnimVarPtr::AnimVarPtr(const std::string& expression,
-                                size_t linenum, const nemesis::File& fileref)
+nemesis::AnimVarPtr::AnimVarPtr(const std::string& expression, size_t linenum, const nemesis::File& fileref)
 {
     Parser parser(expression, linenum, fileref, this);
     parser.Parse();

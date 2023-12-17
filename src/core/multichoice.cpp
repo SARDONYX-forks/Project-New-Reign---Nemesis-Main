@@ -1,4 +1,5 @@
 #include "core/multichoice.h"
+#include "core/condition.h"
 
 nemesis::MultiChoice::Choice::Choice(size_t pointA, size_t pointB, UPtr<Condition>& condition)
     : pointA(pointA)

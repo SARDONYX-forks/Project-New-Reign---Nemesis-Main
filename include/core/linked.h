@@ -2,7 +2,6 @@
 
 #include "core/condition.h"
 #include "core/linkedcond.h"
-#include "scope/scopeinfo.h"
 #include "utilities/conditiondetails.h"
 #include "utilities/conditionsyntax.h"
 #include "utilities/types.h"

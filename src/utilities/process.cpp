@@ -1,16 +1,24 @@
 #include "utilities/process.h"
-#include "utilities/template.h"
-#include "utilities/constants.h"
-#include "utilities/atomiclock.h"
-#include "utilities/lineprocess.h"
+#include "utilities/animquery.h"
 #include "utilities/animqueryfile.h"
+#include "utilities/atomiclock.h"
+#include "utilities/constants.h"
+#include "utilities/lineprocess.h"
+#include "utilities/template.h"
+#include "utilities/templatecategory.h"
 
+#include "base/exporter.h"
+
+#include "core/animimport.h"
 #include "core/preprocessline.h"
 
 #include "generate/alternateanimation.h"
 
 #include "generate/animation/grouptemplate.h"
 #include "generate/animation/templatetree.h"
+
+#include "hkx/HkxEvent.h"
+#include "hkx/HkxVariable.h"
 
 #include "scope/scopeinfo.h"
 
@@ -119,7 +127,8 @@ void nemesis::Process::RotationValidation(nemesis::ScopeInfo& scopeinfo) const
     ErrorMessage(1097, GetFormat(), GetBehaviorFile(), GetCurrentLineNum());
 }
 
-std::string nemesis::Process::IDRegisByType(nemesis::ScopeInfo& scopeinfo, nemesis::File::FileType filetype) const
+std::string nemesis::Process::IDRegisByType(nemesis::ScopeInfo& scopeinfo,
+                                            nemesis::File::FileType filetype) const
 {
     auto* exporter               = scopeinfo.GetExporter();
     auto* templtclass            = exporter->GetTemplateCategory(fixedHkxVariableList.front());
@@ -139,7 +148,8 @@ std::string nemesis::Process::IDRegisByType(nemesis::ScopeInfo& scopeinfo, nemes
 }
 
 void nemesis::Process::ExeFirstAnimFromScope(VecStr& blocks,
-                                             nemesis::ScopeInfo& scopeinfo, funcptr func) const
+                                             nemesis::ScopeInfo& scopeinfo,
+                                             funcptr func) const
 {
     scopeinfo.ExeTempNumAnim(0, GetTemplateCategory(), [&]() { (this->*func)(blocks, scopeinfo); });
 }
@@ -265,9 +275,9 @@ const nemesis::TemplateCategory* nemesis::Process::GetTemplateCategory() const
 void nemesis::Process::RelativeNegative(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     ClearBlocks(blocks);
-    blocks[begin]        = scopeinfo.isend || scopeinfo.negative ? "true" : "false";
+    blocks[begin]      = scopeinfo.isend || scopeinfo.negative ? "true" : "false";
     scopeinfo.negative = false;
-    scopeinfo.isend      = false;
+    scopeinfo.isend    = false;
 }
 
 void nemesis::Process::Compute(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
@@ -307,7 +317,7 @@ void nemesis::Process::MultiChoicePre(VecStr& blocks, nemesis::ScopeInfo& scopei
     // Can't use ClearBlocks because MultiChoice has to be done last
     //ClearBlocks(blocks);
 
-    auto& mc = plinkedline->GetProcess()->GetMultiChoice();
+    auto& mc   = plinkedline->GetProcess()->GetMultiChoice();
     auto& list = mc.GetChoiceList();
 
     for (size_t i = 0; i < list.size(); ++i)
@@ -370,7 +380,8 @@ void nemesis::Process::IDRegis(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) co
     auto* exporter  = scopeinfo.GetExporter();
     auto* animquery = scopeinfo.GetCurrentQuery();
 
-    blocks[begin] = std::string(exporter->GetID(fixedHkxVariableList.front(), plinkedline->GetFile(), animquery));
+    blocks[begin]
+        = std::string(exporter->GetID(fixedHkxVariableList.front(), plinkedline->GetFile(), animquery));
 
     /*
     string ID;
@@ -618,16 +629,14 @@ void nemesis::Process::ImportNode(VecStr& blocks, nemesis::ScopeInfo& scopeinfo)
 void nemesis::Process::ImportIndex(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     ClearBlocks(blocks);
-    blocks[begin]  = scopeinfo.GetCurrentImport()->GetParameter(fixedvarintlist.front());
+    blocks[begin] = scopeinfo.GetCurrentImport()->GetParameter(fixedvarintlist.front());
 }
 
 void nemesis::Process::EndMulti(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     //EndSingle(blocks, scopeinfo.GetTempAnim(fixedvarintlist.front(), GetTemplateCategory())->GetScopeInfo());
-    scopeinfo.ExeTempNumAnim(fixedvarintlist.front(), GetTemplateCategory(), [&]()
-    {
-        EndSingle(blocks, scopeinfo);
-    });
+    scopeinfo.ExeTempNumAnim(
+        fixedvarintlist.front(), GetTemplateCategory(), [&]() { EndSingle(blocks, scopeinfo); });
 }
 
 void nemesis::Process::EndFirst(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
@@ -657,10 +666,8 @@ void nemesis::Process::EndLast(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) co
 void nemesis::Process::EndNum(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     //EndSingle(blocks, scopeinfo.GetTempAnim(fixedvarintlist[0], GetTemplateCategory())->GetScopeInfo());
-    scopeinfo.ExeTempNumAnim(fixedvarintlist.front(), GetTemplateCategory(), [&]()
-    {
-        EndSingle(blocks, scopeinfo);
-    });
+    scopeinfo.ExeTempNumAnim(
+        fixedvarintlist.front(), GetTemplateCategory(), [&]() { EndSingle(blocks, scopeinfo); });
 }
 
 /*
@@ -736,7 +743,7 @@ void nemesis::Process::EndNumMaster(VecStr& blocks, nemesis::ScopeInfo& scopeinf
 void nemesis::Process::EndSingle(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     ClearBlocks(blocks);
-    auto anim = scopeinfo.GetAnim(GetTemplateCategory());
+    auto anim   = scopeinfo.GetAnim(GetTemplateCategory());
     auto option = anim->GetOptionPtr(duration::name);
 
     if (option)
@@ -753,7 +760,7 @@ void nemesis::Process::EndSingle(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) 
 void nemesis::Process::StateMulti(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     ClearBlocks(blocks);
-    auto templt    = plinkedline->GetTemplate();
+    auto templt     = plinkedline->GetTemplate();
     auto multiplier = templt->GetStateMultiplier();
 
     //if (templt->IsMaster())
@@ -936,7 +943,7 @@ void nemesis::Process::StateSingle(VecStr& blocks, nemesis::ScopeInfo& scopeinfo
 {
     ClearBlocks(blocks);
     std::string state = varptr->GetResult(scopeinfo);
-    blocks[begin] = state;
+    blocks[begin]     = state;
 }
 
 void nemesis::Process::FilepathMultiGroup(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
@@ -971,10 +978,8 @@ void nemesis::Process::FilepathLastGroup(VecStr& blocks, nemesis::ScopeInfo& sco
 void nemesis::Process::FilepathNumGroup(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     //FilepathSingle(blocks, scopeinfo.GetTempAnim(fixedvarintlist[0], GetTemplateCategory())->GetScopeInfo());
-    scopeinfo.ExeTempNumAnim(fixedvarintlist.front(), GetTemplateCategory(), [&]()
-    {
-        FilepathSingle(blocks, scopeinfo);
-    });
+    scopeinfo.ExeTempNumAnim(
+        fixedvarintlist.front(), GetTemplateCategory(), [&]() { FilepathSingle(blocks, scopeinfo); });
 }
 
 /*
@@ -1083,10 +1088,8 @@ void nemesis::Process::FilenameNumGroup(VecStr& blocks, nemesis::ScopeInfo& scop
     //auto tempanim = scopeinfo.GetTempAnim(fixedvarintlist[0]);
     //scopeinfo.SetTempAnim(tempanim);
     //FilenameSingle(blocks, scopeinfo.GetTempAnim(fixedvarintlist[0], GetTemplateCategory())->GetScopeInfo());
-    scopeinfo.ExeTempNumAnim(fixedvarintlist.front(), GetTemplateCategory(), [&]()
-    {
-        FilenameSingle(blocks, scopeinfo);
-    });
+    scopeinfo.ExeTempNumAnim(
+        fixedvarintlist.front(), GetTemplateCategory(), [&]() { FilenameSingle(blocks, scopeinfo); });
 }
 
 /*
@@ -1217,7 +1220,7 @@ void nemesis::Process::AOFirstGroupB(VecStr& blocks, nemesis::ScopeInfo& scopein
 }
 
 void nemesis::Process::AONextGroupA(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
-{/*
+{ /*
     if (scopeinfo.optionMulti == -1)
     {
         ErrorMessage(1126, GetFormat(), GetBehaviorFile(), GetCurrentLineNum(), CombineBlocks(blocks));
@@ -2027,7 +2030,7 @@ void nemesis::Process::AddOnNumMaster(VecStr& blocks, nemesis::ScopeInfo& scopei
 void nemesis::Process::AddOnSingle(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) const
 {
     ClearBlocks(blocks);
-    blocks[begin] = varptr->GetResult(scopeinfo);
+    blocks[begin]                   = varptr->GetResult(scopeinfo);
     blocks[fixedvarintlist.front()] = "";
     blocks[fixedvarintlist.back()]  = "";
 
@@ -2107,7 +2110,7 @@ void nemesis::Process::HkxEvent(VecStr& blocks, nemesis::ScopeInfo& scopeinfo) c
 
     ClearBlocks(blocks);
 
-    auto& HkxEvent              = scopeinfo.GetHkxEvent(eventname);
+    auto& HkxEvent             = scopeinfo.GetHkxEvent(eventname);
     blocks[begin]              = std::to_string(HkxEvent.GetId());
     blocks[fixedvarintlist[2]] = "";
     blocks[fixedvarintlist[1]] = "";
@@ -2119,7 +2122,7 @@ void nemesis::Process::VariableID(VecStr& blocks, nemesis::ScopeInfo& scopeinfo)
 
     ClearBlocks(blocks);
 
-    auto& HkxVariable                = scopeinfo.GetVariableID(variablename);
+    auto& HkxVariable          = scopeinfo.GetVariableID(variablename);
     blocks[begin]              = std::to_string(HkxVariable.GetId());
     blocks[fixedvarintlist[2]] = "";
     blocks[fixedvarintlist[1]] = "";

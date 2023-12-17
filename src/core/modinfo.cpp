@@ -1,6 +1,8 @@
 #include <ios>
 #include <sstream>
 
+#include "Global.h"
+
 #include "core/modinfo.h"
 
 #include "utilities/algorithm.h"

@@ -1,5 +1,6 @@
 #include "Testers/TemplateTester.h"
 
+#include "core/AnimationRequestRepository.h"
 #include "core/CompileState.h"
 #include "core/SemanticManager.h"
 
@@ -7,8 +8,8 @@
 
 void nemesis::TemplateTester::Run()
 {
-    nemesis::TemplateClass templt_class(
-        "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
+    nemesis::TemplateClass templt_class("E:\\C++\\Project New Reign - Nemesis\\test "
+                                        "environment\\behavior_templates\\fuo\\template_info.json");
     auto templt = nemesis::TemplateHkx::CreateFromFile(
         &templt_class,
         "E:\\C++\\Project New Reign - Nemesis\\test "
@@ -24,7 +25,7 @@ void nemesis::TemplateTester::Run()
     auto model2  = templt_class.GetModel("o");
     auto option2 = model2->TryCreateOption("o", 2, "file.txt");
     request->AddOption(std::move(option2));
-    
+
     //auto model3  = templt_class.GetModel("ac");
     //auto option3 = model3->TryCreateOption("ac", 3, "file.txt");
     //request->AddOption(std::move(option3));

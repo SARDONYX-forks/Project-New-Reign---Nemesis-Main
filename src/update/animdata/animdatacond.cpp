@@ -14,8 +14,8 @@ void MasterAnimData::getprojectlines(const ProjectData& proj, VecStr& output, Ve
         {
             case nemesis::MOD_CODE:
             {
-                modcodelist.push_back(
-                    make_pair<const string*, const nemesis::CondVar<LinkedProjPair>*>(&cond.conditions, &cond));
+                modcodelist.push_back(make_pair<const string*, const nemesis::CondVar<LinkedProjPair>*>(
+                    &cond.conditions, &cond));
                 break;
             }
             case nemesis::FOREACH:
@@ -153,12 +153,12 @@ MasterAnimData::add(const ProjectName& projName, size_t num, const ModCode& modc
     if (modcode != "original")
     {
         projectlist.push_back(nemesis::CondVar(ref));
-        projectlist.back().linecount       = num;
-        auto& curcond                      = projectlist.back().backCond();
-        curcond.conditions                 = modcode;
-        curcond.conditionType              = type;
-        curcond.rawlist.back().linecount   = num;
-        curcond.rawlist.back().raw->first  = projName;
+        projectlist.back().linecount      = num;
+        auto& curcond                     = projectlist.back().backCond();
+        curcond.conditions                = modcode;
+        curcond.conditionType             = type;
+        curcond.rawlist.back().linecount  = num;
+        curcond.rawlist.back().raw->first = projName;
         return curcond.rawlist.back().raw->second;
     }
 
@@ -349,7 +349,7 @@ VecStr MasterAnimData::getlines()
     return storeline;
 }
 
-string MasterAnimData::writelines(FileWriter& output) 
+string MasterAnimData::writelines(FileWriter& output)
 {
     string total = output.GetFilePath().string() + "\n";
 

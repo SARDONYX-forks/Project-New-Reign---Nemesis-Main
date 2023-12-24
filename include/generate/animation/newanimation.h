@@ -16,8 +16,8 @@
 
 #include "generate/AnimationUtility.h"
 
-#include "generate/animation/animthreadinfo.h"
 #include "generate/animation/animationthread.h"
+#include "generate/animation/animthreadinfo.h"
 #include "generate/animation/registeranimation.h"
 
 typedef std::vector<std::string> VecStr;
@@ -31,12 +31,13 @@ class AnimTemplate;
 
 namespace nemesis
 {
-	template<typename T>
-	struct CondVar;
+    template <typename T>
+    struct CondVar;
 }
 
 struct MDException
-{};
+{
+};
 
 class NewAnimation
 {
@@ -95,37 +96,19 @@ public:
     std::string coreModID;
 
 private:
-    bool singleCondition(std::string condition,
-                         VecStr& storeline,
-                         int numline,
-                         AnimationUtility utility);
-    bool andLoop(std::string condition,
-                 VecStr& storeline,
-                 int numline,
-                 AnimationUtility utility);
+    bool singleCondition(std::string condition, VecStr& storeline, int numline, AnimationUtility utility);
+    bool andLoop(std::string condition, VecStr& storeline, int numline, AnimationUtility utility);
     bool andOrParenthesis(size_t c_and,
                           size_t c_or,
                           std::string condition,
                           VecStr& storeline,
                           int numline,
                           AnimationUtility utility);
-    bool andParenthesis(std::string condition,
-                        VecStr& storeline,
-                        int numline,
-                        AnimationUtility utility);
-    bool newCondition(std::string condition,
-                      VecStr& storeline,
-                      int numline,
-                      AnimationUtility utility);
+    bool andParenthesis(std::string condition, VecStr& storeline, int numline, AnimationUtility utility);
+    bool newCondition(std::string condition, VecStr& storeline, int numline, AnimationUtility utility);
     bool specialCondition(std::string condition, VecStr& storeline, int linecount, AnimationUtility utility);
-    bool GetFirstCondition(std::string firstCondition,
-                           VecStr optionInfo,
-                           int numline,
-                           bool isNot);
-    bool conditionProcess(std::string condition,
-                          bool isNot,
-                          int numline,
-                          AnimationUtility utility);
+    bool GetFirstCondition(std::string firstCondition, VecStr optionInfo, int numline, bool isNot);
+    bool conditionProcess(std::string condition, bool isNot, int numline, AnimationUtility utility);
     void stateReplacer(std::string& line,
                        std::string statenum,
                        int stateID,

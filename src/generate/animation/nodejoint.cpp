@@ -270,8 +270,8 @@ void NodeJoint::insertData(string format,
     vector<uint>* rows_ptr;
     vector<uint> rows;
 
-    if (templateSection.size() > 0) 
-    { 
+    if (templateSection.size() > 0)
+    {
         rows_ptr = &templateSection[format];
     }
     else
@@ -942,7 +942,7 @@ void NodeJoint::forEachProcess(vector<vector<LineCheck>>& output,
                         || condition.find(each + "_master[") != NOT_FOUND || condition == each
                         || condition == each + "_group" || condition == each + "_master")
                     {
-                        return; 
+                        return;
                     }
                 }
 
@@ -1448,36 +1448,36 @@ VecStr NodeJoint::unpack()
         {
             if (line.find("</hkparam>") != NOT_FOUND)
             {
-                string templine = line.substr(0, line.find("</hkparam>"));
-                __int64 t_counter   = count(templine.begin(), templine.end(), '\t');
+                string templine   = line.substr(0, line.find("</hkparam>"));
+                __int64 t_counter = count(templine.begin(), templine.end(), '\t');
 
-				if (openRange == t_counter)
-				{
-					string oldElement;
-					string& ref_line = storeline[element];
+                if (openRange == t_counter)
+                {
+                    string oldElement;
+                    string& ref_line = storeline[element];
 
-					if (ref_line.find("numelements=\"$elements$\">", 0) == NOT_FOUND)
-					{
-						size_t position = ref_line.find("numelements=\"") + 13;
-						oldElement = ref_line.substr(position, ref_line.find("\">", position) - position);
-					}
-					else
-					{
-						oldElement = "$elements$";
-					}
+                    if (ref_line.find("numelements=\"$elements$\">", 0) == NOT_FOUND)
+                    {
+                        size_t position = ref_line.find("numelements=\"") + 13;
+                        oldElement = ref_line.substr(position, ref_line.find("\">", position) - position);
+                    }
+                    else
+                    {
+                        oldElement = "$elements$";
+                    }
 
-					if (oldElement != to_string(counter))
-					{
-						ref_line.replace(ref_line.find(oldElement), oldElement.length(), to_string(counter));
-					}
+                    if (oldElement != to_string(counter))
+                    {
+                        ref_line.replace(ref_line.find(oldElement), oldElement.length(), to_string(counter));
+                    }
 
-					counter = 0;
-					elementCatch = false;
-				}
-			}
-			else
-			{
-				string templine = line;
+                    counter      = 0;
+                    elementCatch = false;
+                }
+            }
+            else
+            {
+                string templine = line;
 
                 if (templine.find("<hkobject>") != NOT_FOUND)
                 {
@@ -1537,11 +1537,11 @@ void NodeJoint::dataBake(VecStr& node,
         {
             if (scope == 0)
             {
-                curType          = CONDITION_START;
-                start            = i + 1;
-                uint pos         = line.find("<!-- CONDITION START ^") + 22;
-                multiOption      = line.substr(pos, line.find("^ -->", pos) - pos);
-                conditionOpen    = true;
+                curType       = CONDITION_START;
+                start         = i + 1;
+                uint pos      = line.find("<!-- CONDITION START ^") + 22;
+                multiOption   = line.substr(pos, line.find("^ -->", pos) - pos);
+                conditionOpen = true;
             }
 
             ++scope;
@@ -1562,10 +1562,10 @@ void NodeJoint::dataBake(VecStr& node,
                 output.push_back(vector<LineCheck>());
                 output.back().push_back(storeTemplate.back());
 
-                curType          = CONDITION_ELSE;
-                start            = i + 1;
-                uint pos         = line.find("<!-- CONDITION ^") + 16;
-                multiOption      = line.substr(pos, line.find("^", pos) - pos);
+                curType     = CONDITION_ELSE;
+                start       = i + 1;
+                uint pos    = line.find("<!-- CONDITION ^") + 16;
+                multiOption = line.substr(pos, line.find("^", pos) - pos);
             }
 
             ++scope;
@@ -1597,10 +1597,10 @@ void NodeJoint::dataBake(VecStr& node,
         {
             if (scope == 0)
             {
-                curType          = FOREACH;
-                start            = i + 1;
-                uint pos         = line.find("<!-- FOREACH ^") + 14;
-                multiOption      = nemesis::to_lower_copy(line.substr(pos, line.find("^", pos) - pos));
+                curType     = FOREACH;
+                start       = i + 1;
+                uint pos    = line.find("<!-- FOREACH ^") + 14;
+                multiOption = nemesis::to_lower_copy(line.substr(pos, line.find("^", pos) - pos));
             }
 
             ++scope;
@@ -1610,10 +1610,10 @@ void NodeJoint::dataBake(VecStr& node,
         {
             if (scope == 0)
             {
-                curType          = NEW;
-                start            = i + 1;
-                uint pos         = line.find("<!-- NEW ^") + 10;
-                multiOption      = nemesis::to_lower_copy(line.substr(pos, line.find("^", pos) - pos));
+                curType     = NEW;
+                start       = i + 1;
+                uint pos    = line.find("<!-- NEW ^") + 10;
+                multiOption = nemesis::to_lower_copy(line.substr(pos, line.find("^", pos) - pos));
             }
 
             ++scope;
@@ -1654,7 +1654,7 @@ void NodeJoint::dataBake(VecStr& node,
                         || multiOption.find(format + "_group[") == 0
                         || multiOption.find(format + "_master[") == 0)
                     {
-                        tempCode = format; 
+                        tempCode = format;
                     }
                     else
                     {
@@ -1834,8 +1834,8 @@ void processing(string& lineRef,
             {
                 nextpos       = line.find("#" + format + "$", nextpos) + 1;
                 string tempID = line.substr(nextpos);
-                string curID
-                    = nemesis::regex_replace(string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
+                string curID  = nemesis::regex_replace(
+                    string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
                 curID = format + "$" + curID;
 
                 if (tempID.find(curID, 0) != NOT_FOUND && nextpos == line.find(curID))
@@ -1843,7 +1843,7 @@ void processing(string& lineRef,
                     if (subFunctionIDs->grouplist[groupMulti]->singlelist[animMulti]->format[curID].length()
                         == 0)
                     {
-                        ErrorMessage(2011, format, filename, linecount, curID); 
+                        ErrorMessage(2011, format, filename, linecount, curID);
                     }
 
                     line.replace(nextpos,
@@ -1859,15 +1859,15 @@ void processing(string& lineRef,
             {
                 nextpos       = line.find("#" + multiOption, nextpos) + 1;
                 string tempID = line.substr(nextpos);
-                string curID
-                    = nemesis::regex_replace(string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
+                string curID  = nemesis::regex_replace(
+                    string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
                 curID = multiOption + "$" + curID;
 
                 if (tempID.find(curID, 0) != NOT_FOUND && nextpos == line.find(curID))
                 {
                     if (subFunctionIDs->grouplist[groupMulti]->functionIDs[curID].length() == 0)
                     {
-                        ErrorMessage(2011, format, filename, linecount, curID); 
+                        ErrorMessage(2011, format, filename, linecount, curID);
                     }
 
                     line.replace(
@@ -1882,15 +1882,15 @@ void processing(string& lineRef,
             {
                 nextpos       = line.find("#" + multiOption, nextpos) + 1;
                 string tempID = line.substr(nextpos);
-                string curID
-                    = nemesis::regex_replace(string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
+                string curID  = nemesis::regex_replace(
+                    string(tempID), nemesis::regex("[^0-9]*([0-9]+).*"), string("\\1"));
                 curID = multiOption + "$" + curID;
 
                 if (tempID.find(curID, 0) != NOT_FOUND && nextpos == line.find(curID))
                 {
                     if (subFunctionIDs->functionIDs[curID].length() == 0)
                     {
-                        ErrorMessage(2011, format, filename, linecount, curID); 
+                        ErrorMessage(2011, format, filename, linecount, curID);
                     }
 
                     line.replace(nextpos, curID.length(), subFunctionIDs->functionIDs[curID]);
@@ -1991,8 +1991,8 @@ void processing2(string& line,
                             if (change.find("(S" + ID + "+") == NOT_FOUND) ID = "";
 
                             number = nemesis::regex_replace(string(equation.substr(3 + ID.length())),
-                                                          nemesis::regex("[^0-9]*([0-9]+).*"),
-                                                          string("\\1"));
+                                                            nemesis::regex("[^0-9]*([0-9]+).*"),
+                                                            string("\\1"));
                         }
 
                         if (equation != "(S" + ID + "+" + number + ")")
@@ -2034,7 +2034,8 @@ void processing2(string& line,
 
                 if (pos != string::npos)
                 {
-                    if (multiOption != format || animMulti == -1) ErrorMessage(1052, format, filename, linecount, line);
+                    if (multiOption != format || animMulti == -1)
+                        ErrorMessage(1052, format, filename, linecount, line);
 
                     if (change.find("[FilePath]") != NOT_FOUND)
                     {
@@ -2061,7 +2062,7 @@ void processing2(string& line,
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
                         }
-                        
+
                         if (change.find(format + "[B][FilePath]", 0) != NOT_FOUND)
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
@@ -2080,8 +2081,8 @@ void processing2(string& line,
                         {
                             string number
                                 = nemesis::regex_replace(string(change.substr(change.find(format + "[", 0))),
-                                                       nemesis::regex("[^0-9]*([0-9]+).*"),
-                                                       string("\\1"));
+                                                         nemesis::regex("[^0-9]*([0-9]+).*"),
+                                                         string("\\1"));
 
                             if (change.find(format + "[" + number + "][FilePath]", 0) != NOT_FOUND)
                             {
@@ -2126,7 +2127,7 @@ void processing2(string& line,
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
                         }
-                        
+
                         if (change.find(format + "[B][FileName]", 0) != NOT_FOUND)
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
@@ -2145,8 +2146,8 @@ void processing2(string& line,
                         {
                             string number
                                 = nemesis::regex_replace(string(change.substr(change.find(format + "[", 0))),
-                                                       nemesis::regex("[^0-9]*([0-9]+).*"),
-                                                       string("\\1"));
+                                                         nemesis::regex("[^0-9]*([0-9]+).*"),
+                                                         string("\\1"));
 
                             if (change.find(format + "[" + number + "][FileName]", 0) != NOT_FOUND)
                             {
@@ -2231,7 +2232,7 @@ void processing2(string& line,
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
                         }
-                        
+
                         if (change.find(format + "[B][main_anim_event]", 0) != NOT_FOUND)
                         {
                             ErrorMessage(1056, format, filename, linecount, line);
@@ -2601,8 +2602,8 @@ void processing2(string& line,
                         keyword = "";
                     }
 
-                    if (import[file][keyword].length() > 0) 
-                    { 
+                    if (import[file][keyword].length() > 0)
+                    {
                         tempID = import[file][keyword];
                     }
                     else

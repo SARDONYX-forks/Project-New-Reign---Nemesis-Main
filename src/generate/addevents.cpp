@@ -18,9 +18,9 @@ bool AddEvents(const string& curNum,
 {
     if (curNum == "eventNames")
     {
-        if (isExist[input]) 
+        if (isExist[input])
         {
-            WarningMessage(1010, input); 
+            WarningMessage(1010, input);
         }
         else if (!orievent[input])
         {

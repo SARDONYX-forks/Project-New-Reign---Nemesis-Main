@@ -15,7 +15,8 @@ void createLanguageCache(std::string language)
     {
         FileWriter cachefile("cache\\language setting");
 
-        if (cachefile.is_open()) cachefile << language;
+        if (cachefile.is_open())
+            cachefile << language;
         else
         {
             CEMsgBox* msg = new CEMsgBox;
@@ -114,7 +115,7 @@ bool getCache(std::string& language, std::unordered_map<std::string, bool>& chos
     }
 
     filename      = "cache\\mod settings";
-    auto errFunc2 = []() 
+    auto errFunc2 = []()
     {
         QMessageBox* msg = new QMessageBox;
         msg->setWindowTitle("WARNING");
@@ -160,7 +161,7 @@ bool getCache(std::wstring& language, std::unordered_map<std::string, bool>& cho
     std::wstring filename = L"cache\\language setting";
     std::vector<std::wstring> storeline;
 
-    auto errFunc = [](std::wstring& language) 
+    auto errFunc = [](std::wstring& language)
     {
         QMessageBox* msg = new QMessageBox;
         msg->setWindowTitle("WARNING");
@@ -188,7 +189,7 @@ bool getCache(std::wstring& language, std::unordered_map<std::string, bool>& cho
     }
 
     filename      = L"cache\\mod settings";
-    auto errFunc2 = []() 
+    auto errFunc2 = []()
     {
         QMessageBox* msg = new QMessageBox;
         msg->setWindowTitle("WARNING");

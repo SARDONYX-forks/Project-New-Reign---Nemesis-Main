@@ -88,7 +88,8 @@ void behaviorActivateMod(VecStr behaviorPriority)
         string modcode = *itr;
         string newpath = directory + modcode;
         DebugLogging("Mod Checked " + to_string(i) + ": " + modcode);
-        interMsg(TextBoxMessage(1013) + L" " + to_wstring(i++) + L": " + nemesis::transform_to<wstring>(modcode));
+        interMsg(TextBoxMessage(1013) + L" " + to_wstring(i++) + L": "
+                 + nemesis::transform_to<wstring>(modcode));
 
         if (!isFileExist(newpath) || !std::filesystem::is_directory(newpath)) continue;
 
@@ -104,7 +105,7 @@ void behaviorActivateMod(VecStr behaviorPriority)
         for (auto& behavior : behaviorlist)
         {
             if (!nemesis::iequals(behavior, "info.ini") && !nemesis::iequals(behavior, "_1stperson"))
-            { 
+            {
                 activatedBehavior[nemesis::to_lower_copy(behavior)] = true;
             }
             else if (nemesis::iequals(behavior, "_1stperson"))

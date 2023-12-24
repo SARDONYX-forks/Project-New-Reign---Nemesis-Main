@@ -10,10 +10,10 @@
 #include "utilities/regex.h"
 #include "utilities/writetextfile.h"
 
+#include "generate/alternateanimation.h"
+#include "generate/generator_utility.h"
 #include "generate/papyruscompile.h"
 #include "generate/playerexclusive.h"
-#include "generate/generator_utility.h"
-#include "generate/alternateanimation.h"
 
 using namespace std;
 namespace sf = filesystem;
@@ -197,7 +197,7 @@ bool PCEAInstallation(const NemesisInfo* nemesisInfo)
 
             size_t startnum = line.find("Which animation pack do you wish to activate?");
 
-            if (startnum == NOT_FOUND) 
+            if (startnum == NOT_FOUND)
             {
                 ErrorMessage(6009, "PCEA.esp", "PCEA mod");
             }
@@ -208,9 +208,9 @@ bool PCEAInstallation(const NemesisInfo* nemesisInfo)
 
             for (uint j = 0; j < pcealist.size(); ++j)
             {
-                string number        = to_string(j + 1);
-                uint size    = min(pcealist[j].modFile.length(), 113 - number.length());
-                uint counter = startnum + (117 * j);
+                string number = to_string(j + 1);
+                uint size     = min(pcealist[j].modFile.length(), 113 - number.length());
+                uint counter  = startnum + (117 * j);
 
                 for (uint i = 0; i < number.length(); ++i)
                 {

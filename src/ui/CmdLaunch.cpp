@@ -8,8 +8,8 @@
 #include "connector.h"
 
 #include "ui/CmdLaunch.h"
-#include "ui/UiModInfo.h"
 #include "ui/ErrorMsgBox.h"
+#include "ui/UiModInfo.h"
 
 #include "update/updateprocess.h"
 
@@ -58,7 +58,7 @@ void CmdGenerateInitialize(VecStr modlist, const NemesisInfo* nemesisInfo)
     {
         nemesis::to_lower(each);
         wstring mod = nemesis::transform_to<wstring>(mod);
-        auto itr = modinfo.find(mod);
+        auto itr    = modinfo.find(mod);
 
         if (itr != modinfo.end())
         {

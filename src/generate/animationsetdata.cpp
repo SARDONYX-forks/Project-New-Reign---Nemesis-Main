@@ -43,9 +43,8 @@ AnimationDataProject::AnimationDataProject(int& startline,
         // assume current project has new alternate animation installed
         if (behaviorProjectPath[projectFileName].length() > 0)
         {
-            projectPath
-                = nemesis::to_lower_copy(behaviorProjectPath[projectFileName] + L"\\animations");
-            projectPath_fp  = projectPath + L"\\_1stperson";
+            projectPath      = nemesis::to_lower_copy(behaviorProjectPath[projectFileName] + L"\\animations");
+            projectPath_fp   = projectPath + L"\\_1stperson";
             VecWstr pathList = {projectPath,
                                 projectPath + L"\\male",
                                 projectPath + L"\\female",
@@ -102,7 +101,8 @@ AnimationDataProject::AnimationDataProject(int& startline,
                 }
             }
 
-            if (isFileExist(nemesisInfo->GetDataPath() + nemesis::transform_to<wstring>(projectPath) + L"\\nemesis_pcea\\pcea_animations")
+            if (isFileExist(nemesisInfo->GetDataPath() + nemesis::transform_to<wstring>(projectPath)
+                            + L"\\nemesis_pcea\\pcea_animations")
                 && pcealist.size() > 0)
             {
                 // cache all pcea animations
@@ -712,9 +712,9 @@ ASDFormat::position ASDConvert(int position, bool muteError)
 {
     using namespace ASDFormat;
 
-    if (position == 1) 
+    if (position == 1)
     {
-        return V3; 
+        return V3;
     }
     else if (position == 2)
     {
@@ -783,7 +783,7 @@ int PositionLineCondition(int& i,
                           bool muteError)
 {
     using namespace ASDFormat;
-    double type         = curID;
+    double type       = curID;
     int conditionOpen = marker[i].conditionOpen;
     bool jump         = false;
 
@@ -977,7 +977,7 @@ int PositionLineCondition(int& i,
         if (type == 5 && jump)
         {
             jump = false;
-            type   = 14;
+            type = 14;
         }
 
         while (i < linecount + 1)
@@ -1061,7 +1061,8 @@ int PositionLineCondition(int& i,
 
                                         if (!isCondition)
                                         {
-                                            if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND) ++next;
+                                            if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND)
+                                                ++next;
 
                                             break;
                                         }
@@ -1085,7 +1086,8 @@ int PositionLineCondition(int& i,
 
                                             if (!isCondition)
                                             {
-                                                if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND) ++next;
+                                                if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND)
+                                                    ++next;
 
                                                 break;
                                             }
@@ -1123,9 +1125,9 @@ int PositionLineCondition(int& i,
                     {
                         if (type == 14)
                         {
-                            if (hasAlpha(animDataSet[i])) 
-                            { 
-                                type = 5; 
+                            if (hasAlpha(animDataSet[i]))
+                            {
+                                type = 5;
                             }
                             else
                             {
@@ -1136,9 +1138,9 @@ int PositionLineCondition(int& i,
                         }
                         else if (type == 5)
                         {
-                            if (isOnlyNumber(animDataSet[i])) 
+                            if (isOnlyNumber(animDataSet[i]))
                             {
-                                type = 13; 
+                                type = 13;
                             }
                             else
                             {
@@ -1149,9 +1151,9 @@ int PositionLineCondition(int& i,
                         }
                         else if (type == 13)
                         {
-                            if (isOnlyNumber(animDataSet[i])) 
+                            if (isOnlyNumber(animDataSet[i]))
                             {
-                                type = 14; 
+                                type = 14;
                             }
                             else
                             {
@@ -1189,7 +1191,7 @@ int PositionLineCondition(int& i,
                             {
                                 if (hasAlpha(animDataSet[i]))
                                 {
-                                    type = 5; 
+                                    type = 5;
                                 }
                                 else
                                 {
@@ -1200,9 +1202,9 @@ int PositionLineCondition(int& i,
                             }
                             else if (type == 5)
                             {
-                                if (isOnlyNumber(animDataSet[i])) 
+                                if (isOnlyNumber(animDataSet[i]))
                                 {
-                                    type = 13; 
+                                    type = 13;
                                 }
                                 else
                                 {
@@ -1213,9 +1215,9 @@ int PositionLineCondition(int& i,
                             }
                             else if (type == 13)
                             {
-                                if (isOnlyNumber(animDataSet[i])) 
+                                if (isOnlyNumber(animDataSet[i]))
                                 {
-                                    type = 14; 
+                                    type = 14;
                                 }
                                 else
                                 {
@@ -1339,7 +1341,7 @@ int PositionLineCondition(int& i,
         if (type == 7 && jump)
         {
             jump = false;
-            type   = 10;
+            type = 10;
         }
 
         while (i < linecount + 1)
@@ -1430,7 +1432,8 @@ int PositionLineCondition(int& i,
 
                                         if (!isCondition)
                                         {
-                                            if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND) ++next;
+                                            if (animDataSet[i + next].find("<!-- CLOSE -->") != NOT_FOUND)
+                                                ++next;
 
                                             break;
                                         }
@@ -1474,8 +1477,8 @@ int PositionLineCondition(int& i,
                                 while (true)
                                 {
                                     if (marker[next].skip)
-                                    { 
-                                        ++next; 
+                                    {
+                                        ++next;
                                     }
                                     else
                                     {
@@ -1494,9 +1497,9 @@ int PositionLineCondition(int& i,
                         }
                         else if (type == 7)
                         {
-                            if (isOnlyNumber(animDataSet[i])) 
+                            if (isOnlyNumber(animDataSet[i]))
                             {
-                                type = 8; 
+                                type = 8;
                             }
                             else
                             {
@@ -1507,9 +1510,9 @@ int PositionLineCondition(int& i,
                         }
                         else if (type == 8)
                         {
-                            if (isOnlyNumber(animDataSet[i])) 
+                            if (isOnlyNumber(animDataSet[i]))
                             {
-                                type = 9; 
+                                type = 9;
                             }
                             else
                             {
@@ -1520,9 +1523,9 @@ int PositionLineCondition(int& i,
                         }
                         else if (type == 9)
                         {
-                            if (hasAlpha(animDataSet[i])) 
+                            if (hasAlpha(animDataSet[i]))
                             {
-                                type = 10; 
+                                type = 10;
                             }
                             else
                             {
@@ -1564,9 +1567,9 @@ int PositionLineCondition(int& i,
 
                                     while (true)
                                     {
-                                        if (marker[next].skip) 
+                                        if (marker[next].skip)
                                         {
-                                            ++next; 
+                                            ++next;
                                         }
                                         else
                                         {
@@ -1585,9 +1588,9 @@ int PositionLineCondition(int& i,
                             }
                             else if (type == 7)
                             {
-                                if (isOnlyNumber(animDataSet[i])) 
+                                if (isOnlyNumber(animDataSet[i]))
                                 {
-                                    type = 8; 
+                                    type = 8;
                                 }
                                 else
                                 {
@@ -1598,9 +1601,9 @@ int PositionLineCondition(int& i,
                             }
                             else if (type == 8)
                             {
-                                if (isOnlyNumber(animDataSet[i])) 
+                                if (isOnlyNumber(animDataSet[i]))
                                 {
-                                    type = 9; 
+                                    type = 9;
                                 }
                                 else
                                 {
@@ -1611,9 +1614,9 @@ int PositionLineCondition(int& i,
                             }
                             else if (type == 9)
                             {
-                                if (hasAlpha(animDataSet[i])) 
+                                if (hasAlpha(animDataSet[i]))
                                 {
-                                    type = 10; 
+                                    type = 10;
                                 }
                                 else
                                 {
@@ -1816,9 +1819,9 @@ void combineExtraction(VecStr& storeline, map<int, VecStr> extract, string proje
     {
         string line = storeline[i];
 
-        if (line.find("<!-- CONDITION START ^", 0) != NOT_FOUND) 
+        if (line.find("<!-- CONDITION START ^", 0) != NOT_FOUND)
         {
-            condition++; 
+            condition++;
         }
         else if (line.find("<!-- NEW ^", 0) != NOT_FOUND && line.find("^ -->", 0) != NOT_FOUND
                  || line.find("<!-- FOREACH ^", 0) != NOT_FOUND && line.find("^ -->", 0) != NOT_FOUND
@@ -1828,10 +1831,10 @@ void combineExtraction(VecStr& storeline, map<int, VecStr> extract, string proje
         }
 
         if (condition == 0 && !newOpen) newline.push_back(storeline[i]);
-        
-        if (line.find("<!-- CLOSE -->", 0) != NOT_FOUND) 
+
+        if (line.find("<!-- CLOSE -->", 0) != NOT_FOUND)
         {
-            newOpen = false; 
+            newOpen = false;
         }
         else if (line.find("<!-- CONDITION END -->", 0) != NOT_FOUND)
         {

@@ -13,8 +13,7 @@ public:
     std::string filename;
     std::set<std::string> cliplist;
 
-    AnimationDataTracker()
-    {}
+    AnimationDataTracker() {}
     AnimationDataTracker(int _order, std::string _filename);
     int GetOrder();
     void SetOrder(int _order);

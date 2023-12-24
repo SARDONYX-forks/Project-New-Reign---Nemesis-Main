@@ -17,8 +17,8 @@ DummyLog* process3;
 
 void interMsg(std::string input)
 {
-    if (process1) 
-    { 
+    if (process1)
+    {
         process1->message(input);
     }
     else if (process2)

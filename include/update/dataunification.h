@@ -121,7 +121,7 @@ void comparing(std::vector<list>& storeline,
             close = true;
         }
 
-        if (close) newlines.push_back(storeline[k].name); 
+        if (close) newlines.push_back(storeline[k].name);
     }
 
     for (uint j = 0; j < extract.size(); ++j)

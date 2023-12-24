@@ -645,7 +645,7 @@ bool AnimDataUpdate(string modcode,
     {
         if (!GetFunctionLines(filepath, storeline, !nemesis::iequals(filename, "$header$"))) return false;
 
-            // must not replace storeline with animData.newAnimData[projectfile][filename] for the total line will not get counted
+        // must not replace storeline with animData.newAnimData[projectfile][filename] for the total line will not get counted
         if (nemesis::iequals(filename, "$header$"))
         {
             auto& proj = animData.projectlist[animData.getIndex(projectfile)];
@@ -660,7 +660,8 @@ bool AnimDataUpdate(string modcode,
                 }
             }
 
-            string fullpath = filesystem::path(filepath).parent_path().parent_path().string() + "\\$header$\\$header$.txt";
+            string fullpath = filesystem::path(filepath).parent_path().parent_path().string()
+                              + "\\$header$\\$header$.txt";
 
             if (!isFileExist(fullpath)) ErrorMessage(2002, fullpath, "-", "-");
 
@@ -700,7 +701,7 @@ bool AnimDataUpdate(string modcode,
 
             if (projptr) break;
         }
-        
+
         if (!projptr) ErrorMessage(3021, projectfile);
 
         if (isOnlyNumber(filename)) // info data
@@ -800,8 +801,7 @@ bool AnimDataUpdate(string modcode,
 
             if (!curptr)
             {
-                auto pair = make_pair(storeline[0],
-                                      nemesis::LinkedVar(AnimDataPack_Condt(storeline, 1)));
+                auto pair     = make_pair(storeline[0], nemesis::LinkedVar(AnimDataPack_Condt(storeline, 1)));
                 auto condpair = nemesis::CondVar(pair, modcode, nemesis::MOD_CODE);
                 projData->animdatalist.push_back(condpair);
                 return true;
@@ -1095,7 +1095,7 @@ void addAnimDataPack(const string& projectfile,
     // new anim data
     if (animDataPtr == nullptr)
     {
-        auto pair = make_pair(storeline[0], nemesis::LinkedVar(AnimDataPack_Condt(storeline, 1)));
+        auto pair     = make_pair(storeline[0], nemesis::LinkedVar(AnimDataPack_Condt(storeline, 1)));
         auto condpair = nemesis::CondVar(pair, modcode, nemesis::MOD_CODE);
         projData->animdatalist.push_back(condpair);
     }
@@ -1125,7 +1125,7 @@ void addInfoDataPack(const string& filepath,
     // new info data
     if (infoDataPtr == nullptr)
     {
-        auto pair = make_pair(storeline[0], nemesis::LinkedVar(InfoDataPack_Condt(storeline, 1)));
+        auto pair     = make_pair(storeline[0], nemesis::LinkedVar(InfoDataPack_Condt(storeline, 1)));
         auto condpair = nemesis::CondVar(pair, modcode, nemesis::MOD_CODE);
         projData->infodatalist.push_back(condpair);
     }

@@ -41,9 +41,9 @@ void ProcessFunction(string change,
                      map<int, vector<shared_ptr<nemesis::scope>>>& lineblocks,
                      vector<AddOnInfo>& addInfo,
                      bool& isTrueMulti,
-                     bool isGroup   = false,
-                     bool isMaster  = false,
-                     bool isMC      = true,
+                     bool isGroup  = false,
+                     bool isMaster = false,
+                     bool isMC     = true,
                      proc& process = _dummy_proc);
 
 void AnimTemplate::ExamineTemplate(

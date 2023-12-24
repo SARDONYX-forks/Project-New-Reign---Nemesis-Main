@@ -7,8 +7,8 @@ struct ExistingFunction;
 struct NodePackedParameters;
 
 #include <memory>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "Global.h"
 
@@ -30,8 +30,7 @@ struct AnimationUtility
     std::shared_ptr<NodePackedParameters> nodeProcess;
     bool isExisting = false;
 
-    AnimationUtility()
-    {}
+    AnimationUtility() {}
     AnimationUtility(std::string condition,
                      ID eventid,
                      ID variableid,

@@ -26,9 +26,9 @@ using uint    = unsigned int;
 #define NOT_FOUND std::string::npos
 
 // utility
-extern bool debug;                      // if debug is on
-extern int memory;                      // not used; for setting memory allocation from 100 - 1000
-extern int fixedkey[257];               // AA installation key
+extern bool debug;        // if debug is on
+extern int memory;        // not used; for setting memory allocation from 100 - 1000
+extern int fixedkey[257]; // AA installation key
 
 // update patcher
 extern std::unordered_map<std::wstring, std::wstring> behaviorPath; // hkx file name, file path
@@ -68,7 +68,7 @@ bool isOnlyNumber(std::string line);
 bool hasAlpha(std::string line);
 bool isOnlyNumber(std::wstring line);
 bool hasAlpha(std::wstring line);
-size_t wordFind(std::string line, std::string word, bool isLast = false); // case insensitive "string.find"
+size_t wordFind(std::string line, std::string word, bool isLast = false);   // case insensitive "string.find"
 size_t wordFind(std::wstring line, std::wstring word, bool isLast = false); // case insensitive "string.find"
 int sameWordCount(std::string line, std::string word);
 int sameWordCount(std::wstring line, std::wstring word);

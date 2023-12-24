@@ -55,15 +55,16 @@ bool connectionCheckLoop(const string& current,
 {
     if (noRepeat.find(current) != noRepeat.end()) return true;
 
-    if (!isConnectedToCharacter(current, original, noRepeat, postBhvrRefBy, characterList, nemesisInfo)) return false;
+    if (!isConnectedToCharacter(current, original, noRepeat, postBhvrRefBy, characterList, nemesisInfo))
+        return false;
 
     if (!isFileExist(current))
     {
         // Staging
         if (nemesisInfo.GetStagePath() != nemesisInfo.GetDataPath())
         {
-            wstring stage = nemesisInfo.GetStagePath();
-            wstring data = nemesisInfo.GetDataPath();
+            wstring stage    = nemesisInfo.GetStagePath();
+            wstring data     = nemesisInfo.GetDataPath();
             wstring wcurrent = nemesis::transform_to<wstring>(current);
 
             if (wordFind(wcurrent, stage) != 0) ErrorMessage(1210, current);
@@ -101,7 +102,8 @@ bool isConnectedToCharacter(const string& current,
                                     original,
                                     noRepeat,
                                     postBhvrRefBy,
-                                    characterList, nemesisInfo))
+                                    characterList,
+                                    nemesisInfo))
             {
                 rst = true;
             }
@@ -178,7 +180,8 @@ void behaviorCheck(BehaviorStart* process)
         beginConnectionCheck(nemesis::transform_to<string>(behaviorfiles.first),
                              nemesis::transform_to<string>(behaviorfiles.first),
                              noRepeat,
-                             process->postBhvrRefBy, *process->nemesisInfo);
+                             process->postBhvrRefBy,
+                             *process->nemesisInfo);
     }
 }
 

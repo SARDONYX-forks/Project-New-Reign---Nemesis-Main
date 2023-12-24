@@ -7,7 +7,6 @@
 
 #include "update/animdata/animdatacond.h"
 
-#include "generate/behaviortype.h"
 #include "generate/animationdata.h"
 #include "generate/behaviortype.h"
 
@@ -16,41 +15,45 @@
 class NemesisEngine;
 struct arguPack;
 
-typedef std::unordered_map<std::string, std::map<std::string, std::unordered_map<std::string, SetStr>>> StateIDList;
+typedef std::unordered_map<std::string, std::map<std::string, std::unordered_map<std::string, SetStr>>>
+    StateIDList;
 
 class UpdateFilesStart : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	typedef std::unordered_map<std::string, std::unique_ptr<SSMap>> SSSMap;
+    typedef std::unordered_map<std::string, std::unique_ptr<SSMap>> SSSMap;
 
-	struct TargetQueue
-	{
-		std::string file, node;
+    struct TargetQueue
+    {
+        std::string file, node;
 
         TargetQueue(std::string _file, std::string _node)
             : node(_node)
             , file(_file)
-        {}
+        {
+        }
     };
 
-	struct RegisterQueue
-	{
-		std::filesystem::path file;
-		bool isFirstPerson;
+    struct RegisterQueue
+    {
+        std::filesystem::path file;
+        bool isFirstPerson;
 
         RegisterQueue(std::string _file, bool _first)
             : file(_file)
             , isFirstPerson(_first)
-        {}
+        {
+        }
         RegisterQueue(std::filesystem::path _file, bool _first)
             : file(_file)
             , isFirstPerson(_first)
-        {}
+        {
+        }
     };
 
 public:
-	bool cmdline = false;
+    bool cmdline = false;
 
     UpdateFilesStart(const NemesisInfo* _ini);
     virtual ~UpdateFilesStart();
@@ -87,13 +90,13 @@ public slots:
     void UpdateFiles();
 
 signals:
-	void progressMax(int);
-	void progressUp();
-	void end();
-	void disable(bool);
-	void disableLaunch(bool);
-	void hide(bool);
-	void incomingMessage(QString);
+    void progressMax(int);
+    void progressUp();
+    void end();
+    void disable(bool);
+    void disableLaunch(bool);
+    void hide(bool);
+    void incomingMessage(QString);
 
 private:
     int filenum;
@@ -105,25 +108,26 @@ private:
     std::atomic_flag queueLock{};
 #endif
 
-	std::unordered_map<std::string, std::unordered_map<std::string, VecStr>> modQueue;	// behavior, node, list of mod
-	std::vector<TargetQueue> processQueue;
-	size_t queuing;
+    std::unordered_map<std::string, std::unordered_map<std::string, VecStr>>
+        modQueue; // behavior, node, list of mod
+    std::vector<TargetQueue> processQueue;
+    size_t queuing;
 
-	std::vector<std::shared_ptr<RegisterQueue>> registeredFiles;
+    std::vector<std::shared_ptr<RegisterQueue>> registeredFiles;
 
-	StateIDList modStateList;				// behavior file, SM ID, state ID, list of mods
+    StateIDList modStateList; // behavior file, SM ID, state ID, list of mods
 #if MULTITHREADED_UPDATE
     std::atomic_flag stateListLock{};
 #endif
 
-	StateIDList duplicatedStateList;		// behavior file, SM ID, state ID, list of conflicting mods
+    StateIDList duplicatedStateList; // behavior file, SM ID, state ID, list of conflicting mods
 #if MULTITHREADED_UPDATE
     std::atomic_flag duplicatedLock{};
 #endif
 
-	// update data container
-	std::map<std::string, std::unique_ptr<std::map<std::string, VecStr, alphanum_less>>> newFile;
-	// behavior file, node ID, node data lines; memory to access each node
+    // update data container
+    std::map<std::string, std::unique_ptr<std::map<std::string, VecStr, alphanum_less>>> newFile;
+    // behavior file, node ID, node data lines; memory to access each node
 #if MULTITHREADED_UPDATE
     std::atomic_flag newFileLock{};
 #endif
@@ -133,12 +137,12 @@ private:
         childrenState;
     // behavior file, node ID, children of state machine; ensure no state conflict
 
-	SSSMap stateID;		// behavior file, children state machine info, state ID
-	SSSMap parent;		// behavior file, children state machine info, parent state machine
+    SSSMap stateID; // behavior file, children state machine info, state ID
+    SSSMap parent;  // behavior file, children state machine info, parent state machine
 
-	std::unordered_set<std::string> newProjectList;
-	MasterAnimData animData;
-	MasterAnimSetData animSetData;
+    std::unordered_set<std::string> newProjectList;
+    MasterAnimData animData;
+    MasterAnimSetData animSetData;
 
     std::map<std::string, VecStr> newAnimAddition;
     std::unordered_map<std::wstring, std::wstring> lastUpdate;
@@ -150,8 +154,8 @@ private:
 
     // global container locker
 #if MULTITHREADED_UPDATE
-    std::atomic_flag behaviorPathLock       {};
-    std::atomic_flag behaviorProjectLock    {};
+    std::atomic_flag behaviorPathLock{};
+    std::atomic_flag behaviorProjectLock{};
     std::atomic_flag behaviorProjectPathLock{};
 #endif
 

@@ -1,8 +1,8 @@
 #ifndef ANIMPROGRESSBAR_H_
 #define ANIMPROGRESSBAR_H_
 
-#include <atomic>
 #include <algorithm>
+#include <atomic>
 #include <QProgressBar>
 
 #include "nemesisinfo.h"

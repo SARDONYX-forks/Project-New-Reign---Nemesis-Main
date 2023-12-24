@@ -6,7 +6,7 @@
 #include "utilities/readtextfile.h"
 #include "utilities/writetextfile.h"
 
-#pragma warning(disable:4503)
+#pragma warning(disable : 4503)
 
 using namespace std;
 namespace sf = filesystem;
@@ -41,119 +41,119 @@ set<string> groupNameList;
 
 void read_directory(const sf::path& name, VecStr& fv)
 {
-	fv.clear();
+    fv.clear();
 
-	for (const auto& entry : sf::directory_iterator(name))
-	{
-		wstring filename = entry.path().filename().wstring();
+    for (const auto& entry : sf::directory_iterator(name))
+    {
+        wstring filename = entry.path().filename().wstring();
 
-		if (filename != L"." && filename != L"..")
-		{
-			fv.push_back(nemesis::transform_to<string>(filename));
-		}
-	}
+        if (filename != L"." && filename != L"..")
+        {
+            fv.push_back(nemesis::transform_to<string>(filename));
+        }
+    }
 
-	for (unsigned int i = 0; i < fv.size(); ++i)
-	{
-		if (nemesis::to_lower_copy(fv[i]).find("folder_managed_by_vortex") != NOT_FOUND)
-		{
-			fv.erase(fv.begin() + i);
-			--i;
-		}
-	}
+    for (unsigned int i = 0; i < fv.size(); ++i)
+    {
+        if (nemesis::to_lower_copy(fv[i]).find("folder_managed_by_vortex") != NOT_FOUND)
+        {
+            fv.erase(fv.begin() + i);
+            --i;
+        }
+    }
 }
 
 void read_directory(const sf::path& name, vector<wstring>& fv)
 {
-	fv.clear();
+    fv.clear();
 
-	for (const auto& entry : sf::directory_iterator(name))
-	{
-		wstring filename = entry.path().filename().wstring();
+    for (const auto& entry : sf::directory_iterator(name))
+    {
+        wstring filename = entry.path().filename().wstring();
 
-		if (filename != L"." && filename != L"..")
-		{
-			fv.push_back(filename);
-		}
-	}
+        if (filename != L"." && filename != L"..")
+        {
+            fv.push_back(filename);
+        }
+    }
 
-	for (unsigned int i = 0; i < fv.size(); ++i)
-	{
-		if (nemesis::to_lower_copy(fv[i]).find(L"folder_managed_by_vortex") != NOT_FOUND)
-		{
-			fv.erase(fv.begin() + i);
-			--i;
-		}
-	}
+    for (unsigned int i = 0; i < fv.size(); ++i)
+    {
+        if (nemesis::to_lower_copy(fv[i]).find(L"folder_managed_by_vortex") != NOT_FOUND)
+        {
+            fv.erase(fv.begin() + i);
+            --i;
+        }
+    }
 }
 
 size_t fileLineCount(sf::path filepath)
 {
-	int linecount = 0;
-	string line;
-	FileReader input(filepath.c_str());
+    int linecount = 0;
+    string line;
+    FileReader input(filepath.c_str());
 
-	if (input.GetFile())
-	{
-		string line;
+    if (input.GetFile())
+    {
+        string line;
 
-		while (input.GetLines(line))
-		{
-			++linecount;
-		}
-	}
-	else
-	{
-		ErrorMessage(1002, filepath);
-	}
+        while (input.GetLines(line))
+        {
+            ++linecount;
+        }
+    }
+    else
+    {
+        ErrorMessage(1002, filepath);
+    }
 
-	return linecount;
+    return linecount;
 }
 
 size_t fileLineCount(const char* filepath)
 {
-	int linecount = 0;
-	string line;
-	FileReader input(filepath);
+    int linecount = 0;
+    string line;
+    FileReader input(filepath);
 
-	if (input.GetFile())
-	{
-		string line;
+    if (input.GetFile())
+    {
+        string line;
 
-		while (input.GetLines(line))
-		{
-			++linecount;
-		}
-	}
-	else
-	{
-		ErrorMessage(1002, filepath);
-	}
+        while (input.GetLines(line))
+        {
+            ++linecount;
+        }
+    }
+    else
+    {
+        ErrorMessage(1002, filepath);
+    }
 
-	return linecount;
+    return linecount;
 }
 
 int sameWordCount(string line, string word)
 {
-	size_t nextWord = -1;
-	int wordCount = 0;
+    size_t nextWord = -1;
+    int wordCount   = 0;
 
-	while (true)
-	{
-		nextWord = line.find(word, nextWord + 1);
+    while (true)
+    {
+        nextWord = line.find(word, nextWord + 1);
 
-		if (nextWord != NOT_FOUND)
-		{
-			wordCount++;
-		}
-		else
-		{
-			nextWord = -1;
-			break;
-		}
-	}
+        if (nextWord != NOT_FOUND)
+        {
+            wordCount++;
+        }
+        else
+        {
+            nextWord = -1;
+            break;
+        }
+    }
 
-	return wordCount;
+    return wordCount;
 }
 
 int sameWordCount(wstring line, wstring word)
@@ -181,9 +181,9 @@ int sameWordCount(wstring line, wstring word)
 
 bool GetFunctionLines(sf::path filename, VecStr& functionlines, bool emptylast)
 {
-	functionlines = VecStr();
+    functionlines = VecStr();
 
-	if (sf::is_directory(filename)) ErrorMessage(3001, filename.string());
+    if (sf::is_directory(filename)) ErrorMessage(3001, filename.string());
 
     functionlines.reserve(fileLineCount(filename));
     FileReader BehaviorFormat(filename.wstring());
@@ -199,31 +199,33 @@ bool GetFunctionLines(sf::path filename, VecStr& functionlines, bool emptylast)
         functionlines.push_back(nemesis::transform_to<string>(line));
     }
 
-	if (functionlines.size() == 0) return false;
+    if (functionlines.size() == 0) return false;
 
-	if (emptylast)
-	{
-		if (functionlines.size() != 0 && functionlines.back().length() != 0 && functionlines.back().find("<!-- CONDITION END -->") == NOT_FOUND && functionlines.back().find("<!-- CLOSE -->") == NOT_FOUND)
-		{
-			functionlines.push_back("");
-		}
-	}
-	else
-	{
-		if (functionlines.size() != 0 && functionlines.back().length() == 0)
-		{
-			functionlines.pop_back();
-		}
-	}
+    if (emptylast)
+    {
+        if (functionlines.size() != 0 && functionlines.back().length() != 0
+            && functionlines.back().find("<!-- CONDITION END -->") == NOT_FOUND
+            && functionlines.back().find("<!-- CLOSE -->") == NOT_FOUND)
+        {
+            functionlines.push_back("");
+        }
+    }
+    else
+    {
+        if (functionlines.size() != 0 && functionlines.back().length() == 0)
+        {
+            functionlines.pop_back();
+        }
+    }
 
-	return true;
+    return true;
 }
 
 bool GetFunctionLines(sf::path filename, vector<wstring>& functionlines, bool emptylast)
 {
-	functionlines = vector<wstring>();
+    functionlines = vector<wstring>();
 
-	if (sf::is_directory(filename)) ErrorMessage(3001, filename.string());
+    if (sf::is_directory(filename)) ErrorMessage(3001, filename.string());
 
     functionlines.reserve(fileLineCount(filename));
     FileReader BehaviorFormat(filename.wstring());
@@ -239,33 +241,34 @@ bool GetFunctionLines(sf::path filename, vector<wstring>& functionlines, bool em
         functionlines.push_back(line);
     }
 
-	if (functionlines.size() == 0) return false;
+    if (functionlines.size() == 0) return false;
 
-	if (emptylast)
-	{
-		if (functionlines.size() != 0 && functionlines.back().length() != 0 && functionlines.back().find(L"<!-- CONDITION END -->") == NOT_FOUND &&
-			functionlines.back().find(L"<!-- CLOSE -->") == NOT_FOUND)
-		{
-			functionlines.push_back(L"");
-		}
-	}
-	else
-	{
-		if (functionlines.size() != 0 && functionlines.back().length() == 0)
-		{
-			functionlines.pop_back();
-		}
-	}
+    if (emptylast)
+    {
+        if (functionlines.size() != 0 && functionlines.back().length() != 0
+            && functionlines.back().find(L"<!-- CONDITION END -->") == NOT_FOUND
+            && functionlines.back().find(L"<!-- CLOSE -->") == NOT_FOUND)
+        {
+            functionlines.push_back(L"");
+        }
+    }
+    else
+    {
+        if (functionlines.size() != 0 && functionlines.back().length() == 0)
+        {
+            functionlines.pop_back();
+        }
+    }
 
-	return true;
+    return true;
 }
 
 size_t wordFind(string line, string word, bool isLast)
 {
-	nemesis::to_lower(line);
-	nemesis::to_lower(word);
+    nemesis::to_lower(line);
+    nemesis::to_lower(word);
 
-	return isLast ? line.rfind(word) : line.find(word);
+    return isLast ? line.rfind(word) : line.find(word);
 }
 
 size_t wordFind(wstring line, wstring word, bool isLast)
@@ -278,20 +281,20 @@ size_t wordFind(wstring line, wstring word, bool isLast)
 
 bool isOnlyNumber(string line)
 {
-	char* end = nullptr;
-	double val = strtod(line.c_str(), &end);
-	return end != line.c_str() && *end == '\0' && val != HUGE_VAL;
+    char* end  = nullptr;
+    double val = strtod(line.c_str(), &end);
+    return end != line.c_str() && *end == '\0' && val != HUGE_VAL;
 }
 
 bool hasAlpha(string line)
 {
-	return nemesis::to_lower_copy(line) != nemesis::to_upper_copy(line);
+    return nemesis::to_lower_copy(line) != nemesis::to_upper_copy(line);
 }
 
 bool isOnlyNumber(wstring line)
 {
-    wchar_t* end  = nullptr;
-    double val = wcstod(line.c_str(), &end);
+    wchar_t* end = nullptr;
+    double val   = wcstod(line.c_str(), &end);
     return end != line.c_str() && *end == '\0' && val != HUGE_VAL;
 }
 
@@ -302,6 +305,6 @@ bool hasAlpha(wstring line)
 
 void addUsedAnim(string behaviorFile, string animPath)
 {
-	Lockless lock(atomLock);
-	usedAnim[nemesis::to_lower_copy(behaviorFile)].insert(nemesis::to_lower_copy(animPath));
+    Lockless lock(atomLock);
+    usedAnim[nemesis::to_lower_copy(behaviorFile)].insert(nemesis::to_lower_copy(animPath));
 }

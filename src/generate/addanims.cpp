@@ -1,7 +1,6 @@
 #include "Global.h"
 
 #include "generate/addanims.h"
-#include "generate/generator_utility.h"
 #include "generate/animationdatatracker.h"
 #include "generate/generator_utility.h"
 
@@ -38,8 +37,8 @@ bool AddAnims(string& line,
                 {
                     sf::path animation(GetFileDirectory(outputdir));
 
-                    if (isFileExist(animation.parent_path().parent_path().wstring() + L"\\Animations\\female\\"
-                                    + nemesis::transform_to<wstring>(animFile)))
+                    if (isFileExist(animation.parent_path().parent_path().wstring()
+                                    + L"\\Animations\\female\\" + nemesis::transform_to<wstring>(animFile)))
                     {
                         animPath = "Animations\\female\\" + animFile;
                     }
@@ -95,7 +94,7 @@ bool AddAnims(string& line,
             }
         }
 
-        string newMod                    = animPath.substr(11, animPath.find("\\", 11) - 11);
+        string newMod             = animPath.substr(11, animPath.find("\\", 11) - 11);
         vector<SetStr>* match_ptr = &animModMatch[lowerBehaviorFile][animFile];
         size_t matchSize          = match_ptr->size();
         addAnim                   = true;

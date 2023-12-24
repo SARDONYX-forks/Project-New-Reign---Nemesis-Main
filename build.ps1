@@ -2,8 +2,16 @@ param (
   [switch]
   $Verbose,
   [switch]
-  $Deploy
+  $Deploy,
+  [switch]
+  $Format
 )
+
+if ($Format) {
+  Get-ChildItem -Path .\include -Recurse | ForEach-Object { clang-format -i -style=file $_.FullName }
+  Get-ChildItem -Path .\src -Recurse -Filter *.cpp | ForEach-Object { clang-format -i -style=file $_.FullName }
+  exit 0
+}
 
 #! NOTE: VS2022 gives me a syntax error when I try to compile 5.14.2. Therefore, use the one for VS2019.
 # If GitHub CI definition, then ignore.

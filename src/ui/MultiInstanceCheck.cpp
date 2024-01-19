@@ -28,11 +28,14 @@ bool isProgramAlreadyRunning()
 
     switch (GetLastError())
     {
-        case ERROR_SUCCESS: break;
+        case ERROR_SUCCESS:
+            break;
 
-        case ERROR_ALREADY_EXISTS: return true;
+        case ERROR_ALREADY_EXISTS:
+            return true;
 
-        default: return true;
+        default:
+            return true;
     }
 
     return false;

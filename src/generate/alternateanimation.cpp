@@ -3,12 +3,12 @@
 #include "debuglog.h"
 #include "nemesisinfo.h"
 
-#include "generate/papyruscompile.h"
-#include "generate/generator_utility.h"
 #include "generate/alternateanimation.h"
+#include "generate/generator_utility.h"
+#include "generate/papyruscompile.h"
 
-#include "utilities/crc32.h"
 #include "utilities/algorithm.h"
+#include "utilities/crc32.h"
 #include "utilities/lastupdate.h"
 #include "utilities/readtextfile.h"
 #include "utilities/writetextfile.h"
@@ -553,16 +553,16 @@ bool AAnimAPICompile(sf::path pscfile,
     {
         size_t pos = line.find("$InstallationKey$");
 
-        if (pos != NOT_FOUND) 
-        { 
+        if (pos != NOT_FOUND)
+        {
             line.replace(pos, 17, to_string(uniquekey));
         }
         else
         {
             pos = line.find("$MaxGroup$");
 
-            if (pos != NOT_FOUND) 
-            { 
+            if (pos != NOT_FOUND)
+            {
                 line.replace(pos, 10, to_string(maxGroup - 1));
             }
             else
@@ -605,8 +605,8 @@ void fixedKeyInitialize()
 
     while (counter <= 256)
     {
-        uint key1         = static_cast<uint>(counter);
-        int key2          = 0;
+        uint key1 = static_cast<uint>(counter);
+        int key2  = 0;
 
         while (key2 <= 7)
         {
@@ -637,10 +637,10 @@ unsigned int CRC32Convert(wstring line)
 
 uint getUniqueKey(unsigned char bytearray[], int byte1, int byte2)
 {
-    uint uniqueKey         = 0;
-    int key1               = byte1;
-    int key2               = byte2;
-    int counter            = byte1;
+    uint uniqueKey = 0;
+    int key1       = byte1;
+    int key2       = byte2;
+    int counter    = byte1;
 
     while (counter <= key2)
     {

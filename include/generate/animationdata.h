@@ -23,71 +23,75 @@ struct AnimDataFunct
 
 namespace AnimDataFormat
 {
-	enum position
-	{
-		totallinecount,
-		behaviorfilecount,
-		behaviorfilelist,
-		animationname,
-		uniquecode,
-		eventnamecount,
-		eventnamelist,
-		totalcliplength,
-		motiondatacount,
-		motiondatalist,
-		rotationdatacount,
-		rotationdatalist,
-		unknown2,
-		unknown3,
-		unknown4,
-		unknown5,
-		space,
-		xerror,
-		null
-	};
+    enum position
+    {
+        totallinecount,
+        behaviorfilecount,
+        behaviorfilelist,
+        animationname,
+        uniquecode,
+        eventnamecount,
+        eventnamelist,
+        totalcliplength,
+        motiondatacount,
+        motiondatalist,
+        rotationdatacount,
+        rotationdatalist,
+        unknown2,
+        unknown3,
+        unknown4,
+        unknown5,
+        space,
+        xerror,
+        null
+    };
 }
 
 struct AnimDataPack
 {
-	// anim data
-	std::string name;
-	std::string uniquecode;
-	std::string unknown1;
-	std::string unknown2;
-	std::string unknown3;
+    // anim data
+    std::string name;
+    std::string uniquecode;
+    std::string unknown1;
+    std::string unknown2;
+    std::string unknown3;
 
-	VecStr eventname;
+    VecStr eventname;
 };
 
 struct InfoDataPack
 {
-	std::string uniquecode;
-	std::string duration;
+    std::string uniquecode;
+    std::string duration;
 
-	VecStr motiondata;
-	VecStr rotationdata;
+    VecStr motiondata;
+    VecStr rotationdata;
 };
 
 struct AnimDataProject
 {
-	VecStr behaviorlist;
-	std::string childActive;
-	std::string projectActive;
+    VecStr behaviorlist;
+    std::string childActive;
+    std::string projectActive;
 
-	std::vector<AnimDataPack> animdatalist;
-	std::vector<InfoDataPack> infodatalist;
+    std::vector<AnimDataPack> animdatalist;
+    std::vector<InfoDataPack> infodatalist;
 
-    AnimDataProject()
-    {}
-    AnimDataProject(VecStr animdatafile,
-                    std::string filename,
-                    std::string modcode = "nemesis");
+    AnimDataProject() {}
+    AnimDataProject(VecStr animdatafile, std::string filename, std::string modcode = "nemesis");
 
-	int GetAnimTotalLine();
-	int GetInfoTotalLine();
+    int GetAnimTotalLine();
+    int GetInfoTotalLine();
 };
 
-AnimDataFormat::position AnimDataPosition(VecStr animData, std::string character, std::string header, std::string modcode, std::string filepath, int linecount, int type, bool muteError = false);
+AnimDataFormat::position AnimDataPosition(VecStr animData,
+                                          std::string character,
+                                          std::string header,
+                                          std::string modcode,
+                                          std::string filepath,
+                                          int linecount,
+                                          int type,
+                                          bool muteError = false);
 AnimDataFormat::position AnimDataConvert(int type, int position);
 
 #endif

@@ -1,41 +1,40 @@
 cmake_minimum_required(VERSION 3.13.0 FATAL_ERROR)
 
+# See: https://github.com/ethereum/solidity/pull/13429
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 project(NemesisUnlimitedBehaviorEngine LANGUAGES CXX VERSION 0.84)
-################################################################################
+
+# ###############################################################################
 # VARIABLES
-################################################################################
+# ###############################################################################
+option(UseLocalBoost "Uses local copy of Boost instead of downloading it" OFF)
+set(BOOST_ROOT "C:/IT/Boost_1.72.0" CACHE PATH "Boost local path")
 
+# You have to use a local copy of Python source, not the binaries
+# Note: It MUST match the version set in Python.cmake
+option(UseLocalPython "Uses local copy of Python instead of downloading it" OFF)
+set(PYTHON_ROOT "C:/IT/cpython" CACHE PATH "Python local path")
 
-# This part is the only one that should be modified by the user wanting to compile Nemesis
-
-set(Qt5_DIR "C:/IT/Qt/5.14.1/msvc2017/lib/cmake/Qt5" CACHE PATH "Qt local path")
-
-option(UseLocalBoost "Uses local copy of Boost instead of downloading it" ON)
-set(BOOST_ROOT "C:/IT/Boost_1.72.0" CACHE PATH "Boost local path" )
-
-#You have to use a local copy of Python source, not the binaries
-#Note: It MUST match the version set in Python.cmake
-option(UseLocalPython "Uses local copy of Python instead of downloading it" ON)
-set(PYTHON_ROOT "C:/IT/cpython" CACHE PATH "Python local path" )
-
-################################################################################
+# ###############################################################################
 # Use solution folders feature
-################################################################################
+# ###############################################################################
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-################################################################################
+# ###############################################################################
 # Required packages
-################################################################################
-
+# ###############################################################################
 include(CMake/Python.cmake)
 include(CMake/Boost.cmake)
 include(CMake/Qt.cmake)
 add_subdirectory(external/hkxcmd)
 
-################################################################################
+# ###############################################################################
 # Source groups
-################################################################################
-
+# ###############################################################################
 set(Header_Files
     "include/connector.h"
     "include/debuglog.h"
@@ -45,7 +44,7 @@ set(Header_Files
     "include/nemesisinfo.h"
     "include/resource.h"
     "include/version.h"
-    )
+)
 source_group("Header Files" FILES ${Header_Files})
 
 set(Header_Files__generate
@@ -68,7 +67,7 @@ set(Header_Files__generate
     "include/generate/installscripts.h"
     "include/generate/papyruscompile.h"
     "include/generate/playerexclusive.h"
-    )
+)
 
 source_group("Header Files\\generate" FILES ${Header_Files__generate})
 
@@ -87,7 +86,7 @@ set(Header_Files__generate__animation
     "include/generate/animation/templateinfo.h"
     "include/generate/animation/templateprocessing.h"
     "include/generate/animation/templatetree.h"
-    )
+)
 source_group("Header Files\\generate\\animation" FILES ${Header_Files__generate__animation})
 
 set(Header_Files__ui
@@ -106,7 +105,7 @@ set(Header_Files__ui
     "include/ui/SettingsSave.h"
     "include/ui/Terminator.h"
     "include/ui/UiModInfo.h"
-    )
+)
 source_group("Header Files\\ui" FILES ${Header_Files__ui})
 
 set(Header_Files__update
@@ -117,7 +116,7 @@ set(Header_Files__update
     "include/update/animdata/animdatapackcond.h"
     "include/update/animdata/animdataprojectcond.h"
     "include/update/animdata/infodatapackcond.h"
-    )
+)
 source_group("Header Files\\update" FILES ${Header_Files__update})
 
 set(Header_Files__update__animdata
@@ -125,7 +124,7 @@ set(Header_Files__update__animdata
     "include/update/animdata/animdatapackcond.h"
     "include/update/animdata/animdataprojectcond.h"
     "include/update/animdata/infodatapackcond.h"
-    )
+)
 source_group("Header Files\\update\\animdata" FILES ${Header_Files__update})
 
 set(Header_Files__utilities
@@ -147,7 +146,7 @@ set(Header_Files__utilities
     "include/utilities/stringsplit.h"
     "include/utilities/writetextfile.h"
     "include/utilities/threadpool.h"
-    )
+)
 source_group("Header Files\\utilities" FILES ${Header_Files__utilities})
 
 set(Source_Files
@@ -158,7 +157,7 @@ set(Source_Files
     "src/Global.cpp"
     "src/main.cpp"
     "src/nemesisinfo.cpp"
-    )
+)
 source_group("Source Files" FILES ${Source_Files})
 
 set(Source_Files__generate
@@ -181,7 +180,7 @@ set(Source_Files__generate
     "src/generate/installscripts.cpp"
     "src/generate/papyruscompile.cpp"
     "src/generate/playerexclusive.cpp"
-    )
+)
 source_group("Source Files\\generate" FILES ${Source_Files__generate})
 
 set(Source_Files__generate__animation
@@ -198,7 +197,7 @@ set(Source_Files__generate__animation
     "src/generate/animation/singletemplate.cpp"
     "src/generate/animation/templateinfo.cpp"
     "src/generate/animation/templateprocessing.cpp"
-    )
+)
 source_group("Source Files\\generate\\animation" FILES ${Source_Files__generate__animation})
 
 set(Source_Files__ui
@@ -216,7 +215,7 @@ set(Source_Files__ui
     "src/ui/SettingsSave.cpp"
     "src/ui/Terminator.cpp"
     "src/ui/UiModInfo.cpp"
-    )
+)
 source_group("Source Files\\ui" FILES ${Source_Files__ui})
 
 set(Source_Files__update
@@ -227,7 +226,7 @@ set(Source_Files__update
     "src/update/animdata/animdatapackcond.cpp"
     "src/update/animdata/animdataprojectcond.cpp"
     "src/update/animdata/infodatapackcond.cpp"
-    )
+)
 source_group("Source Files\\update" FILES ${Source_Files__update})
 
 set(Source_Files__update__animdata
@@ -235,7 +234,7 @@ set(Source_Files__update__animdata
     "src/update/animdata/animdatapackcond.cpp"
     "src/update/animdata/animdataprojectcond.cpp"
     "src/update/animdata/infodatapackcond.cpp"
-    )
+)
 source_group("Source Files\\update\\animdata" FILES ${Source_Files__update})
 
 set(Source_Files__utilities
@@ -252,13 +251,14 @@ set(Source_Files__utilities
     "src/utilities/scope.cpp"
     "src/utilities/stringsplit.cpp"
     "src/utilities/threadpool.cpp"
-    )
+    "src/utilities/writetextfile.cpp"
+)
 source_group("Source Files\\utilities" FILES ${Source_Files__utilities})
 
 set(Resources_Files
     "resources/Nemesis Engine.rc"
     "resources/NemesisEngine.qrc"
-    )
+)
 
 set(ALL_FILES
     ${Header_Files}
@@ -274,38 +274,37 @@ set(ALL_FILES
     ${Source_Files__update}
     ${Source_Files__utilities}
     ${Resources_Files}
-    )
-################################################################################
+)
+
+# ###############################################################################
 # Target
-################################################################################
+# ###############################################################################
 add_executable(${PROJECT_NAME} WIN32 ${ALL_FILES})
 
-################################################################################
+# ###############################################################################
 # Include directories
-################################################################################
-
+# ###############################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}")
 
-#Windows API
+# Windows API
 target_include_directories(${PROJECT_NAME} PUBLIC $ENV{UniversalCRTSdkDir}/Include/ucrt)
 
-################################################################################
+# ###############################################################################
 # Compile definitions
-################################################################################
+# ###############################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     "UNICODE;"
     "_UNICODE;"
     "WIN32;"
     "WIN64"
     "_WIN32_WINNT=0x0601"
-    "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING" #There are no alternatives
-    )
+    "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING" # There are no alternatives
+)
 
-################################################################################
+# ###############################################################################
 # Copy Python DLL
-################################################################################
-
+# ###############################################################################
 message(STATUS "Copying Python DLL: ${Python_DLL_PATH}")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
@@ -313,19 +312,23 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     ${Python_DLL_PATH}
     ${CMAKE_BINARY_DIR}/${Python_DLL_NAME})
 
-################################################################################
+# ###############################################################################
 # Compile and link options
-################################################################################
+# ###############################################################################
 
-#C++17
+# C++17
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(MSVC)
-    #Strictly follow the standard
+    # Strictly follow the standard
     target_compile_options(${PROJECT_NAME} PRIVATE "/permissive-")
-    #Required
+
+    # Required
     target_compile_options(${PROJECT_NAME} PRIVATE "/bigobj")
+
+    # Use /NODEFAULTLIB:library to exclude specific default libraries causing conflicts
+    target_link_options(${PROJECT_NAME} PRIVATE "/NODEFAULTLIB:LIBCMT")
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE BoostNemesis PythonNemesis Qt5Nemesis hkxcmd#add_subdirectory(external/hkxcmd)
+target_link_libraries(${PROJECT_NAME} PRIVATE BoostNemesis PythonNemesis Qt5Nemesis hkxcmd # add_subdirectory(external/hkxcmd)
 )

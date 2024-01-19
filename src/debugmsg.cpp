@@ -1,6 +1,5 @@
 #include "Global.h"
 
-
 #include "debuglog.h"
 #include "debugmsg.h"
 
@@ -43,7 +42,7 @@ DebugMsg::DebugMsg(wstring language)
 
 void DebugMsg::setup(const wstring& language)
 {
-    wstring filename = L"languages\\" + language + L".txt";
+    wstring filename  = L"languages\\" + language + L".txt";
     VecWstr storeline = readUTF8File(filename);
 
     if (error) throw nemesis::exception();
@@ -65,8 +64,8 @@ void DebugMsg::setup(const wstring& language)
                 {
                     wstring code = storeline[i].substr(4, storeline[i].find(L"=") - 4);
 
-                    if (isOnlyNumber(code)) uilist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1); 
-
+                    if (isOnlyNumber(code))
+                        uilist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
                 }
             }
             else if (wordFind(storeline[i], L"TBT ") == 0)
@@ -75,7 +74,8 @@ void DebugMsg::setup(const wstring& language)
                 {
                     wstring code = storeline[i].substr(4, storeline[i].find(L"=") - 4);
 
-                    if (isOnlyNumber(code)) textlist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
+                    if (isOnlyNumber(code))
+                        textlist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
                 }
             }
             else if (wordFind(storeline[i], L"ERR ") == 0)
@@ -84,7 +84,8 @@ void DebugMsg::setup(const wstring& language)
                 {
                     wstring code = storeline[i].substr(4, storeline[i].find(L"=") - 4);
 
-                    if (isOnlyNumber(code)) errorlist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
+                    if (isOnlyNumber(code))
+                        errorlist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
                 }
             }
             else if (wordFind(storeline[i], L"WAR ") == 0)
@@ -93,7 +94,8 @@ void DebugMsg::setup(const wstring& language)
                 {
                     wstring code = storeline[i].substr(4, storeline[i].find(L"=") - 4);
 
-                    if (isOnlyNumber(code)) warninglist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
+                    if (isOnlyNumber(code))
+                        warninglist[stoi(code)] = storeline[i].substr(storeline[i].find(L"=") + 1);
                 }
             }
         }
@@ -160,14 +162,171 @@ string EngLogWarning(int warningcode)
     return nemesis::transform_to<string>(EnglishLog->warninglist[warningcode]);
 }
 
+void InsertMessageParam(string& message, const string& newinput, const string& replacement)
+{
+    int ref = sameWordCount(message, newinput);
+
+    if (ref == 0)
+    {
+        string msg = "CRITICAL ERROR: Wrong error input. Please re-install Nemesis";
+        interMsg(msg + "\n");
+        DebugLogging(msg);
+        error = true;
+        return;
+    }
+
+    for (int i = 0; i < ref; ++i)
+    {
+        message.replace(message.find(newinput), newinput.size(), replacement);
+    }
+}
+
+void InsertMessageParam(wstring& message, const wstring& newinput, const wstring& replacement)
+{
+    int ref = sameWordCount(message, newinput);
+
+    if (ref == 0)
+    {
+        wstring msg = L"CRITICAL ERROR: Wrong error input. Please re-install Nemesis";
+        interMsg(msg + L"\n");
+        DebugLogging(msg);
+        error = true;
+        return;
+    }
+
+    for (int i = 0; i < ref; ++i)
+    {
+        message.replace(message.find(newinput), newinput.size(), replacement);
+    }
+}
+
+void AdditionalInput(std::string& message, int counter, const std::string& input)
+{
+    string newinput = "<" + to_string(counter) + ">";
+    InsertMessageParam(message, newinput, input);
+}
+
+void AdditionalInput(std::string& message, int counter, const std::string_view& input)
+{
+    string newinput = "<" + to_string(counter) + ">";
+    InsertMessageParam(message, newinput, string(input));
+}
+
+void AdditionalInput(string& message, int counter, const wstring& input)
+{
+    string newinput = "<" + to_string(counter) + ">";
+    InsertMessageParam(message, newinput, nemesis::transform_to<string>(input));
+}
+
+void AdditionalInput(string& message, int counter, const wstring_view& input)
+{
+    string newinput = "<" + to_string(counter) + ">";
+    InsertMessageParam(message, newinput, nemesis::transform_to<string>(input));
+}
+
+void AdditionalInput(string& message, int counter, const filesystem::path& input)
+{
+    string newinput    = "<" + to_string(counter) + ">";
+    string replacement = input.string();
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(string& message, int counter, int input)
+{
+    string newinput    = "<" + to_string(counter) + ">";
+    string replacement = std::to_string(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    string& message, int counter, string& path, const char* temp, int input, string& str_input)
+{
+    string newinput    = "<" + to_string(counter) + ">";
+    string replacement = std::to_string(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(std::wstring& message, int counter, const std::wstring& input)
+{
+    wstring newinput = L"<" + to_wstring(counter) + L">";
+    InsertMessageParam(message, newinput, input);
+}
+
+void AdditionalInput(std::wstring& message, int counter, const std::wstring_view& input)
+{
+    wstring newinput = L"<" + to_wstring(counter) + L">";
+    InsertMessageParam(message, newinput, wstring(input));
+}
+
+void AdditionalInput(std::wstring& message, int counter, const char* input)
+{
+    wstring newinput = L"<" + to_wstring(counter) + L">";
+    InsertMessageParam(message, newinput, nemesis::transform_to<wstring>(std::string(input)));
+}
+
+void AdditionalInput(wstring& message, int counter, const string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(wstring& message, int counter, const string_view& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(wstring& message, int counter, const filesystem::path& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = input.wstring();
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(wstring& message, int counter, int input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(std::to_string(input));
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    std::wstring& message, int counter, std::string& modcode, std::string& filepath, const std::string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    std::wstring& message, int counter, const std::string& modcode, int line_count, const std::string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
+void AdditionalInput(
+    std::wstring& message, int counter, std::string& modcode, const char* filepath, const std::string& input)
+{
+    wstring newinput    = L"<" + to_wstring(counter) + L">";
+    wstring replacement = nemesis::transform_to<wstring>(input);
+
+    InsertMessageParam(message, newinput, replacement);
+}
+
 void ErrorMessage(int errorcode)
 {
-    std::scoped_lock<std::mutex> err_Lock(err_Mutex);
+    scoped_lock<mutex> err_Lock(err_Mutex);
 
     if (error) throw nemesis::exception();
 
-    error                 = true;
-    std::wstring errormsg = L"ERROR(" + std::to_wstring(errorcode) + L"): " + DMLogError(errorcode);
+    error            = true;
+    wstring errormsg = L"ERROR(" + to_wstring(errorcode) + L"): " + DMLogError(errorcode);
 
     if (DMLogError(errorcode).length() == 0)
     {
@@ -177,7 +336,7 @@ void ErrorMessage(int errorcode)
     }
 
     interMsg(errormsg + L"\n");
-    DebugLogging("ERROR(" + std::to_string(errorcode) + "): " + EngLogError(errorcode));
+    DebugLogging("ERROR(" + to_string(errorcode) + "): " + EngLogError(errorcode));
     throw nemesis::exception();
 }
 
@@ -199,9 +358,8 @@ void WarningMessage(int warningcode)
     }
 
     warningMsges.push_back(warninmsg + L"\n");
-    DebugLogging("WARNING(" + std::to_string(warningcode) + "): " + EngLogWarning(warningcode));
+    DebugLogging("WARNING(" + to_string(warningcode) + "): " + EngLogWarning(warningcode));
 }
-
 
 wstring TextBoxMessage(int textcode)
 {

@@ -539,7 +539,8 @@ void UpdateFilesStart::RegisterBehavior(shared_ptr<RegisterQueue> curBehavior)
             DebugLogging(L"Behavior Disassemble complete (File: " + newPath + L")");
             emit progressUp();
 
-            if (nemesis::to_lower_copy(curBehavior->file.parent_path().filename().wstring()).find(L"characters")
+            if (nemesis::to_lower_copy(curBehavior->file.parent_path().filename().wstring())
+                    .find(L"characters")
                 == 0)
             {
                 registeredAnim[nemesis::to_lower_copy(curFileNameA)] = SetStr();
@@ -553,7 +554,7 @@ void UpdateFilesStart::RegisterBehavior(shared_ptr<RegisterQueue> curBehavior)
             if (curBehavior->isFirstPerson) firstperson = L"_1stperson\\";
 
             wstring curPath = nemesis::to_lower_copy(curBehavior->file.parent_path().wstring());
-            curPath        = curPath.substr(curPath.find(L"\\meshes\\") + 1);
+            curPath         = curPath.substr(curPath.find(L"\\meshes\\") + 1);
             curFileName
                 = nemesis::to_lower_copy(firstperson + curFileName.substr(8, curFileName.length() - 16));
 
@@ -588,7 +589,8 @@ void UpdateFilesStart::RegisterBehavior(shared_ptr<RegisterQueue> curBehavior)
 #if MULTITHREADED_UPDATE
                     Lockless lock(behaviorProjectLock);
 #endif
-                    behaviorProject[characterfile.data()].push_back(nemesis::transform_to<string>(curFileName));
+                    behaviorProject[characterfile.data()].push_back(
+                        nemesis::transform_to<string>(curFileName));
                 }
 
                 if (line.find("<hkparam name=\"characterFilenames\" numelements=\"") != NOT_FOUND
@@ -823,7 +825,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
                         {
                             bool bone = false;
                             nemesis::regex vector4("\\(((?:-|)[0-9]+\\.[0-9]+) ((?:-|)[0-9]+\\.[0-9]+) "
-                                                 "((?:-|)[0-9]+\\.[0-9]+) ((?:-|)[0-9]+\\.[0-9]+)\\)");
+                                                   "((?:-|)[0-9]+\\.[0-9]+) ((?:-|)[0-9]+\\.[0-9]+)\\)");
                             nemesis::smatch match;
 
                             if (!nemesis::regex_search(curline, match, vector4))
@@ -840,7 +842,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
 
                                 if (curline.find("<!-- Bone$N -->") == NOT_FOUND)
                                 {
-                                    for (auto& it = nemesis::regex_iterator(
+                                    for (auto&& it = nemesis::regex_iterator(
                                              curline, nemesis::regex("([0-9]+(\\.[0-9]+)?)"));
                                          it != nemesis::regex_iterator();
                                          ++it)
@@ -865,7 +867,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
 
                                 storeline.push_back(curline.substr(0, match.position()));
 
-                                for (auto& it = nemesis::regex_iterator(curline, vector4);
+                                for (auto it = nemesis::regex_iterator(curline, vector4);
                                      it != nemesis::regex_iterator();
                                      ++it)
                                 {
@@ -893,7 +895,7 @@ bool UpdateFilesStart::VanillaDisassemble(const wstring& path,
                                         break;
                                 }
 
-                                for (auto& it = nemesis::regex_iterator(curline, vector4);
+                                for (auto it = nemesis::regex_iterator(curline, vector4);
                                      it != nemesis::regex_iterator();
                                      ++it)
                                 {
@@ -980,7 +982,7 @@ bool UpdateFilesStart::AnimDataDisassemble(const wstring& path, MasterAnimData& 
     unordered_map<string, int> projectNameCount;
 
     int projectcounter = 0;
-    size_t totallines = 0;
+    size_t totallines  = 0;
 
     string project;
     string header;
@@ -1068,7 +1070,7 @@ bool UpdateFilesStart::AnimDataDisassemble(const wstring& path, MasterAnimData& 
             }
         }
     }
-    catch (const exception& ex)
+    catch (...)
     {
         ErrorMessage(3014);
     }
@@ -1744,7 +1746,8 @@ void UpdateFilesStart::JoiningEdits(string directory)
 
                     for (auto& each : processQueue)
                     {
-                        multiThreads.enqueue(&UpdateFilesStart::SeparateMod, this, directory, each, std::ref(pack));
+                        multiThreads.enqueue(
+                            &UpdateFilesStart::SeparateMod, this, directory, each, std::ref(pack));
                     }
 
                     multiThreads.join();
@@ -2123,7 +2126,8 @@ void UpdateFilesStart::newAnimUpdate(string sourcefolder, string curCode)
                                     return;
                                 }
                             }
-                            else if (nemesis::regex_match(stemTemp, nemesis::regex("^\\$(?!" + curCode + ").+\\$(?:UC|)$")))
+                            else if (nemesis::regex_match(
+                                         stemTemp, nemesis::regex("^\\$(?!" + curCode + ").+\\$(?:UC|)$")))
                             {
                                 ErrorMessage(3023,
                                              "$" + curCode + "$"
@@ -2267,7 +2271,7 @@ void UpdateFilesStart::milestoneStart(string directory)
     DebugLogging(L"Current Directory: " + curdir);
     DebugLogging(L"Data Directory: " + nemesisInfo->GetDataPath());
     DebugLogging("Skyrim Special Edition: " + string(SSE ? "TRUE" : "FALSE"));
-    filenum = 32;
+    filenum      = 32;
     wstring path = nemesisInfo->GetDataPath() + L"meshes";
 
     DebugLogging("Detecting processes...");

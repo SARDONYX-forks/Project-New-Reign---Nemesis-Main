@@ -6,9 +6,11 @@ using namespace std;
 using LinkedAnimPair = pair<string, nemesis::LinkedVar<AnimDataPack_Condt>>;
 using LinkedInfoPair = pair<string, nemesis::LinkedVar<InfoDataPack_Condt>>;
 
-void getanimdatapack(const nemesis::LinkedVar<LinkedAnimPair>& animdatapack, VecStr& storeline,
+void getanimdatapack(const nemesis::LinkedVar<LinkedAnimPair>& animdatapack,
+                     VecStr& storeline,
                      string& curmodcode);
-void getinfodatapack(const nemesis::LinkedVar<LinkedInfoPair>& infodatapack, VecStr& storeline,
+void getinfodatapack(const nemesis::LinkedVar<LinkedInfoPair>& infodatapack,
+                     VecStr& storeline,
                      string& curmodcode);
 
 AnimDataProject_Condt::AnimDataProject_Condt(const VecStr& storeline, size_t linenum)
@@ -46,7 +48,7 @@ AnimDataProject_Condt::AnimDataProject_Condt(const VecStr& storeline, size_t lin
             }
             case 3:
             {
-                childActive = line;
+                childActive           = line;
                 childActive.linecount = linenum + i;
                 ++type;
                 break;
@@ -359,7 +361,7 @@ InfoDataPack_Condt* AnimDataProject_Condt::ifind(const Header& header, const Mod
     return nullptr;
 }
 
-void AnimDataProject_Condt::getlines(VecStr& storeline) 
+void AnimDataProject_Condt::getlines(VecStr& storeline)
 {
     // project status
     shared_ptr<VecStr> output = getlinkedline(projectActive);
@@ -420,7 +422,8 @@ void getanimdatapack(const nemesis::LinkedVar<LinkedAnimPair>& animdatapack,
         {
             case nemesis::MOD_CODE:
             {
-                modcodelist.push_back(make_pair<const string*, const nemesis::CondVar<LinkedAnimPair>*>(&cond.conditions, &cond));
+                modcodelist.push_back(make_pair<const string*, const nemesis::CondVar<LinkedAnimPair>*>(
+                    &cond.conditions, &cond));
                 break;
             }
             case nemesis::FOREACH:
@@ -542,8 +545,8 @@ void getinfodatapack(const nemesis::LinkedVar<LinkedInfoPair>& infodatapack,
         {
             case nemesis::MOD_CODE:
             {
-                modcodelist.push_back(
-                    make_pair<const string*, const nemesis::CondVar<LinkedInfoPair>*>(&cond.conditions, &cond));
+                modcodelist.push_back(make_pair<const string*, const nemesis::CondVar<LinkedInfoPair>*>(
+                    &cond.conditions, &cond));
                 break;
             }
             case nemesis::FOREACH:

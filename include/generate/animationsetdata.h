@@ -4,8 +4,8 @@
 #include "utilities/alphanum.hpp"
 #include "utilities/writetextfile.h"
 
-#include "generate/generator_utility.h"
 #include "generate/animationsetdatatype.h"
+#include "generate/generator_utility.h"
 
 #include "generate/animation/newanimation.h"
 #include "generate/animation/templateinfo.h"
@@ -24,8 +24,7 @@ struct AnimationDataProject
     std::string mod;                                         // modcode
     std::map<std::string, datapack, alphanum_less> datalist; // anim data set
 
-    AnimationDataProject()
-    {}
+    AnimationDataProject() {}
     AnimationDataProject(int& startline,
                          VecStr& animdatafile,
                          std::string projectname,

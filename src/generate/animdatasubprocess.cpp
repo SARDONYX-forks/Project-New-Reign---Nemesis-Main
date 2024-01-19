@@ -26,8 +26,7 @@ struct invertInt
 {
     short code = SHRT_MAX;
 
-    invertInt()
-    {}
+    invertInt() {}
     invertInt(short _code)
     {
         code = _code;
@@ -91,7 +90,7 @@ void BehaviorSub::AnimDataCompilation()
 
 void BehaviorSub::CompilingAnimData()
 {
-    wstring filepath          = directory + nemesis::transform_to<wstring>(curfilefromlist);
+    wstring filepath         = directory + nemesis::transform_to<wstring>(curfilefromlist);
     string behaviorFile      = curfilefromlist.substr(0, curfilefromlist.find_last_of("."));
     string lowerBehaviorFile = nemesis::to_lower_copy(behaviorFile);
 
@@ -138,7 +137,7 @@ void BehaviorSub::CompilingAnimData()
 
             for (auto& line : newline)
             {
-                const auto storingLine = [&]() 
+                const auto storingLine = [&]()
                 {
                     if (line.find("<!-- *", 0) != NOT_FOUND)
                     {
@@ -180,7 +179,6 @@ void BehaviorSub::CompilingAnimData()
 
                         modif = true;
                         skip  = true;
-
                     }
                     else if (line.find("<!-- ORIGINAL -->") != NOT_FOUND)
                     {
@@ -242,7 +240,7 @@ void BehaviorSub::CompilingAnimData()
                             origLines.push_back(line);
                             continue;
                         }
-                        
+
                         chosenVecLines[newMod].push_back(line);
                         continue;
                     }
@@ -257,7 +255,7 @@ void BehaviorSub::CompilingAnimData()
             int num            = 0;
             projectList.reserve(500);
 
-            for (int i = 1; i < catalyst.size(); ++i)
+            for (int i = 1; static_cast<size_t>(i) < catalyst.size(); ++i)
             {
                 if (catalyst[i].second.find(".txt") == NOT_FOUND)
                 {
@@ -289,15 +287,16 @@ void BehaviorSub::CompilingAnimData()
                 {
                     bool empty = false;
 
-                    if (catalyst[l - 1].second == "") 
+                    if (catalyst[l - 1].second == "")
                     {
-                        empty = true; 
+                        empty = true;
                     }
                     else
                     {
                         int next = -1;
 
-                        while (l + next >= 0 && catalyst[l + next].second.find("<!--") != NOT_FOUND)
+                        while ((static_cast<int>(l) + next) >= 0
+                               && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                         {
                             --next;
                         }
@@ -313,30 +312,32 @@ void BehaviorSub::CompilingAnimData()
                         {
                             int next = 1;
 
-                            if (l + next < catalyst.size()
+                            if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                 && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                 ++next;
 
-                            if (l + next < catalyst.size() && isOnlyNumber(catalyst[l + next].second))
+                            if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
+                                && isOnlyNumber(catalyst[l + next].second))
                             {
                                 ++next;
 
-                                if (l + next < catalyst.size()
+                                if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                     && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                 {
                                     ++next;
                                 }
 
-                                if (l + next < catalyst.size() && isOnlyNumber(catalyst[l + next].second))
+                                if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
+                                    && isOnlyNumber(catalyst[l + next].second))
                                 {
                                     int nextnext = next + 1;
 
-                                    if (l + next < catalyst.size()
+                                    if (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                         && catalyst[l + next].second.find("<!--") != NOT_FOUND)
                                         ++nextnext;
 
                                     if (catalyst[l + next].second == "0"
-                                        || (l + nextnext < catalyst.size()
+                                        || (static_cast<uint>(static_cast<int>(l) + next) < catalyst.size()
                                             && catalyst[l + nextnext].second.find("\\") != NOT_FOUND))
                                     {
                                         newline.shrink_to_fit();
@@ -374,12 +375,12 @@ void BehaviorSub::CompilingAnimData()
                                     {
                                         string number
                                             = nemesis::regex_replace(string(catalyst[l + 1].second),
-                                                                   nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
-                                                                   string("\\1"));
+                                                                     nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
+                                                                     string("\\1"));
 
                                         if (number != catalyst[l + 1].second && isOnlyNumber(number))
                                         {
-                                            string modcode  = catalyst[l + 1].second;
+                                            string modcode         = catalyst[l + 1].second;
                                             catalyst[l + 1].second = to_string(uCode[project].to_int());
                                             --uCode[project];
                                             uniqueModCode[project][modcode] = catalyst[l + 1].second;
@@ -401,15 +402,15 @@ void BehaviorSub::CompilingAnimData()
                                     newline.clear();
                                     string number
                                         = nemesis::regex_replace(string(catalyst[++l].second),
-                                                                         nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
-                                                                         string("\\1"));
+                                                                 nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
+                                                                 string("\\1"));
 
                                     if (number != catalyst[l].second && isOnlyNumber(number))
                                     {
                                         if (uniqueModCode[project].find(catalyst[l].second)
                                             != uniqueModCode[project].end())
                                         {
-                                            catalyst[l].second = uniqueModCode[project][catalyst[l].second]; 
+                                            catalyst[l].second = uniqueModCode[project][catalyst[l].second];
                                         }
                                         else
                                         {
@@ -444,7 +445,7 @@ void BehaviorSub::CompilingAnimData()
                                 {
                                     if (uniqueModCode[project].find(line) != uniqueModCode[project].end())
                                     {
-                                        line = uniqueModCode[project][line]; 
+                                        line = uniqueModCode[project][line];
                                     }
                                     else
                                     {
@@ -481,8 +482,8 @@ void BehaviorSub::CompilingAnimData()
                             else
                             {
                                 string number = nemesis::regex_replace(string(catalyst[l + 1].second),
-                                                                     nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
-                                                                     string("\\1"));
+                                                                       nemesis::regex("[a-zA-Z]+[$]([0-9]+)"),
+                                                                       string("\\1"));
 
                                 if (number != catalyst[l + 1].second && isOnlyNumber(number))
                                 {
@@ -578,7 +579,7 @@ void BehaviorSub::CompilingAnimData()
 
         if (error) return;
 
-        auto& bhvtemp = BehaviorTemplate->grouplist.find(lowerBehaviorFile);
+        const auto& bhvtemp = BehaviorTemplate->grouplist.find(lowerBehaviorFile);
 
         // check for having newAnimation for the file
         if (bhvtemp != BehaviorTemplate->grouplist.end() && bhvtemp->second.size() > 0)
@@ -938,7 +939,7 @@ void BehaviorSub::CompilingAnimData()
     // final output
 #ifdef DEBUG
     string outpath = "new_behaviors\\"
-               + behaviorPath[lowerBehaviorFile].substr(behaviorPath[lowerBehaviorFile].find("\\") + 1);
+                     + behaviorPath[lowerBehaviorFile].substr(behaviorPath[lowerBehaviorFile].find("\\") + 1);
 #else
     filesystem::path outpath = behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)];
 #endif

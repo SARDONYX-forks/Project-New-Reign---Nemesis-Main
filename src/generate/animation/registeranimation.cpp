@@ -5,10 +5,10 @@
 
 #include "debuglog.h"
 
-#include "utilities/regex.h"
 #include "utilities/algorithm.h"
-#include "utilities/stringsplit.h"
 #include "utilities/readtextfile.h"
+#include "utilities/regex.h"
+#include "utilities/stringsplit.h"
 
 #include "generate/animation/registeranimation.h"
 
@@ -37,9 +37,9 @@ bool ruleCheck(VecStr rules, VecStr curList, TemplateInfo& behaviortemplate, str
                 {
                     if (k != rule.length() - 1)
                     {
-                        if (cur[k] == rule[k]) 
+                        if (cur[k] == rule[k])
                         {
-                            matching = true; 
+                            matching = true;
                         }
                         else
                         {
@@ -78,10 +78,10 @@ registerAnimation::registerAnimation(sf::path curDirectory,
                                      bool fstP,
                                      bool isNemesis)
 {
-    int linecount   = isNemesis ? 8 : 5;
-    modID           = filename.string().substr(linecount, filename.string().find("_List.txt") - linecount);
+    int linecount    = isNemesis ? 8 : 5;
+    modID            = filename.string().substr(linecount, filename.string().find("_List.txt") - linecount);
     wstring filepath = curDirectory.wstring() + filename.wstring();
-    linecount       = wordFind(filepath, L"\\animations\\", true);
+    linecount        = wordFind(filepath, L"\\animations\\", true);
 
     if (linecount == NOT_FOUND) ErrorMessage(1081);
 
@@ -442,7 +442,8 @@ registerAnimation::registerAnimation(sf::path curDirectory,
                     animInfo[lowerformat].back()->addFilename(newAnimInfo[3]);
 
                     if (!animInfo[lowerformat].back()->known
-                        && !isFileExist(filepath.substr(0, filepath.find_last_of(L"\\") + 1) + nemesis::transform_to<wstring>(newAnimInfo[3])))
+                        && !isFileExist(filepath.substr(0, filepath.find_last_of(L"\\") + 1)
+                                        + nemesis::transform_to<wstring>(newAnimInfo[3])))
                     {
                         WarningMessage(1000, newAnimInfo[3]);
                     }
@@ -695,20 +696,24 @@ registerAnimation::registerAnimation(sf::path curDirectory,
 
 void registerAnimation::clear()
 {
-	AnimVar.clear();
-	templateType.clear();
-	isMulti.clear();
-	last.clear();
+    AnimVar.clear();
+    templateType.clear();
+    isMulti.clear();
+    last.clear();
 }
 
 var::var(string inputtype, string inputvalue, bool& failed)
 {
-	nemesis::to_lower(inputtype);
+    nemesis::to_lower(inputtype);
 
-	if (inputtype == "bool") var_type = "BOOL";
-	else if (inputtype == "int32") var_type = "INT32";
-	else if (inputtype == "real") var_type = "REAL";
-	else failed = true;
+    if (inputtype == "bool")
+        var_type = "BOOL";
+    else if (inputtype == "int32")
+        var_type = "INT32";
+    else if (inputtype == "real")
+        var_type = "REAL";
+    else
+        failed = true;
 
-	init_value = inputvalue;
+    init_value = inputvalue;
 }

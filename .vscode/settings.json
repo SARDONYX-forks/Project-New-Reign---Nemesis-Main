@@ -1,0 +1,38 @@
+{
+  "[c][cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "C_Cpp.formatting": "clangFormat",
+  "files.associations": {
+    ".editorconfig": "properties",
+    ".env": "dotenv",
+    ".eslintignore": "ignore",
+    ".eslintrc.json": "json",
+    ".gitignore": "ignore",
+    "*.html": "html",
+    "*.inc": "assembly",
+    "*.ipynb": "python",
+    "*.md": "markdown",
+    "*.txt": "txt",
+    "*.vim": "viml",
+    "*CMakeLists*.txt": "cmake",
+    "Cargo.lock": "toml",
+    "default.conf": "nginx",
+    "LICENSE": "txt",
+    "yarn.lock": "txt",
+    "*.asm": "assembly",
+    "*.s": "assembly",
+    "atomic": "cpp",
+    "xstring": "cpp",
+    "chrono": "cpp",
+    "filesystem": "cpp",
+    "string_view": "cpp"
+  },
+  "C_Cpp.codeAnalysis.clangTidy.enabled": false
+  // "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+  //   "*",
+  //   "performance-*",
+  //   "modernize-*",
+  //   "readability-*"
+  // ]
+}

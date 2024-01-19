@@ -6,8 +6,8 @@
 
 #include "connector.h"
 
-#include "ui/ScrollBar.h"
 #include "ui/BehaviorListModel.h"
+#include "ui/ScrollBar.h"
 
 extern std::unordered_map<std::string, std::string> modConvert;
 

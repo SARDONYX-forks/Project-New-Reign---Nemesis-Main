@@ -35,4 +35,4 @@ namespace nemesis
         uint finalxor    = 0;
         uint iTable[256];
     };
-}
+} // namespace nemesis

@@ -6,30 +6,30 @@
 
 #include "ui/Terminator.h"
 
-#include "utilities/conditions.h"
-#include "utilities/threadpool.h"
 #include "utilities/atomiclock.h"
-#include "utilities/stringsplit.h"
+#include "utilities/conditions.h"
 #include "utilities/readtextfile.h"
+#include "utilities/stringsplit.h"
+#include "utilities/threadpool.h"
 
 #include "generate/addanims.h"
 #include "generate/addevents.h"
 #include "generate/addvariables.h"
-#include "generate/behaviorprocess.h"
-#include "generate/playerexclusive.h"
-#include "generate/generator_utility.h"
-#include "generate/behaviorgenerator.h"
-#include "generate/behaviorsubprocess.h"
 #include "generate/animationdatatracker.h"
+#include "generate/behaviorgenerator.h"
+#include "generate/behaviorprocess.h"
 #include "generate/behaviorprocess_utility.h"
+#include "generate/behaviorsubprocess.h"
+#include "generate/generator_utility.h"
+#include "generate/playerexclusive.h"
 
+#include "generate/animation/grouptemplate.h"
 #include "generate/animation/import.h"
 #include "generate/animation/nodejoint.h"
-#include "generate/animation/templatetree.h"
-#include "generate/animation/grouptemplate.h"
-#include "generate/animation/singletemplate.h"
 #include "generate/animation/registeranimation.h"
+#include "generate/animation/singletemplate.h"
 #include "generate/animation/templateprocessing.h"
+#include "generate/animation/templatetree.h"
 
 using namespace std;
 namespace sf = filesystem;
@@ -171,7 +171,7 @@ bool BehaviorSub::modPickProcess(unordered_map<string, vector<pair<uint, shared_
 
     string lastline
         = nemesis::regex_replace(*orig.back().second, nemesis::regex("^([\t]+).*$"), string("\\1"));
-    int counter2    = count(lastline.begin(), lastline.end(), '\t');
+    int counter2 = count(lastline.begin(), lastline.end(), '\t');
 
     if (counter != counter2) return false;
 
@@ -331,7 +331,7 @@ void BehaviorSub::CompilingBehavior()
         return;
     }
 
-    double duration;
+    // double duration;
 
     {
         bool hasAA   = alternateAnim.size() != 0;
@@ -383,7 +383,7 @@ void BehaviorSub::CompilingBehavior()
         string line;
         unordered_map<string, vector<pair<uint, shared_ptr<string>>>> modEditStore;
 
-        auto storingLine = [&]() 
+        auto storingLine = [&]()
         {
             if (line.find("<!-- *", 0) != NOT_FOUND)
             {
@@ -551,7 +551,7 @@ void BehaviorSub::CompilingBehavior()
             && catalyst.back().second.find("<!-- CLOSE -->") == NOT_FOUND)
         {
             modLine.push_back(make_pair(modLine.size(), newMod));
-            catalyst.push_back(make_pair(catalyst.size(),""));
+            catalyst.push_back(make_pair(catalyst.size(), ""));
         }
 
         DebugLogging(L"Processing behavior: " + filepath
@@ -585,7 +585,7 @@ void BehaviorSub::CompilingBehavior()
             sf::path curFile(GetFileDirectory(outputdir));
             wstring wrigfile = curFile.parent_path().parent_path().wstring() + L"\\"
                                + nemesis::transform_to<wstring>(rigfile);
-            
+
             if (found && isFileExist(wrigfile) && !sf::is_directory(wrigfile))
             {
                 bonenum = bonePatch(wrigfile, oribone, newBone, process->hkxCompiler);
@@ -623,9 +623,9 @@ void BehaviorSub::CompilingBehavior()
                 pos += 17;
                 string nodeID = line.substr(pos, line.find("\" class=\"", pos) - pos);
 
-                if (isOnlyNumber(nodeID)) 
+                if (isOnlyNumber(nodeID))
                 {
-                    curID = stoi(nodeID); 
+                    curID = stoi(nodeID);
                 }
                 else
                 {
@@ -750,9 +750,9 @@ void BehaviorSub::CompilingBehavior()
             }
         }
 
-        curID                  = firstID;
+        curID = firstID;
 
-        int special            = 0;
+        int special = 0;
 
         bool doneEventName     = false;
         bool doneEventInfo     = false;
@@ -788,8 +788,8 @@ void BehaviorSub::CompilingBehavior()
             nemesis::smatch check;
 
             if (line.length() == 0)
-            { 
-                catalystMap[curID].push_back(line); 
+            {
+                catalystMap[curID].push_back(line);
             }
             else
             {
@@ -1014,9 +1014,9 @@ void BehaviorSub::CompilingBehavior()
                 {
                     line.find("<hkparam name=\"variableNames\" numelements=") != NOT_FOUND
                         ? doneVarName = true
-                        : line.find("<hkparam name=\"wordVariableValues\" numelements=") != NOT_FOUND
-                              ? doneVarWord = true
-                              : doneVarInfo = true;
+                    : line.find("<hkparam name=\"wordVariableValues\" numelements=") != NOT_FOUND
+                        ? doneVarWord = true
+                        : doneVarInfo = true;
 
                     nemesis::smatch match;
 
@@ -1090,9 +1090,9 @@ void BehaviorSub::CompilingBehavior()
                 {
                     line.find("<hkparam name=\"deformableSkinNames\" numelements=\"") != NOT_FOUND
                         ? doneDeform = true
-                        : line.find("<hkparam name=\"rigidSkinNames\" numelements=\"") != NOT_FOUND
-                              ? doneRigid        = true
-                              : doneAnimFileName = true;
+                    : line.find("<hkparam name=\"rigidSkinNames\" numelements=\"") != NOT_FOUND
+                        ? doneRigid        = true
+                        : doneAnimFileName = true;
 
                     nemesis::smatch match;
 
@@ -1167,10 +1167,13 @@ void BehaviorSub::CompilingBehavior()
 
                             if (eventelements == -1) eventelements = counter;
 
-                            eventOpen                 = false;
-                            if (replacedNum) {
+                            eventOpen = false;
+                            if (replacedNum)
+                            {
                                 replacedNum = false;
-                            } else {
+                            }
+                            else
+                            {
                                 elementUpdate(elementLine, counter, curID, catalystMap);
                             }
                         }
@@ -1202,7 +1205,7 @@ void BehaviorSub::CompilingBehavior()
                     if (!replacedNum && curNum == "wordVariableValues"
                         && line.find("<hkparam name=\"value\">") != NOT_FOUND)
                     {
-                        ++counter; 
+                        ++counter;
                     }
                     else if (!replacedNum && curNum == "variableInfos"
                              && line.find("<hkparam name=\"type\">") != NOT_FOUND)
@@ -1290,10 +1293,13 @@ void BehaviorSub::CompilingBehavior()
 
                                 if (variableelements == -1) variableelements = counter;
 
-                                varOpen                   = false;
-                                if (replacedNum) {
+                                varOpen = false;
+                                if (replacedNum)
+                                {
                                     replacedNum = false;
-                                } else {
+                                }
+                                else
+                                {
                                     elementUpdate(elementLine, counter, curID, catalystMap);
                                 }
                             }
@@ -1532,7 +1538,7 @@ void BehaviorSub::CompilingBehavior()
                                         if (isFileExist(animation.parent_path().parent_path().string()
                                                         + "\\Animations\\" + animFile))
                                         {
-                                            line.replace(pos, animPath.length(), "Animations\\" + animFile); 
+                                            line.replace(pos, animPath.length(), "Animations\\" + animFile);
                                         }
                                     }
                                 }
@@ -1664,7 +1670,8 @@ void BehaviorSub::CompilingBehavior()
                             if (change != line)
                             {
                                 string oldChange = "$" + change + "$";
-                                eventIDReplacer(change, "BASE", behaviorFile, eventid, ZeroEvent, catalyst[l].first);
+                                eventIDReplacer(
+                                    change, "BASE", behaviorFile, eventid, ZeroEvent, catalyst[l].first);
                                 line.replace(line.find(oldChange), oldChange.length(), change);
                             }
 
@@ -1741,7 +1748,7 @@ void BehaviorSub::CompilingBehavior()
 
                 if (isClipTrigger && line.find("<hkparam name=\"localTime\">-") != NOT_FOUND)
                 {
-                    negative = true; 
+                    negative = true;
                 }
                 else if (negative && line.find("<hkparam name=\"relativeToEndOfClip\">") != NOT_FOUND)
                 {
@@ -1804,7 +1811,7 @@ void BehaviorSub::CompilingBehavior()
 
                 if (isFileExist(cachedFile) && !sf::is_directory(cachedFile))
                 {
-                    sf::copy_file(cachedFile, outputdir, sf::copy_options::overwrite_existing); 
+                    sf::copy_file(cachedFile, outputdir, sf::copy_options::overwrite_existing);
                 }
                 else if (isFileExist(outputdir) && !sf::is_directory(outputdir))
                 {
@@ -1819,7 +1826,8 @@ void BehaviorSub::CompilingBehavior()
                     ++i;
                 }
 
-                DebugLogging(L"Processing behavior: " + filepath + L" (Check point 3.4, No changes detected)");
+                DebugLogging(L"Processing behavior: " + filepath
+                             + L" (Check point 3.4, No changes detected)");
                 return;
             }
         }
@@ -2018,9 +2026,7 @@ void BehaviorSub::CompilingBehavior()
                                             BehaviorTemplate->optionlist[templateCode].core,
                                             newAnimCopy[k],
                                             allEditLines.back(),
-                                            isCoreDone[newAnimCopy[k]
-                                                           ->GetGroupAnimInfo()[0]
-                                                           ->filename],
+                                            isCoreDone[newAnimCopy[k]->GetGroupAnimInfo()[0]->filename],
                                             functionState,
                                             exportID,
                                             eventid,
@@ -2325,9 +2331,9 @@ void BehaviorSub::CompilingBehavior()
 
                         diff = chrono::steady_clock::now() - start_time;
                         grouptimer += chrono::duration_cast<chrono::milliseconds>(diff).count();
-                        DebugLogging(L"Processing behavior: " + filepath
-                                     + L" (Check point 3.8, Mod code: " + nemesis::transform_to<wstring>(templateCode)
-                                     + L", Animation count: " + to_wstring(newAnimCount) + L" COMPLETE)");
+                        DebugLogging(L"Processing behavior: " + filepath + L" (Check point 3.8, Mod code: "
+                                     + nemesis::transform_to<wstring>(templateCode) + L", Animation count: "
+                                     + to_wstring(newAnimCount) + L" COMPLETE)");
                     }
                 }
 
@@ -2421,8 +2427,8 @@ void BehaviorSub::CompilingBehavior()
 
     if (clipAA.size() != 0)
     {
-        DebugLogging(L"Processing behavior: " + filepath
-                     + L" (Check point 4.2, AA count: " + to_wstring(clipAA.size()) + L")");
+        DebugLogging(L"Processing behavior: " + filepath + L" (Check point 4.2, AA count: "
+                     + to_wstring(clipAA.size()) + L")");
         unordered_map<string, int> replacerCount;
 
         for (auto iter = clipAA.begin(); iter != clipAA.end(); ++iter)
@@ -2538,7 +2544,7 @@ void BehaviorSub::CompilingBehavior()
                 string animpath;
 
                 {
-                    int i_baseID       = stoi(baseID);
+                    int i_baseID      = stoi(baseID);
                     auto pceaBaseIter = pceaID.find(iter->first);
                     catalystMap[i_baseID].reserve(catalystMap[iter->first].size());
                     catalystMap[i_baseID].push_back(
@@ -2701,16 +2707,16 @@ void BehaviorSub::CompilingBehavior()
             if (isChange) catalystMap[iter->first] = msglines;
         }
 
-        DebugLogging(L"Processing behavior: " + filepath
-                     + L" (Check point 4.4, AA count: " + to_wstring(clipAA.size()) + L" COMPLETE)");
+        DebugLogging(L"Processing behavior: " + filepath + L" (Check point 4.4, AA count: "
+                     + to_wstring(clipAA.size()) + L" COMPLETE)");
     }
 
     VecStr PCEALines;
 
     if (pceaID.size() > 0)
     {
-        DebugLogging(L"Processing behavior: " + filepath
-                     + L" (Check point 4.6, PCEA count: " + to_wstring(pceaID.size()) + L")");
+        DebugLogging(L"Processing behavior: " + filepath + L" (Check point 4.6, PCEA count: "
+                     + to_wstring(pceaID.size()) + L")");
         unordered_map<string, int> replacerCount;
 
         for (auto& datalist : pceaID)
@@ -2720,7 +2726,8 @@ void BehaviorSub::CompilingBehavior()
 
             if (error) throw nemesis::exception();
 
-            for (auto data = datalist.second->rbegin(); data != datalist.second->rend(); ++data) {
+            for (auto data = datalist.second->rbegin(); data != datalist.second->rend(); ++data)
+            {
                 while (importline.length() < 4)
                 {
                     importline = "0" + importline;
@@ -2826,7 +2833,8 @@ void BehaviorSub::CompilingBehavior()
 
             lineRe.push_back(msglines);
 
-            for (auto it = lineRe.rbegin(); it != lineRe.rend(); ++it) {
+            for (auto it = lineRe.rbegin(); it != lineRe.rend(); ++it)
+            {
                 PCEALines.insert(PCEALines.end(), it->begin(), it->end());
             }
 
@@ -2854,16 +2862,18 @@ void BehaviorSub::CompilingBehavior()
     DebugLogging(L"Processing behavior: " + filepath + L" (Check point 5, Prepare to output)");
     process->newMilestone();
 
-    if (behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)].size() == 0) ErrorMessage(1068, behaviorFile);
+    if (behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)].size() == 0)
+        ErrorMessage(1068, behaviorFile);
 
-    wstring filename = getTempBhvrPath(nemesisInfo).wstring() + L"\\xml\\" + nemesis::transform_to<wstring>(modID + lowerBehaviorFile) + L".xml";
+    wstring filename = getTempBhvrPath(nemesisInfo).wstring() + L"\\xml\\"
+                       + nemesis::transform_to<wstring>(modID + lowerBehaviorFile) + L".xml";
 
     redirToStageDir(outputdir, nemesisInfo);
 
     if (!FolderCreate(GetFileDirectory(filename)) || !FolderCreate(GetFileDirectory(outputdir))) return;
 
     ofstream output(filename);
-    bool isClip = false;
+    bool isClip     = false;
     bool isBehavior = false;
     string clipName;
     wstring projectdir = outputdir.parent_path().parent_path().wstring();

@@ -2,6 +2,7 @@
 #define SINGLETEMPLATE_H_
 
 #include "utilities/linkedvar.h"
+#include "utilities/scope.h"
 
 #include "generate/animation/optionlist.h"
 #include "generate/animation/templateprocessing.h"
@@ -13,9 +14,9 @@ struct AddOnInfo
     std::string header;
     std::string addition;
 
-	AddOnInfo() {};
-	AddOnInfo(std::string n_h, std::string n_a);
-	AddOnInfo(std::string n_h, std::string n_a, int n_om);
+    AddOnInfo(){};
+    AddOnInfo(std::string n_h, std::string n_a);
+    AddOnInfo(std::string n_h, std::string n_a, int n_om);
 };
 
 class AnimTemplate
@@ -35,11 +36,11 @@ class AnimTemplate
                  nemesis::CondVar<std::string>* generatedlines);
 
 public:
-	bool hasDuration;
-	bool isGroup = false;
-	size_t size = 0;
-	nemesis::CondVar<std::string> lines;
-	proc process;
+    bool hasDuration;
+    bool isGroup = false;
+    size_t size  = 0;
+    nemesis::CondVar<std::string> lines;
+    proc process;
 
     void ExamineTemplate(std::string n_format,
                          std::string n_file,
@@ -50,5 +51,25 @@ public:
 };
 
 std::string getOption(std::string curline);
+
+void ProcessFunction(std::string change,
+                     std::string line,
+                     std::string format,
+                     std::string behaviorFile,
+                     std::string multiOption,
+                     bool& isEnd,
+                     int numline,
+                     size_t curPos,
+                     OptionList& optionlist,
+                     std::map<int, std::vector<std::shared_ptr<nemesis::scope>>>& lineblocks,
+                     std::vector<AddOnInfo>& addInfo,
+                     bool& isTrueMulti,
+                     bool isGroup,
+                     bool isMaster,
+                     bool isMC,
+                     proc& process);
+
+// lvalue references must be bound to variables, because this method requires &proc and cannot std::move.
+extern proc _dummy_proc;
 
 #endif

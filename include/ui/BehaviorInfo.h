@@ -10,8 +10,7 @@ struct BehaviorInfo
     QString author;
     Qt::CheckState state = Qt::Unchecked;
 
-    BehaviorInfo()
-    {}
+    BehaviorInfo() {}
     BehaviorInfo(const BehaviorInfo& other);
     BehaviorInfo(const QString name, const QString modauthor);
 };

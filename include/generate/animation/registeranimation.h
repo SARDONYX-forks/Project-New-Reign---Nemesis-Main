@@ -1,11 +1,11 @@
 #ifndef REGISTERANIMATION_H_
 #define REGISTERANIMATION_H_
 
-#include <string>
 #include <iostream>
+#include <string>
 
-#include "generate/animation/templateinfo.h"
 #include "generate/animation/animationinfo.h"
+#include "generate/animation/templateinfo.h"
 
 struct var
 {
@@ -13,8 +13,7 @@ struct var
     std::string init_value = "0";
 
     var(std::string inputtype, std::string inputvalue, bool& failed);
-    var()
-    {}
+    var() {}
 };
 
 struct registerAnimation

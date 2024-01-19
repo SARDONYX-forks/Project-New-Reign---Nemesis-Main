@@ -82,7 +82,7 @@ void getlinkedline(const nemesis::LinkedVar<std::string>& linkedline, VecStr& st
         for (auto& modcode : modcodelist)
         {
             storeline.push_back(*modcode->rawlist[0].raw + "\t\t\t\t\t<!-- *" + modcode->conditions
-                                 + "* -->");
+                                + "* -->");
         }
 
         if (linkedline.raw) storeline.push_back(*linkedline.raw + "\t\t\t\t\t<!-- original -->");

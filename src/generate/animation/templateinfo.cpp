@@ -151,9 +151,10 @@ TemplateInfo::TemplateInfo()
                                 }
                                 else if (lowerfilename[0] == '#')
                                 {
-                                    string number = nemesis::regex_replace(string(lowerfilename),
-                                                                         nemesis::regex("[^0-9]*([0-9]+).*"),
-                                                                         string("\\1"));
+                                    string number
+                                        = nemesis::regex_replace(string(lowerfilename),
+                                                                 nemesis::regex("[^0-9]*([0-9]+).*"),
+                                                                 string("\\1"));
 
                                     if (lowerfilename == "#" + number + ".txt" && isOnlyNumber(number))
                                     {
@@ -171,7 +172,7 @@ TemplateInfo::TemplateInfo()
                                     {
                                         if (line.find("class=\"hkbStateMachine\" signature=\"") != NOT_FOUND)
                                         {
-                                            isStateMachine = true; 
+                                            isStateMachine = true;
                                         }
 
                                         if (isStateMachine && line.find("<!-- FOREACH ^" + code) != NOT_FOUND)

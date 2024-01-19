@@ -7,8 +7,7 @@ struct attackdata
     bool isMulti = false;
     std::string data;
 
-    attackdata()
-    {}
+    attackdata() {}
     attackdata(std::string _data)
     {
         data = _data;

@@ -1,5 +1,5 @@
-#include "utilities/algorithm.h"
 #include "utilities/writetextfile.h"
+#include "utilities/algorithm.h"
 
 using namespace std;
 
@@ -7,7 +7,7 @@ FileWriter::FileWriter(filesystem::path filename, VecWstr args)
     : filepath(filename)
 {
     wstring mode = L"w";
-    
+
     for (auto each : args)
     {
         mode.append(L"," + each);

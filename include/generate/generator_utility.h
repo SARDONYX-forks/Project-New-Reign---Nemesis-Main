@@ -1,7 +1,6 @@
 #ifndef GENERATOR_UTILITY_H_
 #define GENERATOR_UTILITY_H_
 
-
 #include "nemesisinfo.h"
 
 #include "generate/alternateanimation.h"

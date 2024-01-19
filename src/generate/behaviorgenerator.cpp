@@ -55,7 +55,7 @@ public:
 sf::path tryGetRelative(sf::path filepath)
 {
     sf::path current = sf::current_path();
-    wstring target  = L"";
+    wstring target   = L"";
 
     do
     {
@@ -71,7 +71,7 @@ sf::path tryGetRelative(sf::path filepath)
     return filepath;
 }
 
-HkxCompiler::HkxCompiler() 
+HkxCompiler::HkxCompiler()
 {
     tempdir = sf::current_path().root_path().string() + "Nemesis_TempHkx\\";
 
@@ -100,9 +100,7 @@ bool HkxCompiler::hkxcmdProcess(fpath xmlfile, fpath hkxfile, bool last) const
     DebugLogging("HKX Input: " + input + "\nHKX Output: " + output);
 
     if (QProcess::execute(QString::fromStdString(tempcompiler),
-                          QStringList() << "convert"
-                                        << (SSE ? "-v:AMD64" : "-v:WIN32") 
-                                        << input.data()
+                          QStringList() << "convert" << (SSE ? "-v:AMD64" : "-v:WIN32") << input.data()
                                         << output.data())
             != 0
         || !isFileExist(output))
@@ -164,7 +162,7 @@ void HkxCompiler::ensureExtension(fpath& file1, const wstring& ext1, fpath& file
     }
 }
 
-std::string HkxCompiler::xmlDecompile(fpath hkxfile, fpath xmlfile, const HkxCompileCount& hkxcount) const 
+std::string HkxCompiler::xmlDecompile(fpath hkxfile, fpath xmlfile, const HkxCompileCount& hkxcount) const
 {
     string input  = tempdir + to_string(hkxcount.GetNum()) + "_" + hkxfile.filename().string();
     string output = tempdir + to_string(hkxcount.GetNum()) + "_" + xmlfile.filename().string();

@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/build/5.15.2/msvc2019/include",
+        "${workspaceFolder}/build/5.15.2/msvc2019/include/QtCore",
+        "${workspaceFolder}/build/5.15.2/msvc2019/include/QtGui",
+        "${workspaceFolder}/build/5.15.2/msvc2019/include/QtWidgets",
+        "${workspaceFolder}/build/NemesisUnlimitedBehaviorEngine_autogen/include_Release",
+        "${workspaceFolder}/build/_deps/boost-src",
+        "${workspaceFolder}/build/_deps/cpython-src/Include",
+        "${workspaceFolder}/external/hkxcmd",
+        "${workspaceFolder}/external/hkxcmd/havok_2010_2_0/Source",
+        "${workspaceFolder}/include"
+      ],
+      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+      "windowsSdkVersion": "10.0.22621.0",
+      "compilerPath": "cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-msvc-x86"
+    }
+  ],
+  "version": 4
+}

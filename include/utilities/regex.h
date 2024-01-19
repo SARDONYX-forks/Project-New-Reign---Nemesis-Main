@@ -13,14 +13,16 @@ namespace nemesis
         using underlying_iterator  = boost::sregex_iterator;
         using underlying_exception = boost::regex_error;
 
-        using underlying_wregex     = boost::wregex;
-        using underlying_wsmatch    = boost::wsmatch;
-        using underlying_witerator  = boost::wsregex_iterator;
+        using underlying_wregex    = boost::wregex;
+        using underlying_wsmatch   = boost::wsmatch;
+        using underlying_witerator = boost::wsregex_iterator;
 
 #define FWD(val) std::forward<decltype(val)>(val)
-        auto underlying_regex_search  = [](auto&&... args) { return boost::regex_search(FWD(args)...); };
-        auto underlying_regex_match   = [](auto&&... args) { return boost::regex_match(FWD(args)...); };
-        auto underlying_regex_replace = [](auto&&... args) { return boost::regex_replace(FWD(args)...); };
+        inline auto underlying_regex_search
+            = [](auto&&... args) { return boost::regex_search(FWD(args)...); };
+        inline auto underlying_regex_match = [](auto&&... args) { return boost::regex_match(FWD(args)...); };
+        inline auto underlying_regex_replace
+            = [](auto&&... args) { return boost::regex_replace(FWD(args)...); };
 #undef FWD
     } // namespace detail
 
@@ -45,7 +47,8 @@ namespace nemesis
 
         smatch(const detail::underlying_smatch& match)
             : match_(match)
-        {}
+        {
+        }
 
         std::string operator[](size_t number) const;
         std::string str(size_t number = 0) const;
@@ -147,6 +150,7 @@ namespace nemesis
     bool wregex_match(const std::wstring& line, nemesis::wsmatch& match, const nemesis::wregex& rgx);
     bool wregex_match(const std::wstring& line, const nemesis::wregex& rgx);
 
-    std::wstring wregex_replace(const std::wstring& line, const nemesis::wregex& rgx, const std::wstring& replace);
+    std::wstring
+    wregex_replace(const std::wstring& line, const nemesis::wregex& rgx, const std::wstring& replace);
 
 } // namespace nemesis

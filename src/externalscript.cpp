@@ -9,8 +9,8 @@
 
 #include "externalscript.h"
 
-#include "generate/generator_utility.h"
 #include "generate/alternateanimation.h"
+#include "generate/generator_utility.h"
 
 #include "utilities/algorithm.h"
 
@@ -98,13 +98,17 @@ void BatchScriptThread(const wstring& filename, const filesystem::path& filepath
         if (hidden)
         {
             QProcess* p = new QProcess();
-            p->start(QString::fromStdWString(filepath));
+            // ref: https://doc.qt.io/qt-5/qprocess.html#setNativeArguments
+            // - https://stackoverflow.com/questions/69164921/alternatives-to-qprocessstartdetached-and-qprocess-start-as-they-are-depre
+            p->start(QString::fromStdWString(filepath), QStringList());
             p->waitForFinished();
             delete p;
         }
         else
         {
-            if (QProcess::execute(QString::fromStdWString(filepath)) != 0) WarningMessage(1023, filepath);
+            // command only overload is deprecated. so we use `QStringList`
+            if (QProcess::execute(QString::fromStdWString(filepath), QStringList()) != 0)
+                WarningMessage(1023, filepath);
         }
     }
     catch (const exception& ex)

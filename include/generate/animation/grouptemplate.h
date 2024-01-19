@@ -40,7 +40,8 @@ struct JointTemplate
                             int optionMulti         = -1,
                             int animMulti           = -1,
                             std::string multiOption = "")
-    {}
+    {
+    }
 
     virtual void processing(std::string& line,
                             std::string filename,
@@ -52,7 +53,8 @@ struct JointTemplate
                             int optionMulti         = -1,
                             int animMulti           = -1,
                             std::string multiOption = "")
-    {}
+    {
+    }
 };
 
 struct GroupTemplate : public JointTemplate

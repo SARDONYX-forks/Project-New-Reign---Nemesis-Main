@@ -1,8 +1,8 @@
 #ifndef BEHAVIORGENERATOR_H_
 #define BEHAVIORGENERATOR_H_
 
-#include <string>
 #include <filesystem>
+#include <string>
 
 #include "Global.h"
 
@@ -28,7 +28,8 @@ public:
     bool hkxcmdXmlInput(fpath hkxfile, VecWstr& fileline) const;
 
 private:
-    void ensureExtension(fpath& file1, const std::wstring& ext1, fpath& file2, const std::wstring& ext2) const;
+    void
+    ensureExtension(fpath& file1, const std::wstring& ext1, fpath& file2, const std::wstring& ext2) const;
     std::string xmlDecompile(fpath hkxfile, fpath xmlfile, const HkxCompileCount& hkxcount) const;
 };
 

@@ -1,3 +1,5 @@
+#include "Global.h"
+
 #include "update/animdata/infodatapackcond.h"
 
 using namespace std;

@@ -4,6 +4,7 @@
 #include "utilities/lastupdate.h"
 
 #include "generate/papyruscompile.h"
+#include <Global.h>
 
 using namespace std;
 namespace sf = filesystem;

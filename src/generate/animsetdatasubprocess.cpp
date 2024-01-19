@@ -59,10 +59,10 @@ void BehaviorSub::CompilingASD()
     string lowerBehaviorFile = nemesis::to_lower_copy(behaviorFile);
 
     VecStr projectList;
-    int projectcounter = 0;
-    int headercounter  = 0;
-    string project     = "	";
-    string header      = project;
+    uint projectcounter = 0;
+    uint headercounter  = 0;
+    string project      = "	";
+    string header       = project;
     unordered_map<string, map<string, VecStr, alphanum_less>> ASDPack;
     unordered_map<string, unique_ptr<AnimationDataProject>> ASDData;
 
@@ -100,7 +100,7 @@ void BehaviorSub::CompilingASD()
         // separation of all items for easier access and better compatibility
         for (string line : catalyst)
         {
-            const auto storingLine = [&]() 
+            const auto storingLine = [&]()
             {
                 if (line.find("<!-- *") != NOT_FOUND)
                 {
@@ -118,7 +118,8 @@ void BehaviorSub::CompilingASD()
                         chosenLines.clear();
                     }
 
-                    if (line.find("//* delete this line *//") == NOT_FOUND) storeline.push_back(make_pair(numline, line));
+                    if (line.find("//* delete this line *//") == NOT_FOUND)
+                        storeline.push_back(make_pair(numline, line));
                 }
             };
 
@@ -131,7 +132,7 @@ void BehaviorSub::CompilingASD()
                 {
                     size_t tempint = line.find("<!-- NEW *") + 10;
                     string modID   = line.substr(tempint, line.find("* -->", tempint + 1) - tempint);
-                    
+
                     if (process->chosenBehavior.find(modID) == process->chosenBehavior.end())
                     {
                         isOpen = false;
@@ -143,7 +144,7 @@ void BehaviorSub::CompilingASD()
                     }
 
                     modif = true;
-                    skip = true;
+                    skip  = true;
                 }
                 else if (line.find("<!-- ORIGINAL -->") != NOT_FOUND)
                 {
@@ -205,7 +206,7 @@ void BehaviorSub::CompilingASD()
                         origLines.push_back(line);
                         continue;
                     }
-                        
+
                     chosenVecLines[newMod].push_back(line);
                     continue;
                 }
@@ -216,7 +217,7 @@ void BehaviorSub::CompilingASD()
             if (error) throw nemesis::exception();
         }
 
-        for (int i = 1; i < storeline.size(); ++i)
+        for (uint i = 1; i < storeline.size(); ++i)
         {
             if (isOnlyNumber(storeline[i].second)) break;
 
@@ -322,7 +323,7 @@ void BehaviorSub::CompilingASD()
 
         process->newMilestone();
 
-        for (int i = num; i < storeline.size(); ++i)
+        for (size_t i = num; i < storeline.size(); ++i)
         {
             line = storeline[i].second;
 
@@ -616,7 +617,7 @@ void BehaviorSub::CompilingASD()
 #ifdef DEBUG
         filesystem::path outpath
             = L"new_behaviors\\"
-                          + behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)].substr(
+              + behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)].substr(
                   behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)].find(L"\\") + 1);
 #else
         filesystem::path outpath = behaviorPath[nemesis::transform_to<wstring>(lowerBehaviorFile)];

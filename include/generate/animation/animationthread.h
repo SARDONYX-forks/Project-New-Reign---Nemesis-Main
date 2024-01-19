@@ -19,7 +19,7 @@ struct NewAnimLock
 {
     std::atomic_flag coreLock   = ATOMIC_FLAG_INIT;
     std::atomic_flag subIDLock  = ATOMIC_FLAG_INIT;
-    std::atomic_flag nodeIDLock  = ATOMIC_FLAG_INIT;
+    std::atomic_flag nodeIDLock = ATOMIC_FLAG_INIT;
     std::atomic_flag exportLock = ATOMIC_FLAG_INIT;
 };
 
@@ -95,7 +95,7 @@ struct newGroupArgs
 {
 public:
     std::string templateCode, lowerBehaviorFile, ZeroEvent, ZeroVariable, filename;
-    int* lastID, groupCount;
+    int *lastID, groupCount;
     std::vector<int> stateID;
     std::shared_ptr<GroupTemplate> groupTemp;
     ImportContainer& exportID;

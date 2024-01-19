@@ -4,9 +4,9 @@
 
 #include "utilities/conditions.h"
 
+#include "generate/animation/animationinfo.h"
 #include "generate/animation/import.h"
 #include "generate/animation/newanimation.h"
-#include "generate/animation/animationinfo.h"
 
 #pragma warning(disable : 4503)
 
@@ -24,10 +24,10 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
     {
         string filename = "behavior templates\\" + it->first + ".txt";
 
-        if (!isFileExist(filename)) 
-		{
-			ErrorMessage(1027, filename);
-		}
+        if (!isFileExist(filename))
+        {
+            ErrorMessage(1027, filename);
+        }
 
         VecStr exportFormat;
 
@@ -73,12 +73,12 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                     }
                     else if (line.find("</hkparam>") != NOT_FOUND && norElement)
                     {
-                        string templine = line.substr(0, line.find("</hkparam>"));
-                        __int64 t_counter   = count(templine.begin(), templine.end(), '\t');
+                        string templine   = line.substr(0, line.find("</hkparam>"));
+                        __int64 t_counter = count(templine.begin(), templine.end(), '\t');
 
-						if (openRange == t_counter)
-						{
-							string oldElement;
+                        if (openRange == t_counter)
+                        {
+                            string oldElement;
 
                             if (exportFormat[elementLine].find("numelements=\"$elements$\">", 0) == NOT_FOUND)
                             {
@@ -108,15 +108,15 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                     {
                         string templine = line;
 
-						if (templine.find("<hkobject>") != NOT_FOUND)
-						{
-							templine = templine.substr(0, templine.find("<hkobject>"));
-							__int64 t_counter = count(templine.begin(), templine.end(), '\t');
+                        if (templine.find("<hkobject>") != NOT_FOUND)
+                        {
+                            templine          = templine.substr(0, templine.find("<hkobject>"));
+                            __int64 t_counter = count(templine.begin(), templine.end(), '\t');
 
-                            if (t_counter == openRange + 1) 
-							{
-								eleCounter++;
-							}
+                            if (t_counter == openRange + 1)
+                            {
+                                eleCounter++;
+                            }
                         }
                         else if (templine.find("\t\t\t#") != NOT_FOUND)
                         {
@@ -131,69 +131,71 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                         }
                     }
 
-					if (line.find("$import[1][2]$", 0) != NOT_FOUND)
-					{
-						int reference = sameWordCount(line, "$import[1][2]$");
+                    if (line.find("$import[1][2]$", 0) != NOT_FOUND)
+                    {
+                        int reference = sameWordCount(line, "$import[1][2]$");
 
-						for (int k = 0; k < reference; ++k)
-						{
-							line.replace(line.find("$import[1][2]$"), 14, iter->second);
-						}
-					}
+                        for (int k = 0; k < reference; ++k)
+                        {
+                            line.replace(line.find("$import[1][2]$"), 14, iter->second);
+                        }
+                    }
 
-					if (line.find("$import[1]$", 0) != NOT_FOUND)
-					{
-						int reference = sameWordCount(line, "$import[1]$");
+                    if (line.find("$import[1]$", 0) != NOT_FOUND)
+                    {
+                        int reference = sameWordCount(line, "$import[1]$");
 
-						for (int k = 0; k < reference; ++k)
-						{
-							line.replace(line.find("$import[1]$"), 11, it->first);
-						}
-					}
+                        for (int k = 0; k < reference; ++k)
+                        {
+                            line.replace(line.find("$import[1]$"), 11, it->first);
+                        }
+                    }
 
-					if (line.find("$import[", 0) != NOT_FOUND && line.find("]$", line.find("$import[" + 1)) != NOT_FOUND)
-					{
-						int reference = sameWordCount(line, "$import[");
+                    if (line.find("$import[", 0) != NOT_FOUND
+                        && line.find("]$", line.find("$import[" + 1)) != NOT_FOUND)
+                    {
+                        int reference = sameWordCount(line, "$import[");
 
-						for (int k = 0; k < reference; ++k)
-						{
+                        for (int k = 0; k < reference; ++k)
+                        {
                             string number = nemesis::regex_replace(string(line.substr(line.find("$import["))),
                                                                    nemesis::regex("[^0-9]*([0-9]+).*"),
                                                                    string("\\1"));
 
-							if (line.find("$import[" + number + "]$", 0) != NOT_FOUND)
-							{
-								if (!isOnlyNumber(number))
-								{
-									ErrorMessage(1154, it->first, j + 1);
-								}
+                            if (line.find("$import[" + number + "]$", 0) != NOT_FOUND)
+                            {
+                                if (!isOnlyNumber(number))
+                                {
+                                    ErrorMessage(1154, it->first, j + 1);
+                                }
 
-								int num = stoi(number);
-								VecStr keywords;
-								string templine = iter->first;
-								size_t nextWord;
-								size_t previousWord = 0;
+                                int num = stoi(number);
+                                VecStr keywords;
+                                string templine = iter->first;
+                                size_t nextWord;
+                                size_t previousWord = 0;
 
-								while (true)
-								{
-									nextWord = templine.find("!~^!", previousWord);
+                                while (true)
+                                {
+                                    nextWord = templine.find("!~^!", previousWord);
 
-									if (nextWord != NOT_FOUND)
-									{
-										keywords.push_back(templine.substr(previousWord, nextWord - previousWord));
-										previousWord = nextWord + 4;
-									}
-									else
-									{
-										keywords.push_back(templine.substr(previousWord));
-										break;
-									}
-								}
+                                    if (nextWord != NOT_FOUND)
+                                    {
+                                        keywords.push_back(
+                                            templine.substr(previousWord, nextWord - previousWord));
+                                        previousWord = nextWord + 4;
+                                    }
+                                    else
+                                    {
+                                        keywords.push_back(templine.substr(previousWord));
+                                        break;
+                                    }
+                                }
 
-								if (num - 2 >= int(keywords.size()))
-								{
-									ErrorMessage(1169, it->first, j + 1);
-								}
+                                if (num - 2 >= int(keywords.size()))
+                                {
+                                    ErrorMessage(1169, it->first, j + 1);
+                                }
 
                                 line.replace(line.find("$import[" + number + "]$"),
                                              10 + number.length(),
@@ -205,8 +207,8 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                     if (line.find("$crc32[") != NOT_FOUND
                         && line.find("]$", line.find("crc32[")) != NOT_FOUND)
                     {
-						CRC32Replacer(line, "import", it->first, j + 1); 
-					}
+                        CRC32Replacer(line, "import", it->first, j + 1);
+                    }
 
                     if (line.find("$import[", 0) != NOT_FOUND
                         && line.find("]$", line.find("$import[" + 1)) != NOT_FOUND)
@@ -219,9 +221,9 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                         if (IDExist[importer].length() == 0)
                         {
                             if (bracketCount != altBracketCount)
-                            { 
-								ErrorMessage(1139, "import", it->first, j + 1, importer);
-							}
+                            {
+                                ErrorMessage(1139, "import", it->first, j + 1, importer);
+                            }
 
                             size_t pos  = importer.find('[') + 1;
                             string file = importer.substr(pos, importer.find(']', pos) - pos);
@@ -235,69 +237,69 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                                     = importer.substr(pos, importer.find_last_of(']') + 1 - pos);
                                 int openBrack = 0;
 
-								for (unsigned int j = 0; j < tempKeyword.length(); ++j)
-								{
-									char curChar = tempKeyword[j];
+                                for (unsigned int j = 0; j < tempKeyword.length(); ++j)
+                                {
+                                    char curChar = tempKeyword[j];
 
-									if (curChar == '[')
-									{
-										++openBrack;
-									}
-									else if (curChar == ']')
-									{
-										--openBrack;
+                                    if (curChar == '[')
+                                    {
+                                        ++openBrack;
+                                    }
+                                    else if (curChar == ']')
+                                    {
+                                        --openBrack;
 
-										if (openBrack == 0)
-										{
-											keyword.append("!~^!");
-										}
-									}
-									else
-									{
-										keyword = keyword + curChar;
-									}
-								}
+                                        if (openBrack == 0)
+                                        {
+                                            keyword.append("!~^!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        keyword = keyword + curChar;
+                                    }
+                                }
 
-								pos = keyword.rfind("!~^!");
+                                pos = keyword.rfind("!~^!");
 
-								if (openBrack != 0 || pos == NOT_FOUND || pos != keyword.length() - 4)
-								{
-									ErrorMessage(1139, "import", it->first, j + 1, importer);
-								}
-								else
-								{
-									keyword = keyword.substr(0, keyword.length() - 4);
-								}
-							}
-							else
-							{
-								keyword = "";
-							}
+                                if (openBrack != 0 || pos == NOT_FOUND || pos != keyword.length() - 4)
+                                {
+                                    ErrorMessage(1139, "import", it->first, j + 1, importer);
+                                }
+                                else
+                                {
+                                    keyword = keyword.substr(0, keyword.length() - 4);
+                                }
+                            }
+                            else
+                            {
+                                keyword = "";
+                            }
 
-							for (unsigned int i = 0; i < ExportID.size(); ++i)
-							{
-								if (ExportID[i][file][keyword].length() > 0)
-								{
-									tempID = ExportID[i][file][keyword];
-									break;
-								}
-							}
+                            for (unsigned int i = 0; i < ExportID.size(); ++i)
+                            {
+                                if (ExportID[i][file][keyword].length() > 0)
+                                {
+                                    tempID = ExportID[i][file][keyword];
+                                    break;
+                                }
+                            }
 
-							if (tempID.length() == 0)
-							{
-								tempID = to_string(lastID);
+                            if (tempID.length() == 0)
+                            {
+                                tempID = to_string(lastID);
 
-								while (tempID.length() < 4)
-								{
-									tempID = "0" + tempID;
-								}
+                                while (tempID.length() < 4)
+                                {
+                                    tempID = "0" + tempID;
+                                }
 
                                 IDExist[importer]          = tempID;
                                 newExportID[file][keyword] = tempID;
                                 ++lastID;
 
-								if (lastID == 9216) ++lastID;
-							}
+                                if (lastID == 9216) ++lastID;
+                            }
 
                             line.replace(nextpos, importer.length() + 2, tempID);
                         }
@@ -307,15 +309,15 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                         }
                     }
 
-					if (line.find("$MD$") != NOT_FOUND)
-					{
-						ErrorMessage(1096, "import", filename, j + 1);
-					}
+                    if (line.find("$MD$") != NOT_FOUND)
+                    {
+                        ErrorMessage(1096, "import", filename, j + 1);
+                    }
 
-					if (line.find("$RD$") != NOT_FOUND)
-					{
-						ErrorMessage(1097, "import", filename, j + 1);
-					}
+                    if (line.find("$RD$") != NOT_FOUND)
+                    {
+                        ErrorMessage(1097, "import", filename, j + 1);
+                    }
 
                     if (line.find("MID$", 0) != NOT_FOUND)
                     {
@@ -332,61 +334,61 @@ VecStr importOutput(vector<ImportContainer>& ExportID, int counter, int nextID)
                             {
                                 size_t nextpos = line.find(oldID);
 
-								if (IDExist[oldID].length() > 0)
-								{
-									tempID = IDExist[oldID];
-								}
-								else
-								{
-									tempID = to_string(lastID);
+                                if (IDExist[oldID].length() > 0)
+                                {
+                                    tempID = IDExist[oldID];
+                                }
+                                else
+                                {
+                                    tempID = to_string(lastID);
 
-									while (tempID.length() < 4)
-									{
-										tempID = "0" + tempID;
-									}
+                                    while (tempID.length() < 4)
+                                    {
+                                        tempID = "0" + tempID;
+                                    }
 
-									IDExist[oldID] = tempID;
-									++lastID;
+                                    IDExist[oldID] = tempID;
+                                    ++lastID;
 
-									if (lastID == 9216) ++lastID;
-								}
+                                    if (lastID == 9216) ++lastID;
+                                }
 
-								line.replace(nextpos, oldID.length(), tempID);
-							}
-							else
-							{
-								ErrorMessage(1028, iter->first, j + 1);
-							}
-						}
-					}
+                                line.replace(nextpos, oldID.length(), tempID);
+                            }
+                            else
+                            {
+                                ErrorMessage(1028, iter->first, j + 1);
+                            }
+                        }
+                    }
 
-					if (elementCatch)
-					{
-						elementLine = behaviorlines.size();
-					}
+                    if (elementCatch)
+                    {
+                        elementLine = behaviorlines.size();
+                    }
 
-					behaviorlines.push_back(line);
-				}
+                    behaviorlines.push_back(line);
+                }
 
-				if (behaviorlines.size() != 0 && behaviorlines.back().length() != 0)
-				{
-					behaviorlines.push_back("");
-				}
-			}
-		}
-	}
+                if (behaviorlines.size() != 0 && behaviorlines.back().length() != 0)
+                {
+                    behaviorlines.push_back("");
+                }
+            }
+        }
+    }
 
-	if (newExportID.size() != 0)
-	{
-		ExportID.push_back(newExportID);
-		VecStr additionlines = importOutput(ExportID, int(ExportID.size() - 1), lastID);
-		behaviorlines.reserve(behaviorlines.size() + additionlines.size());
-		behaviorlines.insert(behaviorlines.end(), additionlines.begin(), additionlines.end());
-	}
-	else
-	{
-		behaviorlines.shrink_to_fit();
-	}
+    if (newExportID.size() != 0)
+    {
+        ExportID.push_back(newExportID);
+        VecStr additionlines = importOutput(ExportID, int(ExportID.size() - 1), lastID);
+        behaviorlines.reserve(behaviorlines.size() + additionlines.size());
+        behaviorlines.insert(behaviorlines.end(), additionlines.begin(), additionlines.end());
+    }
+    else
+    {
+        behaviorlines.shrink_to_fit();
+    }
 
-	return behaviorlines;
+    return behaviorlines;
 }

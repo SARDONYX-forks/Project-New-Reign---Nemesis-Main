@@ -17,9 +17,8 @@
 
 #include "utilities/atomiclock.h"
 
-
 std::atomic<uint> resizeCount = 0;
-std::atomic_flag atm_resize        {};
+std::atomic_flag atm_resize{};
 
 NemesisEngine::NemesisEngine(QWidget* parent)
     : QWidget(parent)
@@ -30,8 +29,7 @@ NemesisEngine::NemesisEngine(QWidget* parent)
     setupUi();
 }
 
-NemesisEngine::~NemesisEngine()
-{}
+NemesisEngine::~NemesisEngine() {}
 
 void NemesisEngine::setupUi()
 {

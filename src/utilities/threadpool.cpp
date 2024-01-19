@@ -23,7 +23,7 @@ void nemesis::ThreadPool::join_all()
     }
 }
 
-void nemesis::ThreadPool::stop() 
+void nemesis::ThreadPool::stop()
 {
     {
         lock_guard lock{queue_mutex};
@@ -42,23 +42,24 @@ nemesis::ThreadPool::~ThreadPool()
 
 void nemesis::ThreadPool::newWorker()
 {
-    workers.emplace_back([&] {
-        for (;;)
+    workers.emplace_back(
+        [&]
         {
-            function<void()> task;
-
+            for (;;)
             {
-                unique_lock<mutex> lock(queue_mutex);
-                condition.wait(lock, [&] { return error || abort || sync || !tasks.empty(); });
+                function<void()> task;
 
-                if (error || abort || tasks.empty()) return;
+                {
+                    unique_lock<mutex> lock(queue_mutex);
+                    condition.wait(lock, [&] { return error || abort || sync || !tasks.empty(); });
 
-                task = tasks.front();
-                tasks.pop();
+                    if (error || abort || tasks.empty()) return;
+
+                    task = tasks.front();
+                    tasks.pop();
+                }
+
+                task();
             }
-
-            task();
-        }
-    });
+        });
 }
-

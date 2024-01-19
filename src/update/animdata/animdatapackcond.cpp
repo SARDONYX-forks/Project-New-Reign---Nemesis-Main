@@ -68,7 +68,7 @@ AnimDataPack_Condt::AnimDataPack_Condt(const VecStr& storeline, size_t linenum)
     }
 }
 
-void AnimDataPack_Condt::getlines(VecStr& storeline) 
+void AnimDataPack_Condt::getlines(VecStr& storeline)
 {
     // anim data name
     storeline.push_back(name);
@@ -93,7 +93,7 @@ void AnimDataPack_Condt::getlines(VecStr& storeline)
     storeline.push_back("");
 }
 
-void getlinkedline(const nemesis::LinkedVar<AnimDataPack_Condt>& linkedanimdata, VecStr& storeline) 
+void getlinkedline(const nemesis::LinkedVar<AnimDataPack_Condt>& linkedanimdata, VecStr& storeline)
 {
     vector<pair<const string*, const nemesis::CondVar<AnimDataPack_Condt>*>> modcodelist;
 
@@ -103,8 +103,8 @@ void getlinkedline(const nemesis::LinkedVar<AnimDataPack_Condt>& linkedanimdata,
         {
             case nemesis::MOD_CODE:
             {
-                modcodelist.push_back(
-                    make_pair<const string*, const nemesis::CondVar<AnimDataPack_Condt>*>(&cond.conditions, &cond));
+                modcodelist.push_back(make_pair<const string*, const nemesis::CondVar<AnimDataPack_Condt>*>(
+                    &cond.conditions, &cond));
                 break;
             }
             case nemesis::FOREACH:

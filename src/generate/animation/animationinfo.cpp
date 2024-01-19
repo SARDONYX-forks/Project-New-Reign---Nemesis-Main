@@ -1,8 +1,8 @@
 #include "Global.h"
 
+#include "utilities/algorithm.h"
 #include "utilities/regex.h"
 #include "utilities/stringsplit.h"
-#include "utilities/algorithm.h"
 
 #include "generate/animation/animationinfo.h"
 
@@ -19,11 +19,11 @@ AnimationInfo::AnimationInfo(VecStr newAnimInfo,
                              bool& isOExist,
                              bool noOption)
 {
-    uint k         = 0;
-    string line    = newAnimInfo[1];
-    animInfo       = newAnimInfo;
-    ignoreGroup    = behaviorOption.ignoreGroup;
-    groupOption    = behaviorOption.groupOption;
+    uint k      = 0;
+    string line = newAnimInfo[1];
+    animInfo    = newAnimInfo;
+    ignoreGroup = behaviorOption.ignoreGroup;
+    groupOption = behaviorOption.groupOption;
 
     if (animInfo.size() < 3) ErrorMessage(1142, curFilename, linecount);
 
@@ -50,9 +50,9 @@ AnimationInfo::AnimationInfo(VecStr newAnimInfo,
 
         for (auto& option : options)
         {
-            if (option == "o") 
+            if (option == "o")
             {
-                isOExist = true; 
+                isOExist = true;
             }
 
             if (error) throw nemesis::exception();
@@ -112,9 +112,9 @@ AnimationInfo::AnimationInfo(VecStr newAnimInfo,
                     // check on group / addon option
                     for (uint j = 0; j < optionOrder[m].size(); ++j)
                     {
-                        if (optionOrder[m][j] != option[j]) 
+                        if (optionOrder[m][j] != option[j])
                         {
-                            break; 
+                            break;
                         }
                         else if (j == optionOrder[m].size() - 1)
                         {
@@ -146,7 +146,7 @@ AnimationInfo::AnimationInfo(VecStr newAnimInfo,
 
                                             if (newSection.length() < section.length())
                                             {
-                                                section = newSection; 
+                                                section = newSection;
                                             }
                                             else
                                             {
@@ -209,8 +209,10 @@ AnimationInfo::AnimationInfo(VecStr newAnimInfo,
                         }
                     }
 
-                    if (loose) break;
-                    else header = "";
+                    if (loose)
+                        break;
+                    else
+                        header = "";
                 }
 
                 if (header.length() == 0) WarningMessage(1026, curFilename, linecount, option);
@@ -311,7 +313,7 @@ void AnimationInfo::groupAdditionProcess(string header,
         addition[header][addOnName] = newName;
     }
 
-    if (nemesis::iequals(addOnName, "event")) 
+    if (nemesis::iequals(addOnName, "event"))
     {
         eventID.push_back(newName);
     }

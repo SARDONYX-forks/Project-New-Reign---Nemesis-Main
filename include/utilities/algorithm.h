@@ -39,4 +39,57 @@ namespace nemesis
         return {std::begin(str), std::end(str)};
     };
 
+    template <>
+    inline std::wstring transform_to<std::wstring, char>(const char& str) noexcept
+    {
+        std::string s = std::string(&str);
+        std::wstring wstr;
+        size_t size;
+        wstr.resize(s.length());
+        mbstowcs_s(&size, &wstr[0], wstr.size() + 1, s.c_str(), s.size());
+        return wstr;
+    }
+
+    // Specialization for converting std::string to std::wstring
+    template <>
+    inline std::wstring transform_to<std::wstring, std::string>(const std::string& str) noexcept
+    {
+        std::wstring wstr;
+        size_t size;
+        wstr.resize(str.length());
+        mbstowcs_s(&size, &wstr[0], wstr.size() + 1, str.c_str(), str.size());
+        return wstr;
+    }
+
+    template <>
+    inline std::string transform_to<std::string, std::wstring>(const std::wstring& wstr) noexcept
+    {
+        std::string str;
+        size_t size;
+        str.resize(wstr.length());
+        wcstombs_s(&size, &str[0], str.size() + 1, wstr.c_str(), wstr.size());
+        return str;
+    }
+
+    // Specialization for converting std::string to std::wstring
+    template <>
+    inline std::wstring transform_to<std::wstring, std::string_view>(const std::string_view& str) noexcept
+    {
+        std::wstring wstr;
+        size_t size;
+        wstr.resize(str.length());
+        mbstowcs_s(&size, &wstr[0], wstr.size() + 1, std::string(str).data(), str.size());
+        return wstr;
+    }
+
+    template <>
+    inline std::string transform_to<std::string, std::wstring_view>(const std::wstring_view& wstr) noexcept
+    {
+        std::string str;
+        size_t size;
+        str.resize(wstr.length());
+        wcstombs_s(&size, &str[0], str.size() + 1, std::wstring(wstr).data(), wstr.size());
+        return str;
+    }
+
 } // namespace nemesis

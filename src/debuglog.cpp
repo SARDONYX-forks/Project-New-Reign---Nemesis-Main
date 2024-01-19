@@ -1,5 +1,5 @@
-#include "Global.h"
 #include "debuglog.h"
+#include "Global.h"
 
 #include "utilities/algorithm.h"
 #include "utilities/atomiclock.h"
@@ -12,17 +12,16 @@ std::atomic_flag atomlock{};
 ;
 string filename = "CriticalLog.txt";
 
-
 std::string currentTime()
 {
     time_t rawtime;
-    struct tm* timeinfo;
+    struct tm timeinfo;
     char buffer[80];
 
     time(&rawtime);
-    timeinfo = localtime(&rawtime);
+    localtime_s(&timeinfo, &rawtime);
 
-    strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeinfo);
+    strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", &timeinfo);
     return buffer;
 }
 

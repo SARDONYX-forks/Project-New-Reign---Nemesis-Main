@@ -6,10 +6,10 @@
 #include "generate/behaviorgenerator.h"
 #include "generate/behaviorprocess_utility.h"
 
-#include "generate/animation/nodejoint.h"
-#include "generate/animation/newanimation.h"
-#include "generate/animation/grouptemplate.h"
 #include "generate/animation/animationthread.h"
+#include "generate/animation/grouptemplate.h"
+#include "generate/animation/newanimation.h"
+#include "generate/animation/nodejoint.h"
 
 using namespace std;
 
@@ -20,55 +20,55 @@ void animThreadStart(shared_ptr<NewAnimArgs> args)
 {
     if (error) return;
 
-	try
-	{
-		try
-		{
-			if (args->core)
-			{
+    try
+    {
+        try
+        {
+            if (args->core)
+            {
                 Lockless lock(args->atomicLock.coreLock);
 
-				if (args->isCoreDone) return;
+                if (args->isCoreDone) return;
 
-				args->isCoreDone = true;
-			}
+                args->isCoreDone = true;
+            }
 
-			// getlines from newAnination
-			args->dummyAnimation->setZeroEvent(args->ZeroEvent);
-			args->dummyAnimation->setZeroVariable(args->ZeroVariable);
-			args->dummyAnimation->GetNewAnimationLine(args);
-		}
-		catch (exception& ex)
-		{
-			ErrorMessage(6002, args->dummyAnimation->GetFormatName(), ex.what());
-		}
-	}
-	catch (nemesis::exception&)
-	{
-		// resolved exception
-	}
-	catch (...)
-	{
-		try
-		{
-			ErrorMessage(6002, args->dummyAnimation->GetFormatName(), "New animation: Unknown");
-		}
-		catch (nemesis::exception&)
-		{
-			// resolved exception
-		}
-	}
+            // getlines from newAnination
+            args->dummyAnimation->setZeroEvent(args->ZeroEvent);
+            args->dummyAnimation->setZeroVariable(args->ZeroVariable);
+            args->dummyAnimation->GetNewAnimationLine(args);
+        }
+        catch (exception& ex)
+        {
+            ErrorMessage(6002, args->dummyAnimation->GetFormatName(), ex.what());
+        }
+    }
+    catch (nemesis::exception&)
+    {
+        // resolved exception
+    }
+    catch (...)
+    {
+        try
+        {
+            ErrorMessage(6002, args->dummyAnimation->GetFormatName(), "New animation: Unknown");
+        }
+        catch (nemesis::exception&)
+        {
+            // resolved exception
+        }
+    }
 }
 
 void groupThreadStart(shared_ptr<newGroupArgs> args)
 {
     if (error) return;
 
-	try
-	{
-		try
-		{
-			args->groupTemp->setZeroEvent(args->ZeroEvent);
+    try
+    {
+        try
+        {
+            args->groupTemp->setZeroEvent(args->ZeroEvent);
             args->groupTemp->setZeroVariable(args->ZeroVariable);
             args->groupTemp->getFunctionLines(args->allEditLines,
                                               args->lowerBehaviorFile,
@@ -83,53 +83,53 @@ void groupThreadStart(shared_ptr<newGroupArgs> args)
                                               args->templateCode,
                                               args->atomicLock,
                                               args->groupCount);
-		}
-		catch (const exception& ex)
-		{
-			ErrorMessage(6002, args->filename, ex.what());
-		}
-	}
-	catch (nemesis::exception&)
-	{
-		// resolved exception
-	}
-	catch (...)
-	{
-		try
-		{
-			ErrorMessage(6002, args->filename, "New animation: Unknown");
-		}
-		catch (nemesis::exception&)
-		{
-			// resolved exception
-		}
-	}
+        }
+        catch (const exception& ex)
+        {
+            ErrorMessage(6002, args->filename, ex.what());
+        }
+    }
+    catch (nemesis::exception&)
+    {
+        // resolved exception
+    }
+    catch (...)
+    {
+        try
+        {
+            ErrorMessage(6002, args->filename, "New animation: Unknown");
+        }
+        catch (nemesis::exception&)
+        {
+            // resolved exception
+        }
+    }
 }
 
 void elementUpdate(size_t& elementLine, int& counter, int& curID, map<int, VecStr>& catalystMap)
 {
-	if (elementLine != -1)
-	{
-		size_t position = catalystMap[curID][elementLine].find("numelements=\"") + 13;
-		string oldElement = catalystMap[curID][elementLine].substr(position, catalystMap[curID][elementLine].
-			find("\">", position) - position);
+    if (elementLine != -1)
+    {
+        size_t position   = catalystMap[curID][elementLine].find("numelements=\"") + 13;
+        string oldElement = catalystMap[curID][elementLine].substr(
+            position, catalystMap[curID][elementLine].find("\">", position) - position);
 
-		if (oldElement != to_string(counter))
-		{
-			catalystMap[curID][elementLine].replace(catalystMap[curID][elementLine].find(oldElement), oldElement.length(),
-				to_string(counter));
-		}
+        if (oldElement != to_string(counter))
+        {
+            catalystMap[curID][elementLine].replace(
+                catalystMap[curID][elementLine].find(oldElement), oldElement.length(), to_string(counter));
+        }
 
-		elementLine = -1;
-	}
+        elementLine = -1;
+    }
 }
 
 void unpackToCatalyst(map<int, VecStr>& catalystMap, unordered_map<int, shared_ptr<NodeJoint>>& existingNodes)
 {
-	for (auto& node : existingNodes)
-	{
-		catalystMap[node.first] = node.second->unpack();
-	}
+    for (auto& node : existingNodes)
+    {
+        catalystMap[node.first] = node.second->unpack();
+    }
 }
 
 int bonePatch(std::filesystem::path rigfile, int oribone, bool& newBone, const HkxCompiler& hkxCompiler)
@@ -161,13 +161,13 @@ int bonePatch(std::filesystem::path rigfile, int oribone, bool& newBone, const H
             bool start      = true;
             uint pos        = line.find("NPC Root [Root]");
 
-			if (pos != NOT_FOUND && pos > 64)
+            if (pos != NOT_FOUND && pos > 64)
             {
                 pos -= 64;
                 char* ch = reinterpret_cast<char*>(&num);
                 ch[0]    = chlist[pos];
                 ch[1]    = chlist[pos + 1];
-			}
+            }
 
             if (error) throw nemesis::exception();
 
@@ -228,54 +228,77 @@ void processExistFuncID(std::vector<int>& funcIDs,
                         const std::string& behaviorFile,
                         std::unordered_map<int, std::shared_ptr<NodeJoint>>& existingNodes)
 {
-	for (int& functionID : funcIDs)
-	{
-		unordered_map<int, shared_ptr<NodeJoint>>::iterator curNode = existingNodes.find(functionID);
-		string filename = to_string(functionID);
+    for (int& functionID : funcIDs)
+    {
+        unordered_map<int, shared_ptr<NodeJoint>>::iterator curNode = existingNodes.find(functionID);
+        string filename                                             = to_string(functionID);
 
-		while (filename.length() < 4)
-		{
-			filename = "0" + filename;
-		}
+        while (filename.length() < 4)
+        {
+            filename = "0" + filename;
+        }
 
-		filename = "#" + filename;
+        filename = "#" + filename;
 
-		if (curNode == existingNodes.end() || curNode->second == nullptr) existingNodes[functionID] = make_shared<NodeJoint>(catalystMap[functionID], templateCode, filename,
-			behaviorFile, templateGroup);
+        if (curNode == existingNodes.end() || curNode->second == nullptr)
+            existingNodes[functionID] = make_shared<NodeJoint>(
+                catalystMap[functionID], templateCode, filename, behaviorFile, templateGroup);
 
-		vector<vector<unordered_map<string, bool>>> optionPicked;
-		SSMap IDExist;
-		unordered_map<string, bool> otherAnimType;
-		string strID = to_string(lastID);
-		unsigned __int64 openRange;
-		unsigned int elementCount = 0;
-		bool negative = false;
+        vector<vector<unordered_map<string, bool>>> optionPicked;
+        SSMap IDExist;
+        unordered_map<string, bool> otherAnimType;
+        string strID = to_string(lastID);
+        unsigned __int64 openRange;
+        unsigned int elementCount = 0;
+        bool negative             = false;
 
-		for (auto& groupInfo : groupAnimInfo)
-		{
-			vector<unordered_map<string, bool>> curGroupInfo;
+        for (auto& groupInfo : groupAnimInfo)
+        {
+            vector<unordered_map<string, bool>> curGroupInfo;
 
-			for (auto& animInfo : groupInfo)
-			{
-				curGroupInfo.push_back(animInfo->optionPicked);
-			}
+            for (auto& animInfo : groupInfo)
+            {
+                curGroupInfo.push_back(animInfo->optionPicked);
+            }
 
-			if (curGroupInfo.size() > 0)
-			{
-				optionPicked.push_back(curGroupInfo);
-			}
-		}
+            if (curGroupInfo.size() > 0)
+            {
+                optionPicked.push_back(curGroupInfo);
+            }
+        }
 
-		while (strID.length() < 4)
-		{
-			strID = "0" + strID;
-		}
+        while (strID.length() < 4)
+        {
+            strID = "0" + strID;
+        }
 
-		existingNodes[functionID]->insertData(templateCode, filename, optionPicked, groupAnimInfo, -1, -1, -1, hasMaster, hasGroup, ignoreGroup, "", lastID, strID, IDExist,
-			exportID, eventid, variableid, ZeroEvent, ZeroVariable, openRange, elementCount, nullptr, groupFunctionIDs, negative);
+        existingNodes[functionID]->insertData(templateCode,
+                                              filename,
+                                              optionPicked,
+                                              groupAnimInfo,
+                                              -1,
+                                              -1,
+                                              -1,
+                                              hasMaster,
+                                              hasGroup,
+                                              ignoreGroup,
+                                              "",
+                                              lastID,
+                                              strID,
+                                              IDExist,
+                                              exportID,
+                                              eventid,
+                                              variableid,
+                                              ZeroEvent,
+                                              ZeroVariable,
+                                              openRange,
+                                              elementCount,
+                                              nullptr,
+                                              groupFunctionIDs,
+                                              negative);
 
-		if (error) throw nemesis::exception();
-	}
+        if (error) throw nemesis::exception();
+    }
 }
 
 void redirToStageDir(filesystem::path& outpath, const NemesisInfo* nemesisInfo)
@@ -296,5 +319,5 @@ std::filesystem::path getTempBhvrPath(const NemesisInfo* nemesisInfo)
         return nemesisInfo->GetStagePath() + L"nemesis_engine\\temp_behaviors";
     }
 
-	return "temp_behaviors";
+    return "temp_behaviors";
 }

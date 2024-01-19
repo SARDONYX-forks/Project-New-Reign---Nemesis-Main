@@ -31,15 +31,15 @@ public:
 
     const std::wstring& GetDataPath() const;
     const std::wstring& GetStagePath() const;
-    const std::string& GetDataPathA() const;
-    const std::string& GetStagePathA() const;
-    const uint& GetMaxAnim() const;
-    const bool& IsFirst() const;
-    const uint& GetWidth() const;
-    const uint& GetHeight() const;
-    const uint& GetModNameWidth() const;
-    const uint& GetAuthorWidth() const;
-    const uint& GetPriorityWidth() const;
+    const std::string GetDataPathA() const;
+    const std::string GetStagePathA() const;
+    uint GetMaxAnim() const;
+    bool IsFirst() const;
+    uint GetWidth() const;
+    uint GetHeight() const;
+    uint GetModNameWidth() const;
+    uint GetAuthorWidth() const;
+    uint GetPriorityWidth() const;
 
     void setFirst(bool _first);
     void setWidth(uint _width);

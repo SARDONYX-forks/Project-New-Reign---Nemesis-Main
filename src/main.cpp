@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     {
         if (argc > 1)
         {
-            for (uint i = 1; i < argc; ++i)
+            for (uint i = 1; (int) i < argc; ++i)
             {
                 if (nemesis::iequals(argv[i], "-update"))
                 {

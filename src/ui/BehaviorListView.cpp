@@ -8,10 +8,10 @@
 #include "Global.h"
 #include "nemesisinfo.h"
 
-#include "ui/UiModInfo.h"
+#include "ui/BehaviorListView.h"
 #include "ui/ErrorMsgBox.h"
 #include "ui/SettingsSave.h"
-#include "ui/BehaviorListView.h"
+#include "ui/UiModInfo.h"
 
 extern std::atomic<uint> resizeCount;
 
@@ -109,9 +109,8 @@ void BehaviorListView::resizeHeader(int logicalIndex, int oldSize, int newSize)
         if (oldSize < newSize)
         {
             // DRAF LEFT, EXPAND
-            if (columnWidth(1) < authorWidth)
+            if (static_cast<uint>(columnWidth(1)) < authorWidth)
             {
-
             }
         }
 

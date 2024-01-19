@@ -1,9 +1,9 @@
 #ifndef BEHAVIORPROCESS_UTILITY_H_
 #define BEHAVIORPROCESS_UTILITY_H_
 
+#include <filesystem>
 #include <map>
 #include <memory>
-#include <filesystem>
 
 struct master;
 class NemesisInfo;

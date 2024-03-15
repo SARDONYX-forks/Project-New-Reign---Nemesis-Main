@@ -33,18 +33,15 @@ const std::string& nemesis::SubTemplateObject::GetName() const noexcept
 }
 
 UPtr<nemesis::SubTemplateObject>
-nemesis::SubTemplateObject::CreateFromFile(const std::filesystem::path& filepath)
+nemesis::SubTemplateObject::ParseFromFile(const std::filesystem::path& filepath)
 {
     VecNstr lines;
     GetFileLines(filepath, lines, false);
-    return nemesis::SubTemplateObject::CreateFromLines(filepath.stem().string(), lines);
-}
 
-UPtr<nemesis::SubTemplateObject> nemesis::SubTemplateObject::CreateFromLines(const std::string& name,
-                                                                             const VecNstr& lines)
-{
+    if (lines.empty()) return nullptr;
+
     UPtr<nemesis::SubTemplateObject> templt(new nemesis::SubTemplateObject());
-    templt->Name  = name;
+    templt->Name  = filepath.stem().string();
     templt->Data  = std::make_unique<nemesis::CollectionObject>();
     auto& col_ref = *templt->Data;
 

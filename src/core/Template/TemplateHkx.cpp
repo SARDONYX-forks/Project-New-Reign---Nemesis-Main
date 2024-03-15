@@ -11,7 +11,7 @@ nemesis::TemplateHkx::TemplateHkx(const nemesis::TemplateClass* template_class) 
 {
 }
 
-SPtr<nemesis::TemplateHkx> nemesis::TemplateHkx::CreateFromFile(const nemesis::TemplateClass* template_class,
+SPtr<nemesis::TemplateHkx> nemesis::TemplateHkx::ParseFromFile(const nemesis::TemplateClass* template_class,
                                                                 const std::filesystem::path& filepath)
 {
     std::string name(template_class->GetName());
@@ -59,7 +59,7 @@ SPtr<nemesis::TemplateHkx> nemesis::TemplateHkx::CreateFromFile(const nemesis::T
     return templt;
 }
 
-SPtr<nemesis::TemplateHkx> nemesis::TemplateHkx::CreateFromFile(const nemesis::TemplateClass* template_class,
+SPtr<nemesis::TemplateHkx> nemesis::TemplateHkx::ParseFromFile(const nemesis::TemplateClass* template_class,
                                                                 const std::filesystem::path& filepath,
                                                                 nemesis::ThreadPool& thread_pool)
 {

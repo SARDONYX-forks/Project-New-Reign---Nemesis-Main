@@ -22,8 +22,6 @@ namespace nemesis
 
         const std::string& GetName() const noexcept;
 
-        static UPtr<nemesis::SubTemplateObject> CreateFromFile(const std::filesystem::path& filepath);
-        static UPtr<nemesis::SubTemplateObject> CreateFromLines(const std::string& name,
-                                                                const VecNstr& lines);
+        static UPtr<nemesis::SubTemplateObject> ParseFromFile(const std::filesystem::path& filepath);
     };
 }

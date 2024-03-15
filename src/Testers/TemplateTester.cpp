@@ -9,7 +9,7 @@ void nemesis::TemplateTester::Run()
 {
     nemesis::TemplateClass templt_class(
         "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
-    auto templt = nemesis::TemplateHkx::CreateFromFile(
+    auto templt = nemesis::TemplateHkx::ParseFromFile(
         &templt_class,
         "E:\\C++\\Project New Reign - Nemesis\\test "
         "environment\\behavior_templates\\fuo\\meshes\\actors\\character\\behaviors\\mt_behavior\\fuo_1.xml");

@@ -69,7 +69,8 @@ namespace nemesis
 
         bool IsSameAsCached(nemesis::CompileState& state) const;
 
-        static UPtr<nemesis::HkxBehavior> CreateFromFile(const std::filesystem::path& filepath);
-        static UPtr<nemesis::HkxBehavior> CreateFromFile(const std::filesystem::path& filepath, nemesis::ThreadPool& thread_pool);
+        static UPtr<nemesis::HkxBehavior> ParseFromFile(const std::filesystem::path& filepath);
+        static UPtr<nemesis::HkxBehavior> ParseFromFile(const std::filesystem::path& filepath,
+                                                        nemesis::ThreadPool& thread_pool);
     };
 }

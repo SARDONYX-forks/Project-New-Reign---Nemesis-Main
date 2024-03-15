@@ -29,7 +29,9 @@ void nemesis::HkxBehaviorTester::Run()
     state.SetBaseRequest(request_ptr);
     state.QueueCurrentRequest("fuo_1", request_ptr);
 
-    auto behavior = nemesis::HkxBehavior::CreateFromFile("E:\\C++\\Project New Reign - Nemesis\\test environment\\data\\meshes\\actors\\character\\behaviors\\Nemesis_bashbehavior.xml");
+    auto behavior = nemesis::HkxBehavior::ParseFromFile(
+        "E:\\C++\\Project New Reign - Nemesis\\test "
+        "environment\\data\\meshes\\actors\\character\\behaviors\\Nemesis_bashbehavior.xml");
 
     DeqNstr serialized = behavior->Serialize();
     DeqNstr compiled   = behavior->Compile(state);

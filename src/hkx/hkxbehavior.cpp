@@ -408,7 +408,7 @@ bool nemesis::HkxBehavior::IsSameAsCached(nemesis::CompileState& state) const
     return true;
 }
 
-UPtr<nemesis::HkxBehavior> nemesis::HkxBehavior::CreateFromFile(const std::filesystem::path& filepath)
+UPtr<nemesis::HkxBehavior> nemesis::HkxBehavior::ParseFromFile(const std::filesystem::path& filepath)
 {
     UPtr<nemesis::HkxBehavior> behavior_uptr(new nemesis::HkxBehavior());
     nemesis::HkxBehavior* behavior_ptr = behavior_uptr.get();
@@ -448,7 +448,7 @@ UPtr<nemesis::HkxBehavior> nemesis::HkxBehavior::CreateFromFile(const std::files
     return behavior_uptr;
 }
 
-UPtr<nemesis::HkxBehavior> nemesis::HkxBehavior::CreateFromFile(const std::filesystem::path& filepath,
+UPtr<nemesis::HkxBehavior> nemesis::HkxBehavior::ParseFromFile(const std::filesystem::path& filepath,
                                                                 nemesis::ThreadPool& thread_pool)
 {
     UPtr<nemesis::HkxBehavior> behavior_uptr(new nemesis::HkxBehavior());

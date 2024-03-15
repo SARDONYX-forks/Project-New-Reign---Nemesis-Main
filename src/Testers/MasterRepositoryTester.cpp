@@ -35,7 +35,7 @@ void nemesis::MasterRepositoryTester::Run()
 
             if (ext == ".xml" && StringStartWith_NC(filename, "nemesis_"))
             {
-                auto behavior_uptr = nemesis::HkxBehavior::CreateFromFile(path, tp);
+                auto behavior_uptr = nemesis::HkxBehavior::ParseFromFile(path, tp);
                 repository.AddBehavior(std::move(behavior_uptr));
             }
         }
@@ -83,7 +83,7 @@ void nemesis::MasterRepositoryTester::Run()
 
                     if (path.filename().wstring().front() != '#')
                     {
-                        auto templt_obj = nemesis::TemplateHkx::CreateFromFile(class_ptr, path, tp);
+                        auto templt_obj = nemesis::TemplateHkx::ParseFromFile(class_ptr, path, tp);
                         class_ptr->AddTemplate(templt_obj);
                         behavior_ptr->AddTemplate(templt_obj);
                         continue;
@@ -101,7 +101,7 @@ void nemesis::MasterRepositoryTester::Run()
 
             for (auto& each : list)
             {
-                auto sub_template = nemesis::SubTemplateObject::CreateFromFile(entry.path());
+                auto sub_template = nemesis::SubTemplateObject::ParseFromFile(entry.path());
                 each->AddSubTemplateNode(std::move(sub_template));
             }
         }

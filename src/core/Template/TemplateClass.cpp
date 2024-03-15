@@ -48,13 +48,13 @@ void nemesis::TemplateClass::AddTemplate(const SPtr<nemesis::TemplateObject>& te
 
 SPtr<nemesis::TemplateObject> nemesis::TemplateClass::AddTemplate(const std::filesystem::path& filepath)
 {
-    return Templates.emplace_back(nemesis::TemplateObject::CreateFromFile(this, filepath));
+    return Templates.emplace_back(nemesis::TemplateObject::ParseFromFile(this, filepath));
 }
 
 SPtr<nemesis::TemplateObject> nemesis::TemplateClass::AddTemplate(const std::filesystem::path& filepath,
                                                                   nemesis::ThreadPool& thread_pool)
 {
-    return Templates.emplace_back(nemesis::TemplateObject::CreateFromFile(this, filepath, thread_pool));
+    return Templates.emplace_back(nemesis::TemplateObject::ParseFromFile(this, filepath, thread_pool));
 }
 
 SPtr<nemesis::TemplateObject> nemesis::TemplateClass::GetTemplate(size_t index)

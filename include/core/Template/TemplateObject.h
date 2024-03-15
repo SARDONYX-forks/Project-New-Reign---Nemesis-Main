@@ -41,9 +41,9 @@ namespace nemesis
         nemesis::TemplateObject* GetChild(UPtr<nemesis::TemplateObject>&& child);
         void SetChild(UPtr<nemesis::TemplateObject>&& child);
 
-        static SPtr<nemesis::TemplateObject> CreateFromFile(const nemesis::TemplateClass* template_class,
+        static SPtr<nemesis::TemplateObject> ParseFromFile(const nemesis::TemplateClass* template_class,
                                                             const std::filesystem::path& filepath);
-        static SPtr<nemesis::TemplateObject> CreateFromFile(const nemesis::TemplateClass* template_class,
+        static SPtr<nemesis::TemplateObject> ParseFromFile(const nemesis::TemplateClass* template_class,
                                                             const std::filesystem::path& filepath,
                                                             nemesis::ThreadPool& thread_pool);
     };

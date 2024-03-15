@@ -89,7 +89,7 @@ void nemesis::TemplateObject::SetChild(UPtr<nemesis::TemplateObject>&& child)
 }
 
 SPtr<nemesis::TemplateObject>
-nemesis::TemplateObject::CreateFromFile(const nemesis::TemplateClass* template_class,
+nemesis::TemplateObject::ParseFromFile(const nemesis::TemplateClass* template_class,
                                         const std::filesystem::path& filepath)
 {
     std::string name(template_class->GetName());
@@ -132,7 +132,7 @@ nemesis::TemplateObject::CreateFromFile(const nemesis::TemplateClass* template_c
 }
 
 SPtr<nemesis::TemplateObject>
-nemesis::TemplateObject::CreateFromFile(const nemesis::TemplateClass* template_class,
+nemesis::TemplateObject::ParseFromFile(const nemesis::TemplateClass* template_class,
                                         const std::filesystem::path& filepath,
                                         nemesis::ThreadPool& thread_pool)
 {

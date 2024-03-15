@@ -13,8 +13,6 @@
 
 #include "core/querymanager.h"
 
-#include "animdata/animdata-singlefile.h"
-
 class NewAnimation;
 class NemesisEngine;
 
@@ -96,7 +94,6 @@ private:
     VecSPtr<const nemesis::AnimQueryFile> querylist;
     UPtr<nemesis::QueryManager> querymanager = std::make_unique<nemesis::QueryManager>();
     VecSPtr<nemesis::HkxBehaviorFile> behaviorlist;
-    UPtr<nemesis::animdata::SingleFile> adsf;
 
     SPtr<bool> running_ptr       = std::make_shared<bool>(true);
     SPtr<size_t> timeout_timer_ptr = std::make_shared<size_t>(0);

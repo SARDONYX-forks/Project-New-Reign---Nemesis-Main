@@ -201,7 +201,6 @@ void BehaviorStart::GenerateAnimTemplate()
 void BehaviorStart::GetBehaviorList()
 {
     int counter = 0;
-    adsf        = std::make_unique<nemesis::animdata::SingleFile>();
 
     for (auto& each : behaviorPath)
     {

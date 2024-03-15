@@ -48,7 +48,7 @@ namespace nemesis
     bool starts_with(const std::wstring& data, const wchar_t* start);
     bool starts_with(const std::string& data, const std::string& start);
     bool starts_with(const std::wstring& data, const std::wstring& start);
-    
+
     bool ends_with(const char* data, const char* start);
     bool ends_with(const wchar_t* data, const wchar_t* start);
     bool ends_with(const char* data, const std::string& start);
@@ -57,6 +57,18 @@ namespace nemesis
     bool ends_with(const std::wstring& data, const wchar_t* start);
     bool ends_with(const std::string& data, const std::string& start);
     bool ends_with(const std::wstring& data, const std::wstring& start);
+
+    template <typename DataType, typename StartType>
+    bool istarts_with(DataType data, StartType start)
+    {
+        return starts_with(to_lower_copy(data), to_lower_copy(start));
+    }
+
+    template <typename DataType, typename EndType>
+    bool iends_with(DataType data, EndType end)
+    {
+        return ends_with(to_lower_copy(data), to_lower_copy(end));
+    }
 
     size_t isearch(const std::string& data, const std::string& key, size_t off = 0U);
     size_t isearch(const std::wstring& data, const std::wstring& key, size_t off = 0U);

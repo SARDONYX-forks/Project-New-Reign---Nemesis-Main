@@ -9,10 +9,6 @@ nemesis::SharableWrapper<std::filesystem::path>* nemesis::Line::GetFilePathPtr()
     return r_path ? r_path : s_path.get();
 }
 
-nemesis::Line::Line() noexcept
-{
-}
-
 nemesis::Line::Line(size_t _linenum)
 {
     linenum = _linenum;

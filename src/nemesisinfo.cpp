@@ -18,7 +18,7 @@ wstring stagePath = L"";
 sf::path CurrentExePath;
 sf::path CurrentExeDirectory;
 
-NemesisInfo* NemesisInfo::nemesisinfo = nullptr;
+NemesisInfo* NemesisInfo::nemesisinfo;
 std::atomic_flag NemesisInfo::lock{};
 
 void NemesisInfo::setup()
@@ -80,72 +80,65 @@ void NemesisInfo::ReadNemesisInfoFile()
         VecWstr storeline;
         SetWstr hasAuto;
 
-        const UMap<wstring, std::function<void(const wstring&)>> variables = {
-            {L"maxanimation", [&](wstring path) { maxAnim = stoi(path); }},
-            {L"first", [&](wstring path) { first = path != L"false"; }},
-            {L"height", [&](wstring path) { height = stoi(path); }},
-            {L"width", [&](wstring path) { width = stoi(path); }},
-            {L"modNameWidth", [&](wstring path) { modNameWidth = stoi(path); }},
-            {L"authorWidth", [&](wstring path) { authorWidth = stoi(path); }},
-            {L"priorityWidth", [&](wstring path) { priorityWidth = stoi(path); }},
-            {L"timeOut", [&](wstring path) { timeout_timer = stoi(path); }},
+        const UMap<std::wstring, std::function<void(const std::wstring&)>> config_map = {
+            {L"MaxAnimation", [&](std::wstring path) { maxAnim = stoi(path); }},
+            {L"First", [&](std::wstring path) { first = path != L"false"; }},
+            {L"Height", [&](std::wstring path) { height = stoi(path); }},
+            {L"Width", [&](std::wstring path) { width = stoi(path); }},
+            {L"ModNameWidth", [&](std::wstring path) { modNameWidth = stoi(path); }},
+            {L"AuthorWidth", [&](std::wstring path) { authorWidth = stoi(path); }},
+            {L"PriorityWidth", [&](std::wstring path) { priorityWidth = stoi(path); }},
+            {L"TimeOut", [&](std::wstring path) { timeout_timer = stoi(path); }},
+            {L"SkyrimDataDirectory",
+             [&](std::wstring path)
+             {
+                 if (!sf::exists(path)) return;
+
+                 dataPath       = path;
+                 forceDirectory = true;
+                 dataPath.make_preferred();
+
+                 VecStr filelist;
+                 sf::path fspath(dataPath);
+
+                 while (!nemesis::iequals(fspath.stem().string(), "data"))
+                 {
+                     fspath = fspath.parent_path();
+                 }
+
+                 read_directory(fspath.parent_path().string(), filelist);
+
+                 for (auto& file : filelist)
+                 {
+                     if (nemesis::iequals(file, "SkyrimSE.exe") || nemesis::iequals(file, "binkw64.dll"))
+                     {
+                         SSE = true;
+                         return;
+                     }
+
+                     if (nemesis::iequals(file, "binkw32.dll")) return;
+                 }
+             }},
         };
 
         if (!GetFileLines(L"nemesis.ini", storeline)) return;
 
         for (auto& line : storeline)
         {
-            wstring path  = nemesis::wregex_replace(line, nemesis::wregex(L".*[\\s]*=[\\s]*(.*)"), L"$1");
-            wstring input = nemesis::to_lower_copy(
-                nemesis::wregex_replace(line, nemesis::wregex(L"(.*)[\\s]*=[\\s]*.*"), L"$1"));
+            nemesis::wsmatch match;
 
-            if (!nemesis::iequals(path, L"auto"))
-            {
-                if (input != L"skyrimdatadirectory")
-                {
-                    auto it = variables.find(input);
+            if (!nemesis::wregex_match(line, match, L"^([^\\s]+)[\\s]*=[\\s]*([^\\s]+)$")) continue;
 
-                    if (it != variables.end())
-                    {
-                        it->second(path);
-                    }
+            std::wstring key = match[1];
+            std::wstring val = match[2];
 
-                    continue;
-                }
+            if (nemesis::iequals(val, L"auto")) continue;
 
-                if (!sf::exists(path) || nemesis::isearch(path, L"data") == NOT_FOUND) continue;
+            auto itr = config_map.find(key);
 
-                dataPath       = path;
-                forceDirectory = true;
-                dataPath.make_preferred();
+            if (itr == config_map.end()) continue;
 
-                VecStr filelist;
-                sf::path fspath(dataPath);
-
-                while (!nemesis::iequals(fspath.stem().string(), "data"))
-                {
-                    fspath = fspath.parent_path();
-                }
-
-                read_directory(fspath.parent_path().string(), filelist);
-
-                for (auto& file : filelist)
-                {
-                    if (nemesis::iequals(file, "SkyrimSE.exe") || nemesis::iequals(file, "binkw64.dll"))
-                    {
-                        SSE = true;
-                        break;
-                    }
-                    else if (nemesis::iequals(file, "binkw32.dll"))
-                    {
-                        break;
-                    }
-                }
-            }
-            else if (input == L"skyrimdatadirectory" || input == L"maxanimation" || input == L"first")
-            {
-                hasAuto.insert(input);
-            }
+            itr->second(val);
         }
     }
     catch (const std::exception&)

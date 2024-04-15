@@ -516,6 +516,248 @@ namespace nemesis
         return sv.substr(0, pos);
     }
 
+    std::string& replace(std::string& line, const char& old_char, const char& new_char)
+    {
+        size_t length = line.length();
+
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (line[i] != old_char) continue;
+
+            line[i] = new_char;
+        }
+
+        return line;
+    }
+
+    std::string& replace(std::string& line, const char& old_char, const std::string& new_val)
+    {
+        size_t length = line.length();
+        std::string new_line;
+
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (line[i] != old_char)
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            new_line.append(new_val);
+        }
+
+        line = new_line;
+        return line;
+    }
+
+    std::string& replace(std::string& line, const std::string& old_val, const char& new_char)
+    {
+        size_t length     = line.length();
+        size_t old_length = old_val.length();
+
+        if (length < old_length) return line;
+
+        std::string new_line;
+        size_t replace_limit = length - old_length;
+
+        for (size_t i = 0; i < replace_limit; ++i)
+        {
+            if (line[i] != old_val[0])
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            for (size_t k = 1; k < old_length; ++k)
+            {
+                if (line[i + k] != old_val[k]) break;
+
+                if (k != old_length - 1) continue;
+
+                i += k;
+                new_line.push_back(new_char);
+            }
+        }
+
+        for (size_t i = replace_limit; i < length; ++i)
+        {
+            new_line.push_back(line[i]);
+        }
+
+        line = new_line;
+        return line;
+    }
+
+    std::string& replace(std::string& line, const std::string& old_val, const std::string& new_val)
+    {
+        if (old_val.size() == 1)
+        {
+            if (new_val.size() == 1) return replace(line, old_val.front(), new_val.front());
+
+            return replace(line, old_val.front(), new_val);
+        }
+        else if (new_val.size() == 1)
+        {
+            return replace(line, old_val, new_val.front());
+        }
+
+        size_t length     = line.length();
+        size_t old_length = old_val.length();
+
+        if (length < old_length) return line;
+
+        std::string new_line;
+        size_t replace_limit = length - old_length;
+
+        for (size_t i = 0; i < replace_limit; ++i)
+        {
+            if (line[i] != old_val[0])
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            for (size_t k = 1; k < old_length; ++k)
+            {
+                if (line[i + k] != old_val[k]) break;
+
+                if (k != old_length - 1) continue;
+
+                i += k;
+                new_line.append(new_val);
+            }
+        }
+
+        for (size_t i = replace_limit; i < length; ++i)
+        {
+            new_line.push_back(line[i]);
+        }
+
+        line = new_line;
+        return line;
+    }
+
+    std::wstring& replace(std::wstring& line, const wchar_t& old_char, const wchar_t& new_char)
+    {
+        size_t length = line.length();
+
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (line[i] != old_char) continue;
+
+            line[i] = new_char;
+        }
+
+        return line;
+    }
+
+    std::wstring& replace(std::wstring& line, const wchar_t& old_char, const std::wstring& new_val)
+    {
+        size_t length = line.length();
+        std::wstring new_line;
+
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (line[i] != old_char)
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            new_line.append(new_val);
+        }
+
+        line = new_line;
+        return line;
+    }
+
+    std::wstring& replace(std::wstring& line, const std::wstring& old_val, const wchar_t& new_char)
+    {
+        size_t length     = line.length();
+        size_t old_length = old_val.length();
+
+        if (length < old_length) return line;
+
+        std::wstring new_line;
+        size_t replace_limit = length - old_length;
+
+        for (size_t i = 0; i < replace_limit; ++i)
+        {
+            if (line[i] != old_val[0])
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            for (size_t k = 1; k < old_length; ++k)
+            {
+                if (line[i + k] != old_val[k]) break;
+
+                if (k != old_length - 1) continue;
+
+                i += k;
+                new_line.push_back(new_char);
+            }
+        }
+
+        for (size_t i = replace_limit; i < length; ++i)
+        {
+            new_line.push_back(line[i]);
+        }
+
+        line = new_line;
+        return line;
+    }
+
+    std::wstring& replace(std::wstring& line, const std::wstring& old_val, const std::wstring& new_val)
+    {
+        if (old_val.size() == 1)
+        {
+            if (new_val.size() == 1) return replace(line, old_val.front(), new_val.front());
+
+            return replace(line, old_val.front(), new_val);
+        }
+        else if (new_val.size() == 1)
+        {
+            return replace(line, old_val, new_val.front());
+        }
+
+        size_t length     = line.length();
+        size_t old_length = old_val.length();
+
+        if (length < old_length) return line;
+
+        std::wstring new_line;
+        size_t replace_limit = length - old_length;
+
+        for (size_t i = 0; i < replace_limit; ++i)
+        {
+            if (line[i] != old_val[0])
+            {
+                new_line.push_back(line[i]);
+                continue;
+            }
+
+            for (size_t k = 1; k < old_length; ++k)
+            {
+                if (line[i + k] != old_val[k]) break;
+
+                if (k != old_length - 1) continue;
+
+                i += k;
+                new_line.append(new_val);
+            }
+        }
+
+        for (size_t i = replace_limit; i < length; ++i)
+        {
+            new_line.push_back(line[i]);
+        }
+
+        line = new_line;
+        return line;
+    }
+
     std::string transform_to(const std::wstring& str) noexcept
     {
         // Note[1]

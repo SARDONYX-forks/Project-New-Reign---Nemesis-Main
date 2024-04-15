@@ -79,6 +79,15 @@ namespace nemesis
     std::string_view between(const std::string& line, std::string_view prefix, std::string_view suffix);
     std::wstring_view between(const std::wstring& line, std::wstring_view prefix, std::wstring_view suffix);
 
+    std::string& replace(std::string& line, const char& old_char, const char& new_char);
+    std::string& replace(std::string& line, const char& old_char, const std::string& new_val);
+    std::string& replace(std::string& line, const std::string& old_val, const char& new_char);
+    std::string& replace(std::string& line, const std::string& old_val, const std::string& new_val);
+    std::wstring& replace(std::wstring& line, const wchar_t& old_char, const wchar_t& new_char);
+    std::wstring& replace(std::wstring& line, const wchar_t& old_char, const std::wstring& new_val);
+    std::wstring& replace(std::wstring& line, const std::wstring& old_val, const wchar_t& new_char);
+    std::wstring& replace(std::wstring& line, const std::wstring& old_val, const std::wstring& new_val);
+
     std::string transform_to(const std::wstring& str) noexcept;
     std::wstring transform_to(const std::string& str) noexcept;
 

@@ -1,39 +1,48 @@
 #include "core/Statements/Statement.h"
 
 #include "core/CompileState.h"
+#include "core/SemanticManager.h"
 
 #include "utilities/regex.h"
 #include "utilities/templatecategory.h"
 
 #include "core/Template/TemplateClass.h"
 
-nemesis::Statement::Statement(const std::string& expression)
-{
-    if (expression.empty()) throw std::runtime_error("Syntax Error: empty expression detected");
-
-    Expression = expression;
-    Components = SplitComponents(expression);
-}
-
 nemesis::Statement::Statement(const std::string& expression,
                               size_t linenum,
-                              const std::filesystem::path filepath)
+                              const std::filesystem::path filepath,
+                              bool no_component)
 {
-    if (expression.empty()) throw std::runtime_error("Syntax Error: empty expression detected");
+    if (expression.empty())
+    {
+        throw std::runtime_error("Syntax Error: empty expression detected (Line: " + std::to_string(linenum)
+                                 + ", File: " + filepath.string() + ")");
+    }
 
     Expression = expression;
     LineNum    = linenum;
     FilePath   = filepath;
+
+    if (no_component) return;
+
     Components = SplitComponents(expression);
 }
 
-nemesis::Statement::Statement(const nemesis::Line& expression)
+nemesis::Statement::Statement(const nemesis::Line& expression, bool no_component)
 {
-    if (expression.empty()) throw std::runtime_error("Syntax Error: empty expression detected");
+    if (expression.empty())
+    {
+        throw std::runtime_error("Syntax Error: empty expression detected (Line: "
+                                 + std::to_string(expression.GetLineNumber())
+                                 + ", File: " + expression.GetFilePath().string() + ")");
+    }
 
     Expression = expression;
     LineNum    = expression.GetLineNumber();
     FilePath   = expression.GetFilePath();
+
+    if (no_component) return;
+
     Components = SplitComponents(expression);
 }
 
@@ -43,6 +52,230 @@ nemesis::Statement::Statement(const nemesis::Statement& statement)
     LineNum    = statement.LineNum;
     FilePath   = statement.FilePath;
     Components = statement.Components;
+}
+
+SPtr<std::function<bool(nemesis::CompileState&)>> nemesis::Statement::CallbackTargetRequests(
+    const nemesis::TemplateClass& templt_class,
+    const nemesis::SemanticManager& manager,
+    const std::function<bool(nemesis::CompileState&, const nemesis::AnimationRequest*)>& callback)
+{
+    auto& templt_name = templt_class.GetName();
+    auto& templt_code = Components.front();
+
+    if (!nemesis::regex_match(templt_code, "^" + templt_name + "_[0-9]+$"))
+    {
+        throw std::runtime_error("Syntax Error: Unable to access (" + templt_code
+                                 + ") template (Template: " + templt_name + ", File: " + FilePath.string()
+                                 + ",  Line: " + std::to_string(LineNum) + ")");
+    }
+
+    const std::string& index_str = Components[1];
+
+    if (!nemesis::iequals(index_str, "ANY") && !nemesis::iequals(index_str, "ALL"))
+    {
+        auto get_request = GetTargetRequest(templt_class, manager);
+        return std::make_shared<std::function<bool(nemesis::CompileState&)>>(
+            [get_request, callback](nemesis::CompileState& state)
+            { return callback(state, (*get_request)(state)); });
+    }
+
+    if (nemesis::iequals(index_str, "ANY"))
+    {
+        return std::make_shared<std::function<bool(nemesis::CompileState&)>>(
+            [&templt_code, callback](nemesis::CompileState& state)
+            {
+                auto request = state.GetCurrentRequest(templt_code);
+                auto parents = request->GetParents();
+
+                // Vacuous false: Default to false
+                if (!parents.empty())
+                {
+                    for (auto& request : parents.back()->GetRequests())
+                    {
+                        if (!callback(state, request)) continue;
+
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                for (auto& request : state.GetRequests(request->GetTemplateName()))
+                {
+                    if (!callback(state, request)) continue;
+
+                    return true;
+                }
+
+                return false;
+            });
+    }
+
+    return std::make_shared<std::function<bool(nemesis::CompileState&)>>(
+        [&templt_code, callback](nemesis::CompileState& state)
+        {
+            auto request = state.GetCurrentRequest(templt_code);
+            auto parents = request->GetParents();
+
+            // Vacuous false: Default to false
+            if (!parents.empty())
+            {
+                auto req_list = parents.back()->GetRequests();
+
+                if (req_list.empty()) return false;
+
+                for (auto& request : req_list)
+                {
+                    if (callback(state, request)) continue;
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            auto& collection = state.GetRequests(request->GetTemplateName());
+
+            if (collection.empty()) return false;
+
+            for (auto& request : collection)
+            {
+                if (callback(state, request)) continue;
+
+                return false;
+            }
+
+            return true;
+        });
+}
+
+SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>
+nemesis::Statement::GetTargetRequest(const nemesis::TemplateClass& templt_class,
+                                     const nemesis::SemanticManager& manager)
+{
+    size_t num                     = GetTemplateNumber(templt_class);
+    auto& templt_name              = templt_class.GetName();
+    const std::string& templt_code = Components.front();
+
+    if (!nemesis::regex_match(templt_code, "^" + templt_name + "_[0-9]+$"))
+    {
+        throw std::runtime_error("Syntax Error: Unable to access (" + templt_code
+                                 + ") template (Template: " + templt_name + ", File: " + FilePath.string()
+                                 + ",  Line: " + std::to_string(LineNum) + ")");
+    }
+
+    const std::string& index_str = Components[1];
+    SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>> rst;
+
+    if (index_str == "")
+    {
+        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+            [this, &templt_code](nemesis::CompileState& state)
+            { return state.GetCurrentRequest(templt_code); });
+    }
+    else if (isOnlyNumber(index_str))
+    {
+        size_t index = std::stoul(index_str);
+        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+            [this, &templt_code, index](nemesis::CompileState& state)
+            {
+                auto request = state.GetCurrentRequest(templt_code);
+                auto parents = request->GetParents();
+
+                if (!parents.empty())
+                {
+                    auto list = parents.back()->GetRequests();
+
+                    if (index < list.size()) return list[index];
+
+                    goto Unaccessible;
+                }
+
+                auto& collection = state.GetRequests(request->GetTemplateName());
+
+                if (index < collection.size()) return collection[index];
+
+            Unaccessible:
+                throw std::runtime_error("Value Unaccessible: Index is larger than list (Syntax: "
+                                         + Expression + ", Line: " + std::to_string(LineNum)
+                                         + ", File: " + FilePath.string() + ")");
+            });
+    }
+    else if (index_str.size() != 1)
+    {
+    Invalid:
+        throw std::runtime_error("Syntax Error: Invalid request target (Expression: " + Expression
+                                 + ", Line: " + std::to_string(LineNum) + ", File: " + FilePath.string()
+                                 + ")");
+    }
+    else
+    {
+        switch (index_str.front())
+        {
+            case 'F':
+            {
+                rst = std::make_shared<
+                    std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+                    [this, &templt_code](nemesis::CompileState& state)
+                    { return state.GetFirstRequest(templt_code); });
+                break;
+            }
+            case 'L':
+            {
+                rst = std::make_shared<
+                    std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+                    [this, &templt_code](nemesis::CompileState& state)
+                    { return state.GetLastRequest(templt_code); });
+                break;
+            }
+            case 'B':
+            {
+                if (!manager.HasRequestInQueue(templt_code)) goto Unaccessible;
+
+                return std::make_shared<
+                    std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+                    [this, &templt_code](nemesis::CompileState& state)
+                    { return state.GetBackRequest(templt_code); });
+            }
+            case 'N':
+            {
+                if (!manager.HasRequestInQueue(templt_code)) goto Unaccessible;
+
+                return std::make_shared<
+                    std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
+                    [this, &templt_code](nemesis::CompileState& state)
+                    { return state.GetNextRequest(templt_code); });
+            }
+            default:
+                goto Invalid;
+        }
+    }
+
+    if (manager.HasRequestInQueue(templt_code)
+        || manager.HasRequestInQueue(templt_name + "_" + std::to_string(num - 1)))
+    {
+        return rst;
+    }
+
+Unaccessible:
+    throw std::runtime_error("Syntax Error: Unable to get target request from queue (Expression: "
+                             + Expression + ", Line: " + std::to_string(LineNum)
+                             + ", File: " + FilePath.string() + ")");
+}
+
+const nemesis::AnimationRequest* nemesis::Statement::GetBaseRequest(nemesis::CompileState& state) const
+{
+    auto request = state.GetBaseRequest();
+
+    if (!request)
+    {
+        throw std::runtime_error("Invalid Access: Base request cannot be found. Use specific "
+                                 "request reference instead (<template_code>[]) (Expression: "
+                                 + Expression + ", Line: " + std::to_string(LineNum)
+                                 + ", File: " + FilePath.string() + ")");
+    }
+
+    return request;
 }
 
 const std::string& nemesis::Statement::GetExpression() const noexcept
@@ -60,94 +293,16 @@ const std::filesystem::path& nemesis::Statement::GetFilePath() const noexcept
     return FilePath;
 }
 
-SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>
-nemesis::Statement::GetTargetRequest(const nemesis::TemplateClass& template_class,
-                                     const nemesis::SemanticManager& manager) const
-{
-    size_t num          = GetTemplateNumber(template_class);
-    auto& template_name = template_class.GetName();
-
-    const std::string& index_str = Components[1];
-    SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>> rst;
-
-    if (index_str == "")
-    {
-        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this](nemesis::CompileState& state) { return state.GetCurrentRequest(Components.front()); });
-    }
-    else if (index_str == "F")
-    {
-        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this](nemesis::CompileState& state) { return state.GetFirstRequest(Components.front()); });
-    }
-    else if (index_str == "L")
-    {
-        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this](nemesis::CompileState& state) { return state.GetLastRequest(Components.front()); });
-    }
-    else if (isOnlyNumber(index_str))
-    {
-        size_t index = std::stoul(index_str);
-
-        rst = std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this, index](nemesis::CompileState& state)
-            {
-                auto request = state.GetCurrentRequest(Components.front());
-                auto parents = request->GetParents();
-
-                if (!parents.empty()) return parents.back()->GetRequests()[index];
-
-                const nemesis::AnimationRequest* ptr
-                    = state.GetRequests(request->GetTemplateName())[index].get(); 
-                return ptr;
-            });
-    }
-
-    if (rst)
-    {
-        if (!manager.HasRequestInQueue(Components.front())
-            && !manager.HasRequestInQueue(template_name + "_" + std::to_string(num - 1)))
-        {
-            throw std::runtime_error("Syntax error: Unable to get target request from queue (Expression: "
-                                     + Expression + ", Line: " + std::to_string(LineNum)
-                                     + ", FilePath: " + FilePath.string() + ")");
-        }
-
-        return rst;
-    }
-
-    if (!manager.HasRequestInQueue(Components.front()))
-    {
-        throw std::runtime_error("Syntax error: Unable to get target request from queue (Expression: "
-                                 + Expression + ", Line: " + std::to_string(LineNum)
-                                 + ", FilePath: " + FilePath.string() + ")");
-    }
-
-    if (index_str == "B")
-    {
-        return std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this](nemesis::CompileState& state) { return state.GetBackRequest(Components.front()); });
-    }
-    else if (index_str == "N")
-    {
-        return std::make_shared<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>(
-            [this](nemesis::CompileState& state) { return state.GetNextRequest(Components.front()); });
-    }
-
-    throw std::runtime_error("Syntax error: Invalid request target (Expression: " + Expression + ", Line: "
-                             + std::to_string(LineNum) + ", FilePath: " + FilePath.string() + ")");
-}
-
-size_t nemesis::Statement::GetTemplateNumber(const nemesis::TemplateClass& template_class) const
+size_t nemesis::Statement::GetTemplateNumber(const nemesis::TemplateClass& templt_class) const
 {
     nemesis::smatch match;
-    auto& template_name = template_class.GetName();
+    auto& template_name = templt_class.GetName();
 
     if (!nemesis::regex_match(
             Expression, match, "^" + template_name + "_([1-9]+)\\[.*?\\](?:\\[.+?\\]|)(?:\\[.+?\\]|)?$"))
     {
-        throw std::runtime_error("Syntax error: Invalid request target (Expression: " + Expression
-                                 + ", Line: " + std::to_string(LineNum) + ", FilePath: " + FilePath.string()
+        throw std::runtime_error("Syntax Error: Invalid request target (Expression: " + Expression
+                                 + ", Line: " + std::to_string(LineNum) + ", File: " + FilePath.string()
                                  + ")");
     }
 

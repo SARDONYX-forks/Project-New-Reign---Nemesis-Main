@@ -1,16 +1,17 @@
 #pragma once
 
 #include <filesystem>
+#include <functional>
 
 #include "utilities/types.h"
 
 namespace nemesis
 {
     struct Line;
-    struct AnimationRequest;
     struct CompileState;
     struct TemplateClass;
     struct SemanticManager;
+    struct AnimationRequest;
 
 	struct Statement
     {
@@ -20,20 +21,25 @@ namespace nemesis
         std::filesystem::path FilePath;
         VecStr Components;
 
-        Statement() = default;
-        Statement(const std::string& expression);
-        Statement(const std::string& expression, size_t linenum, const std::filesystem::path filepath);
-        Statement(const nemesis::Line& expression);
+        Statement(const std::string& expression, size_t linenum, const std::filesystem::path filepath, bool no_component = false);
+        Statement(const nemesis::Line& expression, bool no_component = false);
         Statement(const nemesis::Statement& statement);
+
+        virtual SPtr<std::function<bool(nemesis::CompileState&)>> CallbackTargetRequests(
+            const nemesis::TemplateClass& templt_class,
+            const nemesis::SemanticManager& manager,
+            const std::function<bool(nemesis::CompileState&, const nemesis::AnimationRequest*)>& callback);
+
+        virtual SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>
+        GetTargetRequest(const nemesis::TemplateClass& templt_class, const nemesis::SemanticManager& manager);
+
+        const nemesis::AnimationRequest* GetBaseRequest(nemesis::CompileState& state) const;
 
     public:
         const std::string& GetExpression() const noexcept;
         size_t GetLineNum() const noexcept;
         const std::filesystem::path& GetFilePath() const noexcept;
-        SPtr<std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)>>
-        GetTargetRequest(const nemesis::TemplateClass& template_class,
-                         const nemesis::SemanticManager& manager) const;
-        size_t GetTemplateNumber(const nemesis::TemplateClass& template_class) const;
+        size_t GetTemplateNumber(const nemesis::TemplateClass& templt_class) const;
 
         virtual std::string Serialize() const = 0;
 

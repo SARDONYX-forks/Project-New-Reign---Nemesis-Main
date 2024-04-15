@@ -243,7 +243,7 @@ nemesis::NObject::ParseIfObject(nemesis::LineStream& stream,
 
                 if (has_else)
                 {
-                    throw std::runtime_error("Syntax error: ELSEIF syntax cannot come after ELSE (Line: "
+                    throw std::runtime_error("Syntax Error: ELSEIF syntax cannot come after ELSE (Line: "
                                              + std::to_string(value.GetLineNumber())
                                              + ", File: " + value.GetFilePath().string() + ")");
                 }
@@ -259,7 +259,7 @@ nemesis::NObject::ParseIfObject(nemesis::LineStream& stream,
                 if (has_else)
                 {
                     auto& value = token.Value;
-                    throw std::runtime_error("Syntax error: ELSE syntax cannot come after ELSE (Line: "
+                    throw std::runtime_error("Syntax Error: ELSE syntax cannot come after ELSE (Line: "
                                              + std::to_string(value.GetLineNumber())
                                              + ", File: " + value.GetFilePath().string() + ")");
                 }

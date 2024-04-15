@@ -30,8 +30,8 @@ namespace nemesis
             Token(const std::string& value,
                   size_t linenum,
                   const std::filesystem::path& filepath,
-                  TokenType type) noexcept;
-            Token(const nemesis::Line& value, TokenType type) noexcept;
+                  nemesis::LineStream::TokenType type) noexcept;
+            Token(const nemesis::Line& value, nemesis::LineStream::TokenType type) noexcept;
         };
 
     private:

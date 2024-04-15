@@ -34,7 +34,7 @@ nemesis::BreakObject::BreakObject(const std::string& expression,
     if (manager.HasForEachInQueue(expression)) return;
 
     throw std::runtime_error(
-        "Syntax error: Break must be within stated scope of FOREACH and CLOSE (Expression: " + expression
+        "Syntax Error: Break must be within stated scope of FOREACH and CLOSE (Expression: " + expression
         + ", Line: " + std::to_string(linenum) + ", File: " + filepath.string() + ")");
 }
 

@@ -36,7 +36,7 @@ nemesis::NLine::NLine(const std::string& expression,
 
 nemesis::NLine::NLine(const nemesis::Line& line, const nemesis::SemanticManager& manager)
 {
-    Value = std::make_unique<nemesis::Line>(line, line.GetLineNumber(), line.GetFilePath());
+    Value = std::make_unique<nemesis::Line>(line, line.GetLineNumber(), line.GetFilePathPtr()->shared_from_this());
     Modifiers = LineModifierFactory::BuildModifiers(line, line.GetLineNumber(), line.GetFilePath(), manager);
 }
 

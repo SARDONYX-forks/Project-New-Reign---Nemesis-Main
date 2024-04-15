@@ -60,7 +60,7 @@ UPtr<nemesis::IfObject> nemesis::NObjectParser::ParseIfObject(nemesis::LineStrea
             {
                 if (has_else)
                 {
-                    throw std::runtime_error("Syntax error: ELSE IF syntax cannot come after ELSE (Line: "
+                    throw std::runtime_error("Syntax Error: ELSE IF syntax cannot come after ELSE (Line: "
                                        + std::to_string(ntoken.Value.GetLineNumber())
                                        + ", File: " + ntoken.Value.GetFilePath().string() + ")");
                 }
@@ -271,7 +271,7 @@ Vec<UPtr<nemesis::NObject>> nemesis::NObjectParser::ParseHkxObjects(nemesis::Lin
 
         for (auto& each : list)
         {
-            nemesis::Line nline("				" + each, line.GetLineNumber(), line.GetFilePath());
+            nemesis::Line nline("				" + each, line.GetLineNumber(), line.GetFilePathPtr()->shared_from_this());
             objects.emplace_back(std::make_unique<nemesis::NLine>(nline, manager));
         }
 
@@ -297,7 +297,7 @@ Vec<UPtr<nemesis::NObject>> nemesis::NObjectParser::ParseHkxObjects(nemesis::Lin
     nemesis::Line nline = line.substr(0, pos + 17);
     objects.emplace_back(std::make_unique<nemesis::NLine>(nline, manager));
 
-    nline = nemesis::Line("			</hkparam>", line.GetLineNumber(), line.GetFilePath());
+    nline = nemesis::Line("			</hkparam>", line.GetLineNumber(), line.GetFilePathPtr()->shared_from_this());
     objects.emplace_back(std::make_unique<nemesis::NLine>(nline, manager));
     return objects;
 }

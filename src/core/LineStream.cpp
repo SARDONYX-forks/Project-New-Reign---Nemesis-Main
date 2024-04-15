@@ -12,13 +12,13 @@ namespace ns = nemesis::syntax;
 nemesis::LineStream::Token::Token(const std::string& value,
                                   size_t linenum,
                                   const std::filesystem::path& filepath,
-                                  TokenType type) noexcept
+                                  nemesis::LineStream::TokenType type) noexcept
     : Value(value, linenum, filepath)
     , Type(type)
 {
 }
 
-nemesis::LineStream::Token::Token(const nemesis::Line& value, TokenType type) noexcept
+nemesis::LineStream::Token::Token(const nemesis::Line& value, nemesis::LineStream::TokenType type) noexcept
     : Value(value)
     , Type(type)
 {

@@ -18,6 +18,10 @@ namespace nemesis
         ModObject(const std::string& modcode,
                   size_t linenum,
                   const std::filesystem::path& filepath,
+                  UPtr<nemesis::NObject>&& value);
+        ModObject(const std::string& modcode,
+                  size_t linenum,
+                  const std::filesystem::path& filepath,
                   nemesis::SemanticManager& manager,
                   UPtr<nemesis::NObject>&& value);
 

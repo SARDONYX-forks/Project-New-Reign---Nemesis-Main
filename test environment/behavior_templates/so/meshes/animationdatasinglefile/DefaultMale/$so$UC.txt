@@ -1,6 +1,6 @@
-<!-- IF ^motion|rotation^ -->
+<!-- IF ^@MotionData || @RotationData^ -->
 $animOrder[Animations\FilePath]$
-$D[end]$
+$D[time]$
 $MD$
 $RD$
 

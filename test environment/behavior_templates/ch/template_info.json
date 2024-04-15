@@ -1,7 +1,8 @@
 {
     "MinimumArray": 4,
     "IsArray": false,
-    "Options": [{
+    "Options": [
+        {
             "Name": "o",
             "IsArray": false
         },

@@ -1,5 +1,5 @@
 		<hkobject name="#4038" class="hkbStateMachineTransitionInfoArray" signature="0xe397b11e">
-			<hkparam name="transitions" numelements="$elements$">			<!-- COMPUTE -->
+			<hkparam name="transitions" numelements="9">
 				<hkobject>
 					<hkparam name="triggerInterval">
 						<hkobject>

@@ -333,7 +333,7 @@
 					<hkparam name="transition">#0091</hkparam>
 					<hkparam name="condition">null</hkparam>
 					<hkparam name="eventId">$@EventID[{ch_1[][@AnimationEvent]}]$</hkparam>
-					<hkparam name="toStateId">$@StateID[ch_1~{@ID}~0]$</hkparam>
+					<hkparam name="toStateId">$@StateID[ch_1~{ch_1[][@ID]}~0]$</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
 					<hkparam name="toNestedStateId">0</hkparam>
 					<hkparam name="priority">0</hkparam>

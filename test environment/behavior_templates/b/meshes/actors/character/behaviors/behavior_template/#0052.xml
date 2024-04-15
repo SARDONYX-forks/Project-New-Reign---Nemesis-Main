@@ -24,7 +24,7 @@
 				<hkcstring>bAnimationDriven</hkcstring>
 <!-- FOREACH ^b_1^ -->
 <!-- FOREACH ^b_1[][AV*]^ -->
-				<hkcstring>$b_1[][AV*][variable]$</hkcstring>
+				<hkcstring>$b_1[][AV*][][variable]$</hkcstring>
 <!-- CLOSE -->
 <!-- CLOSE -->
 			</hkparam>

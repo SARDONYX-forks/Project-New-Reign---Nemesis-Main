@@ -19,8 +19,13 @@
 			<hkparam name="maxSimultaneousTransitions">32</hkparam>
 			<hkparam name="startStateMode">START_STATE_MODE_DEFAULT</hkparam>
 			<hkparam name="selfTransitionMode">SELF_TRANSITION_MODE_NO_TRANSITION</hkparam>
-			<hkparam name="states" numelements="$elements$">			<!-- COMPUTE -->
-				#0845 #0835 #0823 #0812 #0801 #0790
+			<hkparam name="states" numelements="6">
+				#0845
+				#0835
+				#0823
+				#0812
+				#0801
+				#0790
 <!-- FOREACH ^km_1^ -->
 				#km~0 #km~10
 <!-- CLOSE -->

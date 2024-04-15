@@ -1,5 +1,5 @@
-<!-- IF ^motion|rotation^ -->
-Nemesis_Sequenced_Optimized_Animation_$@Index$
+<!-- IF ^@MotionData || @RotationData^ -->
+Nemesis_Sequenced_Optimized_Animation_$@ID$
 $animOrder[Animations\FilePath]$
 1
 0

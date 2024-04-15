@@ -1,7 +1,8 @@
 {
     "MinimumArray": 0,
     "IsArray": false,
-    "Options": [{
+    "Options": [
+        {
             "Name": "o",
             "IsArray": false
         },
@@ -16,7 +17,9 @@
         {
             "Name": "B",
             "IsArray": false,
-            "Variables": ["duration"]
+            "Variables": [
+                "duration"
+            ]
         }
     ]
 }

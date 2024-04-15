@@ -1,11 +1,11 @@
 		<hkobject name="#pa_1~$@ID$~0" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac1^ #0120 --> <!-- null -->
-			<hkparam name="exitNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
+			<hkparam name="enterNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac1^ #0120 --> <!-- null -->
+			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~1</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAnim_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAnim_$@ID$</hkparam>
 			<hkparam name="stateId">$@StateID[pa_1~{pa_1[][@ID]}~0]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -14,7 +14,7 @@
 		<hkobject name="#pa_1~$@ID$~1" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0370</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAnim_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAnim_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -45,7 +45,7 @@
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~3</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAnim_DisablePitch_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAnim_DisablePitch_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -54,7 +54,7 @@
 		<hkobject name="#pa_1~$@ID$~3" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0369</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAnim_DisablePitch_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAnim_DisablePitch_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -81,11 +81,11 @@
 		<hkobject name="#pa_1~$@ID$~4" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">$MultiChoice$</hkparam>			<!-- ^o^ #pa_1~$@ID$~5 --> <!-- ^h^ null --> <!-- #0408 -->
-			<hkparam name="exitNotifyEvents">$MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
+			<hkparam name="enterNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^o^ #pa_1~$@ID$~5 --> <!-- ^h^ null --> <!-- #0408 -->
+			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~6</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAnim_State_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAnim_State_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -132,7 +132,7 @@
 		<hkobject name="#pa_1~$@ID$~7" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_PairedAim_Clip_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_PairedAim_Clip_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
 			<hkparam name="triggers">#pa_1~$@ID$~8</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
@@ -163,7 +163,7 @@
 				</hkobject>
 <!-- CLOSE -->
 				<hkobject>
-					<hkparam name="localTime">$D[end]$</hkparam>
+					<hkparam name="localTime">$D[time]$</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">156</hkparam>
@@ -175,7 +175,7 @@
 					<hkparam name="isAnnotation">false</hkparam>
 				</hkobject>
 				<hkobject>
-					<hkparam name="localTime">$D[end]$</hkparam>
+					<hkparam name="localTime">$D[time]$</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">1070</hkparam>
@@ -192,11 +192,11 @@
 		<hkobject name="#pa_1~$@ID$~9" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac1^ #0120 --> <!-- null -->
-			<hkparam name="exitNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
+			<hkparam name="enterNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac1^ #0120 --> <!-- null -->
+			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~10</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_$@ID$</hkparam>
 			<hkparam name="stateId">$@StateID[pa_1~{pa_1[][@ID]}~9]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -205,7 +205,7 @@
 		<hkobject name="#pa_1~$@ID$~10" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0370</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -236,7 +236,7 @@
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~12</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_DiablePitch_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_DiablePitch_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -245,7 +245,7 @@
 		<hkobject name="#pa_1~$@ID$~12" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0369</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_DiablePitch_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_DiablePitch_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -272,11 +272,11 @@
 		<hkobject name="#pa_1~$@ID$~13" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">$MultiChoice$</hkparam>			<!-- ^o^ #pa_1~$@ID$~14 --> <!-- ^h^ null --> <!-- #0408 -->
-			<hkparam name="exitNotifyEvents">$MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
+			<hkparam name="enterNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^o^ #pa_1~$@ID$~14 --> <!-- ^h^ null --> <!-- #0408 -->
+			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#pa_1~$@ID$~15</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -323,7 +323,7 @@
 		<hkobject name="#pa_1~$@ID$~16" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_Clip_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_Clip_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
 			<hkparam name="triggers">#pa_1~$@ID$~17</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
@@ -354,7 +354,7 @@
 				</hkobject>
 <!-- CLOSE -->
 				<hkobject>
-					<hkparam name="localTime">$D[end]$</hkparam>
+					<hkparam name="localTime">$D[time]$</hkparam>
 					<hkparam name="event">
 						<hkobject>
 							<hkparam name="id">956</hkparam>

@@ -3742,7 +3742,7 @@
 					<hkparam name="eventId">$@EventID[{fuo_1[][@AnimationEvent]}]$</hkparam>
 					<hkparam name="toStateId">$@StateID[fuo_0]$</hkparam>
 					<hkparam name="fromNestedStateId">0</hkparam>
-					<hkparam name="toNestedStateId">$@StateID[fuo_1~{@ID}~1]$</hkparam>
+					<hkparam name="toNestedStateId">$@StateID[fuo_1~{fuo_1[][@ID]}~1]$</hkparam>
 					<hkparam name="priority">0</hkparam>
 					<hkparam name="flags">FLAG_TO_NESTED_STATE_ID_IS_VALID|FLAG_IS_LOCAL_WILDCARD|FLAG_DISABLE_CONDITION</hkparam>
 				</hkobject>

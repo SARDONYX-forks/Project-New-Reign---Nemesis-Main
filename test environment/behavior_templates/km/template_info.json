@@ -1,7 +1,8 @@
 {
     "MinimumArray": 0,
     "IsArray": false,
-    "Options": [{
+    "Options": [
+        {
             "Name": "o",
             "IsArray": false
         },
@@ -26,9 +27,15 @@
             "IsArray": false
         },
         {
+            "Name": "Tn",
+            "IsArray": false
+        },
+        {
             "Name": "D",
             "IsArray": false,
-            "Variables": ["time"]
+            "Variables": [
+                "time"
+            ]
         },
         {
             "Name": "T",
@@ -48,9 +55,14 @@
         },
         {
             "Name": "AV*",
-            "Aliases": ["AVI", "AV"],
+            "Aliases": [
+                "AVI",
+                "AV"
+            ],
             "IsArray": true,
-            "Variables": ["variable"]
+            "Variables": [
+                "variable"
+            ]
         }
     ]
 }

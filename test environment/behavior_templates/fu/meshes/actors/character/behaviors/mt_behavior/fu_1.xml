@@ -5,7 +5,7 @@
 			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0^ #5221 --> <!-- null -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">$@MultiChoice$</hkparam>			<!-- ^AV*^ #fu_1~$@ID$~1 --> <!-- #fu_1~$@ID$~4 -->
-			<hkparam name="name">Nemesis_Furniture_Group_State_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Furniture_Group_State_$@ID$</hkparam>
 			<hkparam name="stateId">$@StateID[fu_1~{@ID}~0]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -52,7 +52,7 @@
 <!-- CLOSE -->
 <!-- FOREACH ^AV^ -->
 <!-- IF ^@CurrentCount[0] == "5"^ -->
-<!-- BREAK ^AVI^ -->
+<!-- BREAK ^AV^ -->
 <!-- ENDIF -->
 				<hkobject>
 					<hkparam name="memberPath">bIsActive$@CurrentCount[0]$</hkparam>
@@ -69,7 +69,7 @@
 		<hkobject name="#fu_1~$@ID$~4" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Furniture_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Furniture_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>

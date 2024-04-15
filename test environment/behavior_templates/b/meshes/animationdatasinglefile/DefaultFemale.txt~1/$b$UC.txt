@@ -1,0 +1,11 @@
+<!-- IF ^@MotionData || @RotationData^ -->
+$@AnimationOrder[Characters\DefaultMale.hkx][Animations\FilePath]$
+$D[time]$
+<!-- FOREACH ^@MotionData^ -->
+$@MotionData[]$
+<!-- CLOSE -->
+<!-- FOREACH ^@RotationData^ -->
+$@RotationData[]$
+<!-- CLOSE -->
+
+<!-- ENDIF -->

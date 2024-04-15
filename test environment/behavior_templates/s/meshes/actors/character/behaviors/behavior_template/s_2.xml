@@ -1,12 +1,12 @@
 		<hkobject name="#s_2~$@ID$~0" class="hkbStateMachineStateInfo" signature="0xed7f9d0">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="listeners" numelements="0"></hkparam>
-			<hkparam name="enterNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac1 || @Map[1]^ #s_2~$@ID$~1 --> <!-- ^!h && ((s_2[] == s_2[F] && s_1[][h]) || (s_2[] != s_2[F] && s_2[B][h]))^ #$@SubTemplate[event_property][{@EventID[HeadTrackingOff]}][null]$ --> <!-- null -->
-			<hkparam name="exitNotifyEvents">$MultiChoice$</hkparam>			<!-- ^ac0 || (o && (s_2[] == s_2[L] || s_2[N][@Map][1] != @Map[1]))^ #s_2~$@ID$~2 --> <!-- ^!h && (s_2[] == s_2[L] || s_2[N][h])^ #$@SubTemplate[event_property][{@EventID[HeadTrackingOn]}][null]$ --> <!-- null -->
-			<hkparam name="transitions">#s_group~7</hkparam>
- 			<hkparam name="generator">$MultiChoice$</hkparam>			<!-- ^md || (!s_1[][md] && !s_2[ANY][md]) || AV*^ #s_2~$@ID$~3 --> <!-- #s_2~$@ID$~6 -->
+			<hkparam name="enterNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac1 || @Map[1]^ #s_2~$@ID$~1 --> <!-- ^!h && ((s_2[] == s_2[F] && s_1[][h]) || (s_2[] != s_2[F] && s_2[B][h]))^ #$@SubTemplate[event_property][{@EventID[HeadTrackingOff]}][null]$ --> <!-- null -->
+			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0 || (o && (s_2[] == s_2[L] || s_2[N][@Map][1] != @Map[1]))^ #s_2~$@ID$~2 --> <!-- ^!h && (s_2[] == s_2[L] || s_2[N][h])^ #$@SubTemplate[event_property][{@EventID[HeadTrackingOn]}][null]$ --> <!-- null -->
+			<hkparam name="transitions">#s_1~$s_1[][@ID]$~7</hkparam>
+ 			<hkparam name="generator">$@MultiChoice$</hkparam>			<!-- ^md || (!s_1[][md] && !s_2[ANY][md]) || AV*^ #s_2~$@ID$~3 --> <!-- #s_2~$@ID$~6 -->
 			<hkparam name="name">$@AnimationEvent$</hkparam>
-			<hkparam name="stateId">$S@0$</hkparam>
+			<hkparam name="stateId">$@StateID[s_2~{@ID}~0]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
 		</hkobject>
@@ -29,11 +29,11 @@
 	<!-- FOREACH ^@Map[1]^ -->
 				<hkobject>
 					<hkparam name="id">0</hkparam>
-					<hkparam name="payload">#$@SubTemplate[anim_object][{@Map][1][]}]$</hkparam>
+					<hkparam name="payload">#$@SubTemplate[anim_object][{@Map[1][]}]$</hkparam>
 				</hkobject>
 				<hkobject>
 					<hkparam name="id">1</hkparam>
-					<hkparam name="payload">#$@SubTemplate[anim_object][{@Map][1][]}]$</hkparam>
+					<hkparam name="payload">#$@SubTemplate[anim_object][{@Map[1][]}]$</hkparam>
 				</hkobject>
 	<!-- CLOSE -->
 			</hkparam>
@@ -81,15 +81,15 @@
 			<hkparam name="name">$@AnimationEvent$_IsActive</hkparam>
 			<hkparam name="enable">true</hkparam>
 			<hkparam name="bIsActive0">false</hkparam>
-			<hkparam name="bInvertActive0">$MultiChoice$</hkparam>			<!-- ^AVI[0]^ true --> <!-- false -->
+			<hkparam name="bInvertActive0">$@MultiChoice$</hkparam>			<!-- ^AVI[0]^ true --> <!-- false -->
 			<hkparam name="bIsActive1">false</hkparam>
-			<hkparam name="bInvertActive1">$MultiChoice$</hkparam>			<!-- ^AVI[1]^ true --> <!-- false -->
+			<hkparam name="bInvertActive1">$@MultiChoice$</hkparam>			<!-- ^AVI[1]^ true --> <!-- false -->
 			<hkparam name="bIsActive2">false</hkparam>
-			<hkparam name="bInvertActive2">$MultiChoice$</hkparam>			<!-- ^AVI[2]^ true --> <!-- false -->
+			<hkparam name="bInvertActive2">$@MultiChoice$</hkparam>			<!-- ^AVI[2]^ true --> <!-- false -->
 			<hkparam name="bIsActive3">false</hkparam>
-			<hkparam name="bInvertActive3">$MultiChoice$</hkparam>			<!-- ^AVI[3]^ true --> <!-- false -->
+			<hkparam name="bInvertActive3">$@MultiChoice$</hkparam>			<!-- ^AVI[3]^ true --> <!-- false -->
 			<hkparam name="bIsActive4">false</hkparam>
-			<hkparam name="bInvertActive4">$MultiChoice$</hkparam>			<!-- ^AVI[4]^ true --> <!-- false -->
+			<hkparam name="bInvertActive4">$@MultiChoice$</hkparam>			<!-- ^AVI[4]^ true --> <!-- false -->
 		</hkobject>
 
 		<hkobject name="#s_2~$@ID$~5" class="hkbVariableBindingSet" signature="0x338ad4ff">
@@ -129,13 +129,13 @@
 			<hkparam name="bIsActive0">false</hkparam>
 			<hkparam name="bInvertActive0">false</hkparam>
 			<hkparam name="bIsActive1">false</hkparam>
-			<hkparam name="bInvertActive1">$MultiChoice$</hkparam>			<!-- ^AVI[0]^ true --> <!-- false -->
+			<hkparam name="bInvertActive1">$@MultiChoice$</hkparam>			<!-- ^AVI[0]^ true --> <!-- false -->
 			<hkparam name="bIsActive2">false</hkparam>
-			<hkparam name="bInvertActive2">$MultiChoice$</hkparam>			<!-- ^AVI[1]^ true --> <!-- false -->
+			<hkparam name="bInvertActive2">$@MultiChoice$</hkparam>			<!-- ^AVI[1]^ true --> <!-- false -->
 			<hkparam name="bIsActive3">false</hkparam>
-			<hkparam name="bInvertActive3">$MultiChoice$</hkparam>			<!-- ^AVI[2]^ true --> <!-- false -->
+			<hkparam name="bInvertActive3">$@MultiChoice$</hkparam>			<!-- ^AVI[2]^ true --> <!-- false -->
 			<hkparam name="bIsActive4">false</hkparam>
-			<hkparam name="bInvertActive4">$MultiChoice$</hkparam>			<!-- ^AVI[3]^ true --> <!-- false -->
+			<hkparam name="bInvertActive4">$@MultiChoice$</hkparam>			<!-- ^AVI[3]^ true --> <!-- false -->
 		</hkobject>
 
 		<hkobject name="#s_2~$@ID$~5" class="hkbVariableBindingSet" signature="0x338ad4ff">
@@ -177,9 +177,9 @@
 		<hkobject name="#s_2~$@ID$~6" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Sequenced_Animation_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Sequenced_Animation_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
-			<hkparam name="triggers">$MultiChoice$</hkparam>			<!-- ^a || T^ #s_2~$@ID$~7 --> <!-- null -->
+			<hkparam name="triggers">$@MultiChoice$</hkparam>			<!-- ^a || T^ #s_2~$@ID$~7 --> <!-- null -->
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
 			<hkparam name="cropEndAmountLocalTime">0.000000</hkparam>
 			<hkparam name="startTime">0.000000</hkparam>
@@ -187,7 +187,7 @@
 			<hkparam name="enforcedDuration">0.000000</hkparam>
 			<hkparam name="userControlledTimeFraction">0.000000</hkparam>
 			<hkparam name="animationBindingIndex">-1</hkparam>
-			<hkparam name="mode">$MultiChoice$</hkparam>			<!-- ^a^ MODE_SINGLE_PLAY --> <!-- MODE_LOOPING -->
+			<hkparam name="mode">$@MultiChoice$</hkparam>			<!-- ^a^ MODE_SINGLE_PLAY --> <!-- MODE_LOOPING -->
 			<hkparam name="flags">0</hkparam>
 		</hkobject>
 

@@ -123,7 +123,7 @@
 		<hkobject name="#fu_2~$@ID$~6" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemsis_Furniture_Clip_$@Index$</hkparam>
+			<hkparam name="name">Nemsis_Furniture_Clip_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
 			<hkparam name="triggers">$@MultiChoice$</hkparam>			<!-- ^T || a || fu_2[] == fu_2[L]^ #fu_2~$@ID$~7 --> <!-- null -->
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>

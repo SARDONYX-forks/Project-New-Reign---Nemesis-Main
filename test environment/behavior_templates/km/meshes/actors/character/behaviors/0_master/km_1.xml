@@ -5,7 +5,7 @@
 			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~1</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_$@ID$</hkparam>
 			<hkparam name="stateId">$@StateID[km_1~{@ID}~0]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -14,7 +14,7 @@
 		<hkobject name="#km_1~$@ID$~1" class="hkbModifierGenerator" signature="0x1f81fae6">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">1</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_MG_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_MG_$@ID$</hkparam>
 			<hkparam name="modifier">#0371</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~2</hkparam>
 		</hkobject>
@@ -22,7 +22,7 @@
 		<hkobject name="#km_1~$@ID$~2" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0370</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -53,7 +53,7 @@
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~4</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_DisablePitch_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_DisablePitch_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -62,7 +62,7 @@
 		<hkobject name="#km_1~$@ID$~4" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0369</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_DisablePitch_Behavior_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_DisablePitch_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -93,7 +93,7 @@
 			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~7</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_State_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_State_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -140,7 +140,7 @@
 		<hkobject name="#km_1~$@ID$~8" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_Player_KillMove_Clip_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_Player_KillMove_Clip_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
 			<hkparam name="triggers">#km_1~$@ID$~9</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>
@@ -228,7 +228,7 @@
 			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^ac0^ #0201 --> <!-- null -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~11</hkparam>
-			<hkparam name="name">Nemesis_NPC_KillMove_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_KillMove_$@ID$</hkparam>
 			<hkparam name="stateId">$@StateID[km_1~{@ID}~10]$</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -237,7 +237,7 @@
 		<hkobject name="#km_1~$@ID$~11" class="hkbModifierGenerator" signature="0x1f81fae6">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">1</hkparam>
-			<hkparam name="name">Nemesis_NPC_PairedAnim_MG_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_PairedAnim_MG_$@ID$</hkparam>
 			<hkparam name="modifier">#0371</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~12</hkparam>
 		</hkobject>
@@ -245,7 +245,7 @@
 		<hkobject name="#km_1~$@ID$~12" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0370</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">NPC_Nemesis_KillMove_Behavior_$@Index$</hkparam>
+			<hkparam name="name">NPC_Nemesis_KillMove_Behavior_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -276,7 +276,7 @@
 			<hkparam name="exitNotifyEvents">null</hkparam>
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~14</hkparam>
-			<hkparam name="name">Nemesis_NPC_KillMove_DisablePitch_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_KillMove_DisablePitch_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -285,7 +285,7 @@
 		<hkobject name="#km_1~$@ID$~14" class="hkbStateMachine" signature="0x816c1dcb">
 			<hkparam name="variableBindingSet">#0369</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">Nemesis_NPC_KillMove_DisablePitch_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_KillMove_DisablePitch_$@ID$</hkparam>
 			<hkparam name="eventToSendWhenStateOrTransitionChanges">
 				<hkobject>
 					<hkparam name="id">-1</hkparam>
@@ -316,7 +316,7 @@
 			<hkparam name="exitNotifyEvents">$@MultiChoice$</hkparam>			<!-- ^h && o^ #2098 --> <!-- ^h^ null --> <!-- ^o^ #$@SubTemplate[event_property_2][{@EventID[HeadTrackingOn]}][null][{@EventID[AnimObjectUnequip]}][null]$ --> <!-- #0756 -->
 			<hkparam name="transitions">null</hkparam>
 			<hkparam name="generator">#km_1~$@ID$~17</hkparam>
-			<hkparam name="name">Nemesis_NPC_KillMove_$@Index$</hkparam>
+			<hkparam name="name">Nemesis_NPC_KillMove_$@ID$</hkparam>
 			<hkparam name="stateId">0</hkparam>
 			<hkparam name="probability">1.000000</hkparam>
 			<hkparam name="enable">true</hkparam>
@@ -363,7 +363,7 @@
 		<hkobject name="#km_1~$@ID$~18" class="hkbClipGenerator" signature="0x333b85b9">
 			<hkparam name="variableBindingSet">null</hkparam>
 			<hkparam name="userData">0</hkparam>
-			<hkparam name="name">NPC_Nemesis_KillMove_Clip_$@Index$</hkparam>
+			<hkparam name="name">NPC_Nemesis_KillMove_Clip_$@ID$</hkparam>
 			<hkparam name="animationName">Animations\$@AnimationFilePath$</hkparam>
 			<hkparam name="triggers">#km_1~$@ID$~19</hkparam>
 			<hkparam name="cropStartAmountLocalTime">0.000000</hkparam>

@@ -1,0 +1,7 @@
+2GSThrust
+$@RunningNumber[tkuc~1]$
+1
+0
+0
+1
+HitFrame:1.2

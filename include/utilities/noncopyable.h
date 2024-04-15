@@ -1,7 +1,5 @@
 #pragma once
 
-#include <boost/noncopyable.hpp>
-
 namespace nemesis
 {
 	struct NonCopyableStruct

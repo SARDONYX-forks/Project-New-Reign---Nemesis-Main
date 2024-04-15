@@ -4,11 +4,6 @@
 using LinkedString = nemesis::LinkedVar<std::string>;
 using LinkedWstring = nemesis::LinkedVar<std::wstring>;
 
-nemesis::SharableWrapper<std::filesystem::path>* nemesis::Line::GetFilePathPtr() const noexcept
-{
-    return r_path ? r_path : s_path.get();
-}
-
 nemesis::Line::Line(size_t _linenum)
 {
     linenum = _linenum;
@@ -31,7 +26,7 @@ nemesis::Line::Line(const QType _ch) noexcept
 
 nemesis::Line::Line(const RawChar* _ch,
                     size_t linenum,
-                    SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                    const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base = _ch;
     this->linenum = linenum;
@@ -40,7 +35,7 @@ nemesis::Line::Line(const RawChar* _ch,
 
 nemesis::Line::Line(const RawType& _ch,
                     size_t linenum,
-                    SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                    const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base = _ch;
     this->linenum = linenum;
@@ -49,7 +44,7 @@ nemesis::Line::Line(const RawType& _ch,
 
 nemesis::Line::Line(const QType& _ch,
                     size_t linenum,
-                    SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                    const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base          = _ch.toStdString();
     this->linenum = linenum;
@@ -440,6 +435,11 @@ std::filesystem::path nemesis::Line::GetFilePath() const noexcept
     return "";
 }
 
+nemesis::SharableWrapper<std::filesystem::path>* nemesis::Line::GetFilePathPtr() const noexcept
+{
+    return r_path ? r_path : s_path.get();
+}
+
 std::string nemesis::Line::GetClassName() const noexcept
 {
     std::string format  = "Base";
@@ -485,11 +485,6 @@ void nemesis::Line::SetLineNumber(size_t linenum)
     this->linenum = linenum;
 }
 
-nemesis::SharableWrapper<std::filesystem::path>* nemesis::Wline::GetFilePathPtr() const noexcept
-{
-    return r_path ? r_path : s_path.get();
-}
-
 nemesis::Wline::Wline(size_t _linenum) noexcept
 {
     linenum = _linenum;
@@ -512,7 +507,7 @@ nemesis::Wline::Wline(const QType& _wch) noexcept
 
 nemesis::Wline::Wline(const RawChar* _wch,
                       size_t linenum,
-                      SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                      const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base          = _wch;
     this->linenum = linenum;
@@ -521,7 +516,7 @@ nemesis::Wline::Wline(const RawChar* _wch,
 
 nemesis::Wline::Wline(const RawType& _wch,
                       size_t linenum,
-                      SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                      const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base          = _wch;
     this->linenum = linenum;
@@ -530,7 +525,7 @@ nemesis::Wline::Wline(const RawType& _wch,
 
 nemesis::Wline::Wline(const QType& _wch,
                       size_t linenum,
-                      SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept
+                      const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept
 {
     base          = _wch.toStdWString();
     this->linenum = linenum;
@@ -875,6 +870,26 @@ std::filesystem::path nemesis::Wline::GetFilePath() const noexcept
     if (ptr) return ptr->Get();
 
     return "";
+}
+
+nemesis::SharableWrapper<std::filesystem::path>* nemesis::Wline::GetFilePathPtr() const noexcept
+{
+    return r_path ? r_path : s_path.get();
+}
+
+std::wstring nemesis::Wline::GetClassName() const noexcept
+{
+    std::wstring format  = L"Base";
+    std::wstring path    = nemesis::to_lower_copy(GetFilePath().wstring());
+    std::wstring bhv_tmp = L"behavior templates\\";
+    auto pos            = nemesis::isearch(path, bhv_tmp);
+
+    if (pos != NOT_FOUND)
+    {
+        format = std::wstring(nemesis::between(path, bhv_tmp, L"\\"));
+    }
+
+    return format;
 }
 
 const nemesis::Wline::RawType& nemesis::Wline::ToWstring() const noexcept

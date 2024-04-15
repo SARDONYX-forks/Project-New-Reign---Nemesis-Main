@@ -27,8 +27,6 @@ namespace nemesis
         SPtr<nemesis::SharableWrapper<std::filesystem::path>> s_path;
         nemesis::SharableWrapper<std::filesystem::path>* r_path = nullptr;
 
-        nemesis::SharableWrapper<std::filesystem::path>* GetFilePathPtr() const noexcept;
-
     public:
         Line() = default;
         Line(size_t _linenum);
@@ -37,13 +35,13 @@ namespace nemesis
         Line(const QType _ch) noexcept;
         Line(const RawChar* _ch,
              size_t linenum,
-             SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+             const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Line(const RawType& _ch,
              size_t linenum,
-             SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+             const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Line(const QType& _ch,
              size_t linenum,
-             SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+             const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Line(const RawChar* _ch,
              size_t linenum,
              nemesis::SharableWrapper<std::filesystem::path>* path_ptr = nullptr) noexcept;
@@ -127,6 +125,7 @@ namespace nemesis
 
         size_t GetLineNumber() const noexcept;
         std::filesystem::path GetFilePath() const noexcept;
+        nemesis::SharableWrapper<std::filesystem::path>* GetFilePathPtr() const noexcept;
         std::string GetClassName() const noexcept;
 
         WRawType ToWstring() const noexcept;
@@ -157,8 +156,6 @@ namespace nemesis
         SPtr<nemesis::SharableWrapper<std::filesystem::path>> s_path;
         nemesis::SharableWrapper<std::filesystem::path>* r_path = nullptr;
 
-        nemesis::SharableWrapper<std::filesystem::path>* GetFilePathPtr() const noexcept;
-
     public:
         Wline() = default;
         Wline(size_t _linenum) noexcept;
@@ -167,13 +164,13 @@ namespace nemesis
         Wline(const QType& _wch) noexcept;
         Wline(const RawChar* _wch,
               size_t linenum,
-              SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+              const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Wline(const RawType& _wch,
               size_t linenum,
-              SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+              const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Wline(const QType& _wch,
               size_t linenum,
-              SPtr<nemesis::SharableWrapper<std::filesystem::path>> path_ptr) noexcept;
+              const SPtr<nemesis::SharableWrapper<std::filesystem::path>>& path_ptr) noexcept;
         Wline(const RawChar* _wch,
               size_t linenum,
               nemesis::SharableWrapper<std::filesystem::path>* path_ptr = nullptr) noexcept;
@@ -249,6 +246,8 @@ namespace nemesis
 
         size_t GetLineNumber() const noexcept;
         std::filesystem::path GetFilePath() const noexcept;
+        nemesis::SharableWrapper<std::filesystem::path>* GetFilePathPtr() const noexcept;
+        std::wstring GetClassName() const noexcept;
 
         const RawType& ToWstring() const noexcept;
         ARawType ToString() const noexcept;

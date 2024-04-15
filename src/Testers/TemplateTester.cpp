@@ -1,9 +1,6 @@
 #include "Testers/TemplateTester.h"
 
-#include "core/CompileState.h"
-#include "core/SemanticManager.h"
-
-#include "core/Template/TemplateClass.h"
+#include "core/CoreObject.h"
 
 void nemesis::TemplateTester::Run()
 {
@@ -14,7 +11,7 @@ void nemesis::TemplateTester::Run()
         "E:\\C++\\Project New Reign - Nemesis\\test "
         "environment\\behavior_templates\\fuo\\meshes\\actors\\character\\behaviors\\mt_behavior\\fuo_1.xml");
 
-    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("fuo", 0, true);
+    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
     request->SetAnimationEvent("ExampleAnimation");
 
     auto model  = templt_class.GetModel("T");
@@ -36,7 +33,8 @@ void nemesis::TemplateTester::Run()
     request->AddOption(std::move(option4));
 
     {
-        UPtr<nemesis::AnimationRequest> irequest = std::make_unique<nemesis::AnimationRequest>("fuo", 1, true);
+        UPtr<nemesis::AnimationRequest> irequest
+            = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
         irequest->SetAnimationEvent("NewAnimation");
 
         auto model  = templt_class.GetModel("T");
@@ -62,8 +60,10 @@ void nemesis::TemplateTester::Run()
 
     auto request_ptr = request.get();
     nemesis::AnimationRequestRepository repo;
+    nemesis::TemplateRepository templt_repo;
     repo.AddRequest(std::move(request));
-    nemesis::CompileState state(repo);
+    nemesis::CompilationManager compile_manager({}, repo, templt_repo);
+    nemesis::CompileState& state = compile_manager.CreateCompileState(templt->GetFilePath());
 
     state.AddEventName("ExampleAnimation");
     state.AddEventName("DodgeStop");

@@ -1,15 +1,6 @@
 #include "Testers/HkxNodeTester.h"
 
-#include "core/NLine.h"
-#include "core/ModLine.h"
-#include "core/IfObject.h"
-#include "core/CompileState.h"
-#include "core/ForEachObject.h"
-#include "core/CollectionObject.h"
-#include "core/SemanticManager.h"
-#include "core/AnimationRequest.h"
-
-#include "core/Template/TemplateClass.h"
+#include "core/CoreObject.h"
 
 #include "hkx/HkxNode.h"
 
@@ -19,7 +10,7 @@ void nemesis::HkxNodeTester::Run()
         "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
-    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("ta", 0, true);
+    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
 
     auto model  = templt_class.GetModel("T");
     auto option = model->TryCreateOption("TDodgeStop/1.05", 1, "file.txt");
@@ -28,14 +19,6 @@ void nemesis::HkxNodeTester::Run()
     auto model2  = templt_class.GetModel("o");
     auto option2 = model2->TryCreateOption("o", 2, "file.txt");
     request->AddOption(std::move(option2));
-
-    auto request_ptr = request.get();
-    nemesis::AnimationRequestRepository repo;
-    repo.AddRequest(std::move(request));
-    nemesis::CompileState state(repo);
-
-    state.SetBaseRequest(request_ptr);
-    state.QueueCurrentRequest("fuo_1", request_ptr);
 
     nemesis::SemanticManager manager;
     manager.SetCurrentTemplate(&templt);
@@ -80,6 +63,16 @@ void nemesis::HkxNodeTester::Run()
 
     nemesis::LineStream stream(lines.begin(), lines.end());
     auto hkx_node = nemesis::HkxNode::ParseHkxNode(stream, manager);
+
+    auto request_ptr = request.get();
+    nemesis::AnimationRequestRepository repo;
+    nemesis::TemplateRepository templt_repo;
+    repo.AddRequest(std::move(request));
+    nemesis::CompilationManager compile_manager({}, repo, templt_repo);
+    nemesis::CompileState& state = compile_manager.CreateCompileState(filepath);
+
+    state.SetBaseRequest(request_ptr);
+    state.QueueCurrentRequest("fuo_1", request_ptr);
 
     DeqNstr serialized = hkx_node->Serialize();
     DeqNstr compiled   = hkx_node->Compile(state);

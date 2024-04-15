@@ -1,12 +1,6 @@
 #include "Testers/AnimationSetDataSingleFileTester.h"
 
-#include "core/AnimationRequest.h"
-#include "core/CompileState.h"
-#include "core/ModLine.h"
-#include "core/NLine.h"
-#include "core/SemanticManager.h"
-
-#include "core/Template/TemplateClass.h"
+#include "core/CoreObject.h"
 
 #include "animsetdata/AnimationSetDataSingleFile.h"
 
@@ -16,7 +10,7 @@ void nemesis::AnimationSetDataSingleFileTester::Run()
                                         "environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
-    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("ta", 0, true);
+    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
 
     auto model  = templt_class.GetModel("T");
     auto option = model->TryCreateOption("TDodgeStop/2512309553", 1, "file.txt");
@@ -26,15 +20,6 @@ void nemesis::AnimationSetDataSingleFileTester::Run()
     auto option2 = model2->TryCreateOption("o", 2, "file.txt");
     request->AddOption(std::move(option2));
 
-    auto request_ptr = request.get();
-    nemesis::AnimationRequestRepository repo;
-    repo.AddRequest(std::move(request));
-    nemesis::CompileState state(repo);
-
-    state.SetBaseRequest(request_ptr);
-    state.QueueCurrentRequest("fuo_1", request_ptr);
-    state.SelectMod("tudm");
-
     nemesis::SemanticManager manager;
     manager.SetCurrentTemplate(&templt);
 
@@ -43,6 +28,16 @@ void nemesis::AnimationSetDataSingleFileTester::Run()
 
     auto project_ptr = singlefile->GetProject("DefaultFemaleData\\DefaultFemale.txt");
     auto state_ptr   = project_ptr->GetState("_MTSolo.txt");
+
+    auto request_ptr = request.get();
+    nemesis::AnimationRequestRepository repo;
+    nemesis::TemplateRepository templt_repo;
+    repo.AddRequest(std::move(request));
+    nemesis::CompilationManager compile_manager({"tudm"}, repo, templt_repo);
+    nemesis::CompileState& state = compile_manager.CreateCompileState(filepath);
+
+    state.SetBaseRequest(request_ptr);
+    state.QueueCurrentRequest("fuo_1", request_ptr);
 
     VecNstr original_lines;
     GetFileLines(filepath, original_lines, false);

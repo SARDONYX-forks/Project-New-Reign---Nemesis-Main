@@ -2,10 +2,7 @@
 
 #include "core/LineModifier/MultipleChoiceModifier.h"
 
-#include "core/CompileState.h"
-#include "core/AnimationRequest.h"
-
-#include "core/Template/TemplateClass.h"
+#include "core/CoreObject.h"
 
 #include "utilities/stringextension.h"
 
@@ -27,7 +24,7 @@ void nemesis::ModifierTester::Run()
         "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
-    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("fuo", 0, true);
+    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
 
     auto model  = templt_class.GetModel("T");
     auto option = model->TryCreateOption("TDodgeStop/1.05", 2, "file_list.txt");
@@ -39,8 +36,10 @@ void nemesis::ModifierTester::Run()
 
     auto request_ptr = request.get();
     nemesis::AnimationRequestRepository repo;
+    nemesis::TemplateRepository templt_repo;
     repo.AddRequest(std::move(request));
-    nemesis::CompileState state(repo);
+    nemesis::CompilationManager compile_manager({}, repo, templt_repo);
+    nemesis::CompileState& state = compile_manager.CreateCompileState(templt.GetFilePath());
     
     state.SetBaseRequest(request_ptr);
     state.QueueCurrentRequest("fuo_1", request_ptr);
@@ -57,7 +56,7 @@ void nemesis::ModifierTester::Run()
     auto modifier_ptr = nemesis::LineModifierFactory::BuildModifier(pos, pos + 13, "@MultiChoice", mc_line, 3, "C:\\mod.txt", manager);
     nemesis::MultipleChoiceModifier& modifier = static_cast<nemesis::MultipleChoiceModifier&>(*modifier_ptr);
 
-    std::string new_line = modifier.GetStatement()->Serialize();
+    std::string new_line = modifier.GetStatement().Serialize();
 
     if (!StringEndWith(mc_line, new_line)) throw std::runtime_error("serializing or parsing mistake");
 

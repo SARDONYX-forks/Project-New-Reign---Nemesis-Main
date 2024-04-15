@@ -2,6 +2,7 @@
 
 #include "hkx/hkxnode.h"
 
+#include "core/Template.h"
 #include "core/CompileState.h"
 #include "core/MasterRepository.h"
 
@@ -15,6 +16,7 @@ extern sf::path CurrentExeDirectory;
 void nemesis::MasterRepositoryTester::Run()
 {
     nemesis::MasterRepository repository;
+    Vec<UPtr<nemesis::SubTemplateObject>> sub_template_list;
     
     {
         nemesis::ThreadPool tp;
@@ -66,7 +68,7 @@ void nemesis::MasterRepositoryTester::Run()
 
                     if (!nemesis::iequals(path.extension().wstring(), L".xml")) continue;
 
-                    sf::path parent_path(nemesis::to_lower_copy(path.parent_path()));
+                    sf::path parent_path(nemesis::to_lower_copy(path.parent_path().string()));
 #if _DEBUG
                     if (parent_path.stem().wstring() != L"mt_behavior") continue;
 #endif
@@ -81,7 +83,9 @@ void nemesis::MasterRepositoryTester::Run()
                         throw std::runtime_error("Behavior referenced by template cannot be found");
                     }
 
-                    if (path.filename().wstring().front() != '#')
+                    auto node = behavior_ptr->GetNodeById(path.filename().string());
+
+                    if (!node)
                     {
                         auto templt_obj = nemesis::TemplateHkx::ParseFromFile(class_ptr, path, tp);
                         class_ptr->AddTemplate(templt_obj);
@@ -89,7 +93,8 @@ void nemesis::MasterRepositoryTester::Run()
                         continue;
                     }
 
-                    behavior_ptr->UpdateNodeFromFile(path, class_ptr);
+                    auto m_node = nemesis::HkxNode::ParseHkxNodeFromFile(path);
+                    node->MatchAndUpdate(*m_node);
                 }
 
                 continue;
@@ -102,7 +107,6 @@ void nemesis::MasterRepositoryTester::Run()
             for (auto& each : list)
             {
                 auto sub_template = nemesis::SubTemplateObject::ParseFromFile(entry.path());
-                each->AddSubTemplateNode(std::move(sub_template));
             }
         }
 
@@ -123,7 +127,6 @@ void nemesis::MasterRepositoryTester::Run()
         = templt_class->CreateRequest("fuo -TDodgeStop/1.05,o,ac,TDodgeStart/1.3,TAttackQuickStart/2.1 ExampleAnimation  "
                                       "idlestop.hkx AnimobjectSweetRoll/1",
                                       0,
-                                      0,
                                       "E:\\C++\\Project New Reign - Nemesis\\test "
                                       "environment\\data\\meshes\\actors\\character\\animations\\animated"
                                       "eatingredux\\fnis_animatedeatingredux_list.txt");
@@ -134,7 +137,6 @@ void nemesis::MasterRepositoryTester::Run()
     {
         auto request
             = templt_class->CreateRequest("fuo -TRollStop/3.05,h,o,TRollStart/4.3,TBlockStart/1.1 FZSweetRoll1  ..\\animobjecteatingidlebase.hkx AnimobjectSweetRoll/1",
-                                          1,
                                           1,
                                           "E:\\C++\\Project New Reign - Nemesis\\test "
                                           "environment\\data\\meshes\\actors\\character\\animations\\animated"

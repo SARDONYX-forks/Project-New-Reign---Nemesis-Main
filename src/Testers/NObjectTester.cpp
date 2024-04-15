@@ -1,15 +1,6 @@
 #include "Testers/NObjectTester.h"
 
-#include "core/NLine.h"
-#include "core/ModLine.h"
-#include "core/IfObject.h"
-#include "core/CompileState.h"
-#include "core/ForEachObject.h"
-#include "core/CollectionObject.h"
-#include "core/SemanticManager.h"
-#include "core/AnimationRequest.h"
-
-#include "core/Template/TemplateClass.h"
+#include "core/CoreObject.h"
 
 void nemesis::NObjectTester::Run()
 {
@@ -17,7 +8,7 @@ void nemesis::NObjectTester::Run()
         "E:\\C++\\Project New Reign - Nemesis\\test environment\\behavior_templates\\fuo\\template_info.json");
     nemesis::TemplateObject templt(&templt_class);
 
-    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>("ta", 0, true);
+    UPtr<nemesis::AnimationRequest> request = std::make_unique<nemesis::AnimationRequest>(templt_class, true);
 
     auto model  = templt_class.GetModel("T");
     auto option = model->TryCreateOption("TDodgeStop/1.05", 1, "file.txt");
@@ -26,14 +17,6 @@ void nemesis::NObjectTester::Run()
     auto model2  = templt_class.GetModel("o");
     auto option2  = model2->TryCreateOption("o", 2, "file.txt");
     request->AddOption(std::move(option2));
-
-    auto request_ptr = request.get();
-    nemesis::AnimationRequestRepository repo;
-    repo.AddRequest(std::move(request));
-    nemesis::CompileState state(repo);
-
-    state.SetBaseRequest(request_ptr);
-    state.QueueCurrentRequest("fuo_1", request_ptr);
 
     nemesis::SemanticManager manager;
     manager.SetCurrentTemplate(&templt);
@@ -77,7 +60,7 @@ void nemesis::NObjectTester::Run()
     auto* fe_list_ptr = fe_list.get();
     UPtr<nemesis::ForEachObject> foreach_obj
         = std::make_unique<nemesis::ForEachObject>("T", 9, filepath, manager, std::move(fe_list));
-    auto statement = foreach_obj->GetStatement();
+    auto& statement = foreach_obj->GetStatement();
     std::string option_name;
 
     if (statement.TryGetOptionName(option_name))
@@ -115,6 +98,16 @@ void nemesis::NObjectTester::Run()
 
     list.AddObject(std::move(if_obj));
     list.AddObject(std::make_unique<nemesis::NLine>("_end_", 16, filepath, manager));
+
+    auto request_ptr = request.get();
+    nemesis::AnimationRequestRepository repo;
+    nemesis::TemplateRepository templt_repo;
+    repo.AddRequest(std::move(request));
+    nemesis::CompilationManager compile_manager({}, repo, templt_repo);
+    nemesis::CompileState& state = compile_manager.CreateCompileState(filepath);
+
+    state.SetBaseRequest(request_ptr);
+    state.QueueCurrentRequest("fuo_1", request_ptr);
 
     DeqNstr compiled   = list.Compile(state);
     DeqNstr serialized = list.Serialize();

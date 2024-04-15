@@ -287,6 +287,18 @@ std::filesystem::path NemesisInfo::GetStagePath() const
     return stageDirectory;
 }
 
+std::filesystem::path NemesisInfo::PatchOutputPath(const std::filesystem::path& filepath) const
+{
+    if (stageDirectory == dataPath) return filepath;
+
+    std::wstring filepath_wstr = filepath.wstring();
+    std::wstring datapath_wstr = dataPath.wstring();
+
+    if (!nemesis::starts_with(filepath_wstr, datapath_wstr)) return filepath;
+
+    return stageDirectory / filepath_wstr.substr(datapath_wstr.size() + 1);
+}
+
 size_t NemesisInfo::GetMaxAnim() const
 {
     return maxAnim;

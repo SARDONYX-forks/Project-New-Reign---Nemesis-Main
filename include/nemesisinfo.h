@@ -43,6 +43,7 @@ public:
 
     std::filesystem::path GetDataPath() const;
     std::filesystem::path GetStagePath() const;
+    std::filesystem::path PatchOutputPath(const std::filesystem::path& filepath) const;
 
     size_t GetMaxAnim() const;
     size_t GetWidth() const;

@@ -3,49 +3,74 @@
 #include "core/SubTemplateRequest.h"
 #include "core/AnimationRequestRepository.h"
 
+#include "utilities/NonCopyable.h"
+
 namespace nemesis
 {
     struct NObject;
+    struct CompilationManager;
 
-	struct CompileState
+	struct CompileState : public nemesis::NonCopyableStruct
     {
     private:
-        VecStr SelectedMods;
-
-        const nemesis::AnimationRequest* BaseRequest;
+        const nemesis::AnimationRequest* BaseRequest = nullptr;
         UMap<std::string, Vec<const nemesis::AnimationRequest*>> CurrentRequest;
         UMap<std::string, Vec<Vec<const nemesis::AnimationRequest*>>> ChildRequestList;
-        const nemesis::AnimationRequestRepository& Repository;
 
         UMap<const nemesis::AnimationRequest*, UMap<std::string, Vec<const nemesis::TemplateOption*>>>
             CurrentRequestOption;
         UMap<std::string, Vec<const nemesis::TemplateOption*>> CurrentOption;
 
-        UMap<const nemesis::AnimationRequest*, UMap<std::string, Vec<const std::string*>>> CurrentRequestMap;
-        UMap<std::string, Vec<const std::string*>> CurrentMap;
+        UMap<const nemesis::AnimationRequest*, UMap<std::string, Vec<Pair<const std::string*, size_t>>>>
+            CurrentRequestMap;
+        UMap<std::string, Vec<Pair<const std::string*, size_t>>> CurrentMap;
 
-        Vec<UPtr<std::function<void(nemesis::Line&, const nemesis::NObject&)>>> AddLineEvents;
-        Vec<UPtr<std::function<void()>>> EOFEvents;
+        UMap<const nemesis::AnimationRequest*, Vec<Pair<const std::string*, size_t>>>
+            CurrentRequestMotionData;
+        Vec<Pair<const std::string*, size_t>> CurrentMotionData;
+
+        UMap<const nemesis::AnimationRequest*, Vec<Pair<const std::string*, size_t>>>
+            CurrentRequestRotationData;
+        Vec<Pair<const std::string*, size_t>> CurrentRotationData;
+
+        Vec<SPtr<std::function<void(nemesis::Line&, const nemesis::NObject&)>>> AddLineEvents;
+        Vec<SPtr<std::function<void()>>> EOFEvents;
 
         Map<std::string, nemesis::SubTemplateRequest> SubTemplateRequests;
 
-        const nemesis::SubTemplateRequest* CurrentSubTemplateRequest;
+        const nemesis::SubTemplateRequest* CurrentSubTemplateRequest = nullptr;
 
         UMap<std::string, std::string> EventMap;
         UMap<std::string, std::string> VariableMap;
         UMap<std::string, std::string> AttributeMap;
         UMap<std::string, std::string> PropertyMap;
         UMap<std::string, std::string> StateMap;
+        UMap<std::string, size_t> AnimationOrderMap;
 
         UMap<std::string, int*> CounterMap;
 
         UMap<std::string, bool> ConditionCache;
 
+        nemesis::CompilationManager& Manager;
+
         int StateRunningID = -1852516352;
 
+        mutable std::mutex AnimationOrderMapMutex;
+
+        const Pair<const std::string*, size_t>& GetCurrentRequestMap(const nemesis::AnimationRequest* request,
+                                                               const std::string& key) const;
+        const Pair<const std::string*, size_t>& GetCurrentMap(const std::string& key) const;
+        const Pair<const std::string*, size_t>&
+        GetCurrentRequestMotion(const nemesis::AnimationRequest* request) const;
+        const Pair<const std::string*, size_t>& GetCurrentMotion() const;
+        const Pair<const std::string*, size_t>&
+        GetCurrentRequestRotation(const nemesis::AnimationRequest* request) const;
+        const Pair<const std::string*, size_t>& GetCurrentRotation() const;
+
     public:
-        CompileState(const nemesis::AnimationRequestRepository& repository) noexcept;
-        CompileState(nemesis::CompileState& state) noexcept;
+        CompileState(nemesis::CompilationManager& manager) noexcept;
+
+        const nemesis::CompilationManager& GetManager() const noexcept;
 
         void SetBaseRequest(const nemesis::AnimationRequest* request);
         const nemesis::AnimationRequest* GetBaseRequest() const noexcept;
@@ -64,15 +89,42 @@ namespace nemesis
 
         void QueueCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                          const std::string& key,
-                                         const std::string& value);
-        void DequeCurrentRequestMapValue(const nemesis::AnimationRequest* request,
-                                         const std::string& key);
-        const std::string* GetCurrentRequestMapValue(const nemesis::AnimationRequest* request,
+                                         const std::string& value,
+                                         size_t index);
+        void DequeCurrentRequestMapValue(const nemesis::AnimationRequest* request, const std::string& key);
+        const std::string& GetCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                                      const std::string& key) const;
+        size_t GetCurrentRequestMapIndex(const nemesis::AnimationRequest* request,
+                                         const std::string& key) const;
 
-        void QueueCurrentMapValue(const std::string& key, const std::string& value);
+        void QueueCurrentMapValue(const std::string& key, const std::string& value, size_t index);
         void DequeCurrentMapValue(const std::string& key);
-        const std::string* GetCurrentMapValue(const std::string& key) const;
+        const std::string& GetCurrentMapValue(const std::string& key) const;
+        size_t GetCurrentMapIndex(const std::string& key) const;
+
+        void QueueCurrentRequestMotionData(const nemesis::AnimationRequest* request,
+                                           const std::string& value,
+                                           size_t index);
+        void DequeCurrentRequestMotionData(const nemesis::AnimationRequest* request);
+        const std::string& GetCurrentRequestMotionData(const nemesis::AnimationRequest* request) const;
+        size_t GetCurrentRequestMotionIndex(const nemesis::AnimationRequest* request) const;
+
+        void QueueCurrentMotionData(const std::string& value, size_t index);
+        void DequeCurrentMotionData();
+        const std::string& GetCurrentMotionData() const;
+        size_t GetCurrentMotionIndex() const;
+
+        void QueueCurrentRequestRotationData(const nemesis::AnimationRequest* request,
+                                             const std::string& value,
+                                             size_t index);
+        void DequeCurrentRequestRotationData(const nemesis::AnimationRequest* request);
+        const std::string& GetCurrentRequestRotationData(const nemesis::AnimationRequest* request) const;
+        size_t GetCurrentRequestRotationIndex(const nemesis::AnimationRequest* request) const;
+
+        void QueueCurrentRotationData(const std::string& value, size_t index);
+        void DequeCurrentRotationData();
+        const std::string& GetCurrentRotationData() const;
+        size_t GetCurrentRotationIndex() const;
 
         const nemesis::AnimationRequestCollection& GetRequests(const std::string& template_name) const;
 
@@ -88,17 +140,14 @@ namespace nemesis
         void DequeueOption(const std::string& option_name);
         const nemesis::TemplateOption* GetCurrentOption(const std::string& option_name) const;
 
-        uintptr_t InsertAddLineHandler(std::function<void(nemesis::Line&)> event);
-        uintptr_t InsertAddLineHandler(std::function<void(nemesis::Line&, const nemesis::NObject&)> event);
-        void RemoveAddLineHandler(uintptr_t handler_address);
+        void* InsertAddLineHandler(const std::function<void(nemesis::Line&)>& event);
+        void* InsertAddLineHandler(const std::function<void(nemesis::Line&, const nemesis::NObject&)>& event);
+        void RemoveAddLineHandler(void* handler_address);
         void RaiseAddLineEvent(nemesis::Line& line, const nemesis::NObject& nobject) const;
 
-        uintptr_t InsertEOFHandler(std::function<void()> event);
-        void RemoveEOFHandler(uintptr_t handler_address);
+        std::function<void()>* InsertEOFHandler(const std::function<void()>& event);
+        void RemoveEOFHandler(std::function<void()>* handler_address);
         void RaiseEOFEvent() const;
-
-        void SelectMod(const std::string& modcode);
-        void DeselectMod(const std::string& modcode);
 
         bool IsModSelected(const std::string& modcode) const;
         bool IsModSelected(const std::string_view& modcode) const;
@@ -125,6 +174,10 @@ namespace nemesis
         const std::string& GetPropertyID(const std::string& name) const;
         const std::string& AddPropertyName(const std::string& name);
 
+        bool TryGetAnimationOrder(const std::string& name, size_t& value) const;
+        size_t GetAnimationOrder(const std::filesystem::path& char_path, const std::string& anim_path) const;
+        size_t AddAnimationToOrder(const std::string& name);
+
         const std::string& GetStateID(const std::string& unique_key);
 
         int* GetCounter(const std::string& name) const;
@@ -135,5 +188,7 @@ namespace nemesis
         Vec<Pair<std::string, bool>> RemoveConditionCacheContaining(const std::string& syntax);
         void ClearAllConditionCache();
         const bool* TryGetCacheConditionResult(const std::string& condition_syntax);
+
+        UPtr<nemesis::CompileState> Clone();
     };
 }

@@ -1,15 +1,91 @@
 #include "core/CompileState.h"
 #include "core/AnimationRequest.h"
+#include "core/CompilationManager.h"
 #include "core/AnimationRequestRepository.h"
 
-nemesis::CompileState::CompileState(const nemesis::AnimationRequestRepository& repository) noexcept
-    : Repository(repository)
+const Pair<const std::string*, size_t>&
+nemesis::CompileState::GetCurrentRequestMap(const nemesis::AnimationRequest* request,
+                                            const std::string& key) const
+{
+    auto itr = CurrentRequestMap.find(request);
+
+    if (itr == CurrentRequestMap.end())
+    {
+        throw std::runtime_error("Current map index is not registered in queue. Use "
+                                 "SemanticManager::HasRequestMapInQueue during parsing to "
+                                 "ensure the semantic is correct");
+    }
+
+    auto k_itr = itr->second.find(key);
+
+    if (k_itr != itr->second.end()) return k_itr->second.back();
+
+    throw std::runtime_error("Current map index is not registered in queue. Use "
+                             "SemanticManager::HasRequestMapInQueue during parsing to "
+                             "ensure the semantic is correct");
+}
+
+const Pair<const std::string*, size_t>& nemesis::CompileState::GetCurrentMap(const std::string& key) const
+{
+    auto itr = CurrentMap.find(key);
+
+    if (itr != CurrentMap.end()) return itr->second.back();
+
+    throw std::runtime_error(
+        "Current map index is not registered in queue. Use SemanticManager::HasMapInQueue during parsing to "
+        "ensure the semantic is correct");
+}
+
+const Pair<const std::string*, size_t>&
+nemesis::CompileState::GetCurrentRequestMotion(const nemesis::AnimationRequest* request) const
+{
+    auto itr = CurrentRequestMotionData.find(request);
+
+    if (itr != CurrentRequestMotionData.end()) return itr->second.back();
+
+    throw std::runtime_error("Current motion data is not registered in queue. Use "
+                             "SemanticManager::HasMotionDataInQueue during parsing to "
+                             "ensure the semantic is correct");
+}
+
+const Pair<const std::string*, size_t>& nemesis::CompileState::GetCurrentMotion() const
+{
+    if (!CurrentMotionData.empty()) return CurrentMotionData.back();
+
+    throw std::runtime_error("Current motion data is not registered in queue. Use "
+                             "SemanticManager::HasMotionDataInQueue during parsing to "
+                             "ensure the semantic is correct");
+}
+
+const Pair<const std::string*, size_t>&
+nemesis::CompileState::GetCurrentRequestRotation(const nemesis::AnimationRequest* request) const
+{
+    auto itr = CurrentRequestRotationData.find(request);
+
+    if (itr != CurrentRequestRotationData.end()) return itr->second.back();
+
+    throw std::runtime_error("Current rotation is not registered in queue. Use "
+                             "SemanticManager::HasRotationDataInQueue during parsing to "
+                             "ensure the semantic is correct");
+}
+
+const Pair<const std::string*, size_t>& nemesis::CompileState::GetCurrentRotation() const
+{
+    if (!CurrentRotationData.empty()) return CurrentRotationData.back();
+
+    throw std::runtime_error("Current rotation data is not registered in queue. Use "
+                             "SemanticManager::HasRotationDataInQueue during parsing to "
+                             "ensure the semantic is correct");
+}
+
+nemesis::CompileState::CompileState(nemesis::CompilationManager& manager) noexcept
+    : Manager(manager)
 {
 }
 
-nemesis::CompileState::CompileState(nemesis::CompileState& state) noexcept
-    : Repository(state.Repository)
+const nemesis::CompilationManager& nemesis::CompileState::GetManager() const noexcept
 {
+    return Manager;
 }
 
 void nemesis::CompileState::SetBaseRequest(const nemesis::AnimationRequest* request)
@@ -63,7 +139,7 @@ const nemesis::AnimationRequest* nemesis::CompileState::GetNextRequest(const std
 
     if (index >= requests.size()) return nullptr;
 
-    return requests[index].get();
+    return requests[index];
 }
 
 const nemesis::AnimationRequest* nemesis::CompileState::GetBackRequest(const std::string& group) const
@@ -83,7 +159,7 @@ const nemesis::AnimationRequest* nemesis::CompileState::GetBackRequest(const std
 
     auto& name     = request->GetTemplateName();
     auto& requests = GetRequests(name);
-    return requests[index].get();
+    return requests[index];
 }
 
 void nemesis::CompileState::QueueCurrentRequest(const std::string& group,
@@ -102,7 +178,7 @@ void nemesis::CompileState::QueueCurrentRequest(const std::string& group,
         
         for (auto& each : collection)
         {
-            anim_requests.emplace_back(each.get());
+            anim_requests.emplace_back(each);
         }
 
         QueueChildRequestList(cur_group, anim_requests);
@@ -151,7 +227,7 @@ const nemesis::AnimationRequest* nemesis::CompileState::GetCurrentRequest(const 
 
     if (itr != CurrentRequest.end()) return itr->second.back();
 
-    throw std::runtime_error("Syntax error: Request group does not exist in current context");
+    throw std::runtime_error("Syntax Error: Request group does not exist in current context");
 }
 
 void nemesis::CompileState::QueueChildRequestList(const std::string& group,
@@ -178,21 +254,27 @@ nemesis::CompileState::GetChildRequestList(const std::string& group) const
 
     if (itr != ChildRequestList.end()) return itr->second.back();
 
-    throw std::runtime_error("Syntax error: Child request group does not exist in current context");
+    throw std::runtime_error("Syntax Error: Child request group does not exist in current context");
 }
 
 void nemesis::CompileState::QueueCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                                         const std::string& key,
-                                                        const std::string& value)
+                                                        const std::string& value,
+                                                        size_t index)
 {
-    CurrentRequestMap[request][key].emplace_back(&value);
+    CurrentRequestMap[request][key].emplace_back(&value, index);
 }
 
 void nemesis::CompileState::DequeCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                                         const std::string& key)
 {
     auto r_itr = CurrentRequestMap.find(request);
+
+    if (r_itr == CurrentRequestMap.end()) return;
+
     auto itr   = r_itr->second.find(key);
+
+    if (itr == r_itr->second.end()) return;
 
     if (itr->second.size() != 1)
     {
@@ -207,20 +289,21 @@ void nemesis::CompileState::DequeCurrentRequestMapValue(const nemesis::Animation
     CurrentRequestMap.erase(r_itr);
 }
 
-const std::string* nemesis::CompileState::GetCurrentRequestMapValue(const nemesis::AnimationRequest* request,
+const std::string& nemesis::CompileState::GetCurrentRequestMapValue(const nemesis::AnimationRequest* request,
                                                                     const std::string& key) const
 {
-    auto itr = CurrentRequestMap.find(request);
-
-    if (itr == CurrentRequestMap.end()) return nullptr;
-
-    auto k_itr = itr->second.find(key);
-    return k_itr == itr->second.end() ? nullptr : k_itr->second.back();
+    return *GetCurrentRequestMap(request, key).first;
 }
 
-void nemesis::CompileState::QueueCurrentMapValue(const std::string& key, const std::string& value)
+size_t nemesis::CompileState::GetCurrentRequestMapIndex(const nemesis::AnimationRequest* request,
+                                                        const std::string& key) const
 {
-    CurrentMap[key].emplace_back(&value);
+    return GetCurrentRequestMap(request, key).second;
+}
+
+void nemesis::CompileState::QueueCurrentMapValue(const std::string& key, const std::string& value, size_t index)
+{
+    CurrentMap[key].emplace_back(&value, index);
 }
 
 void nemesis::CompileState::DequeCurrentMapValue(const std::string& key)
@@ -236,16 +319,106 @@ void nemesis::CompileState::DequeCurrentMapValue(const std::string& key)
     itr->second.pop_back();
 }
 
-const std::string* nemesis::CompileState::GetCurrentMapValue(const std::string& key) const
+const std::string& nemesis::CompileState::GetCurrentMapValue(const std::string& key) const
 {
-    auto itr = CurrentMap.find(key);
-    return itr == CurrentMap.end() ? nullptr : itr->second.back();
+    return *GetCurrentMap(key).first;
+}
+
+size_t nemesis::CompileState::GetCurrentMapIndex(const std::string& key) const
+{
+    return GetCurrentMap(key).second;
+}
+
+void nemesis::CompileState::QueueCurrentRequestMotionData(const nemesis::AnimationRequest* request,
+                                                          const std::string& value,
+                                                          size_t index)
+{
+    CurrentRequestMotionData[request].emplace_back(&value, index);
+}
+
+void nemesis::CompileState::DequeCurrentRequestMotionData(const nemesis::AnimationRequest* request)
+{
+    CurrentRequestMotionData.erase(request);
+}
+
+const std::string&
+nemesis::CompileState::GetCurrentRequestMotionData(const nemesis::AnimationRequest* request) const
+{
+    return *GetCurrentRequestMotion(request).first;
+}
+
+size_t nemesis::CompileState::GetCurrentRequestMotionIndex(const nemesis::AnimationRequest* request) const
+{
+    return GetCurrentRequestMotion(request).second;
+}
+
+void nemesis::CompileState::QueueCurrentMotionData(const std::string& value, size_t index)
+{
+    CurrentMotionData.emplace_back(&value, index);
+}
+
+void nemesis::CompileState::DequeCurrentMotionData()
+{
+    CurrentMotionData.pop_back();
+}
+
+const std::string& nemesis::CompileState::GetCurrentMotionData() const
+{
+    return *GetCurrentMotion().first;
+}
+
+size_t nemesis::CompileState::GetCurrentMotionIndex() const
+{
+    return GetCurrentMotion().second;
+}
+
+void nemesis::CompileState::QueueCurrentRequestRotationData(const nemesis::AnimationRequest* request,
+                                                            const std::string& value,
+                                                            size_t index)
+{
+    CurrentRequestRotationData[request].emplace_back(&value, index);
+}
+
+void nemesis::CompileState::DequeCurrentRequestRotationData(const nemesis::AnimationRequest* request)
+{
+    CurrentRequestRotationData.erase(request);
+}
+
+const std::string&
+nemesis::CompileState::GetCurrentRequestRotationData(const nemesis::AnimationRequest* request) const
+{
+    return *GetCurrentRequestRotation(request).first;
+}
+
+size_t nemesis::CompileState::GetCurrentRequestRotationIndex(const nemesis::AnimationRequest* request) const
+{
+    return GetCurrentRequestRotation(request).second;
+}
+
+void nemesis::CompileState::QueueCurrentRotationData(const std::string& value, size_t index)
+{
+    CurrentRotationData.emplace_back(&value, index);
+}
+
+void nemesis::CompileState::DequeCurrentRotationData()
+{
+    CurrentRotationData.pop_back();
+}
+
+const std::string& nemesis::CompileState::GetCurrentRotationData() const
+{
+    return *GetCurrentRotation().first;
+}
+
+size_t nemesis::CompileState::GetCurrentRotationIndex() const
+{
+    return GetCurrentRotation().second;
 }
 
 const nemesis::AnimationRequestCollection&
 nemesis::CompileState::GetRequests(const std::string& template_name) const
 {
-    return Repository.GetRequests(template_name);
+    return Manager.GetAnimationRepository().GetRequests(template_name);
 }
 
 void nemesis::CompileState::QueueRequestOption(const nemesis::AnimationRequest* request,
@@ -259,6 +432,9 @@ void nemesis::CompileState::DequeueRequestOption(const nemesis::AnimationRequest
                                                  const std::string& option_name)
 {
     auto r_itr = CurrentRequestOption.find(request);
+
+    if (r_itr == CurrentRequestOption.end()) return;
+
     auto itr   = r_itr->second.find(option_name);
 
     if (itr->second.size() != 1)
@@ -310,26 +486,26 @@ const nemesis::TemplateOption* nemesis::CompileState::GetCurrentOption(const std
     return itr == CurrentOption.end() ? nullptr : itr->second.back();
 }
 
-uintptr_t nemesis::CompileState::InsertAddLineHandler(std::function<void(nemesis::Line&)> event)
+void* nemesis::CompileState::InsertAddLineHandler(const std::function<void(nemesis::Line&)>& event)
 {
-    auto func_ptr = std::make_unique<std::function<void(nemesis::Line&, const nemesis::NObject&)>>(
+    auto func_ptr = std::make_shared<std::function<void(nemesis::Line&, const nemesis::NObject&)>>(
         [event](nemesis::Line& line, const nemesis::NObject& nobject) { event(line); });
-    return reinterpret_cast<uintptr_t>(AddLineEvents.emplace_back(std::move(func_ptr)).get());
+    return AddLineEvents.emplace_back(func_ptr).get();
 }
 
-uintptr_t nemesis::CompileState::InsertAddLineHandler(
-    std::function<void(nemesis::Line&, const nemesis::NObject&)> event)
+void* nemesis::CompileState::InsertAddLineHandler(
+    const std::function<void(nemesis::Line&, const nemesis::NObject&)>& event)
 {
-    auto func_ptr = std::make_unique<std::function<void(nemesis::Line&, const nemesis::NObject&)>>(
+    auto func_ptr = std::make_shared<std::function<void(nemesis::Line&, const nemesis::NObject&)>>(
         [event](nemesis::Line& line, const nemesis::NObject& nobject) { event(line, nobject); });
-    return reinterpret_cast<uintptr_t>(AddLineEvents.emplace_back(std::move(func_ptr)).get());
+    return AddLineEvents.emplace_back(func_ptr).get();
 }
 
-void nemesis::CompileState::RemoveAddLineHandler(uintptr_t handler_address)
+void nemesis::CompileState::RemoveAddLineHandler(void* handler_address)
 {
     for (size_t i = 0; i < AddLineEvents.size(); ++i)
     {
-        if (reinterpret_cast<uintptr_t>(AddLineEvents[i].get()) != handler_address) continue;
+        if (AddLineEvents[i].get() != handler_address) continue;
 
         AddLineEvents.erase(AddLineEvents.begin() + i);
         return;
@@ -340,11 +516,11 @@ void nemesis::CompileState::RemoveAddLineHandler(uintptr_t handler_address)
 
 void nemesis::CompileState::RaiseAddLineEvent(nemesis::Line& line, const nemesis::NObject& nobject) const
 {
-    Vec<std::function<void(nemesis::Line&, const nemesis::NObject&)>*> event_pointers; 
+    Vec<SPtr<std::function<void(nemesis::Line&, const nemesis::NObject&)>>> event_pointers; 
 
     for (auto& event : AddLineEvents)
     {
-        event_pointers.emplace_back(event.get());
+        event_pointers.emplace_back(event);
     }
 
     for (auto& event_ptr : event_pointers)
@@ -353,17 +529,17 @@ void nemesis::CompileState::RaiseAddLineEvent(nemesis::Line& line, const nemesis
     }
 }
 
-uintptr_t nemesis::CompileState::InsertEOFHandler(std::function<void()> event)
+std::function<void()>* nemesis::CompileState::InsertEOFHandler(const std::function<void()>& event)
 {
-    auto func_ptr = std::make_unique<std::function<void()>>([event]() { event(); });
-    return reinterpret_cast<uintptr_t>(EOFEvents.emplace_back(std::move(func_ptr)).get());
+    auto func_ptr = std::make_shared<std::function<void()>>([event]() { event(); });
+    return EOFEvents.emplace_back(func_ptr).get();
 }
 
-void nemesis::CompileState::RemoveEOFHandler(uintptr_t handler_address)
+void nemesis::CompileState::RemoveEOFHandler(std::function<void()>* handler_address)
 {
     for (size_t i = 0; i < EOFEvents.size(); ++i)
     {
-        if (reinterpret_cast<uintptr_t>(EOFEvents[i].get()) != handler_address) continue;
+        if (EOFEvents[i].get() != handler_address) continue;
 
         EOFEvents.erase(EOFEvents.begin() + i);
         return;
@@ -374,7 +550,7 @@ void nemesis::CompileState::RemoveEOFHandler(uintptr_t handler_address)
 
 void nemesis::CompileState::RaiseEOFEvent() const
 {
-    Vec<std::function<void()>*> event_pointers;
+    Vec<SPtr<std::function<void()>>> event_pointers;
 
     for (auto& event : EOFEvents)
     {
@@ -387,46 +563,19 @@ void nemesis::CompileState::RaiseEOFEvent() const
     }
 }
 
-void nemesis::CompileState::SelectMod(const std::string& modcode)
-{
-    SelectedMods.emplace_back(modcode);
-}
-
-void nemesis::CompileState::DeselectMod(const std::string& modcode)
-{
-    auto start = SelectedMods.begin();
-
-    for (size_t i = 0; i < SelectedMods.size(); ++i)
-    {
-        if (SelectedMods[i] != modcode) continue;
-
-        SelectedMods.erase(start + i);
-    }
-}
-
 bool nemesis::CompileState::IsModSelected(const std::string& modcode) const
 {
-    for (size_t i = 0; i < SelectedMods.size(); ++i)
-    {
-        if (modcode == SelectedMods[i]) return true;
-    }
-
-    return false;
+    return Manager.IsModSelected(modcode);
 }
 
 bool nemesis::CompileState::IsModSelected(const std::string_view& modcode) const
 {
-    for (size_t i = 0; i < SelectedMods.size(); ++i)
-    {
-        if (modcode == SelectedMods[i]) return true;
-    }
-
-    return false;
+    return Manager.IsModSelected(modcode);
 }
 
 const VecStr& nemesis::CompileState::GetSelectedMods() const noexcept
 {
-    return SelectedMods;
+    return Manager.GetSelectedMods();
 }
 
 void nemesis::CompileState::AddSubTemplateRequest(const VecStr& arguments)
@@ -524,6 +673,43 @@ const std::string& nemesis::CompileState::AddPropertyName(const std::string& nam
     return PropertyMap[name] = std::to_string(PropertyMap.size());
 }
 
+bool nemesis::CompileState::TryGetAnimationOrder(const std::string& name, size_t& value) const
+{
+    std::scoped_lock lock(AnimationOrderMapMutex);
+
+    auto itr = AnimationOrderMap.find(name);
+
+    if (itr == AnimationOrderMap.end()) return false;
+
+    value = itr->second;
+    return true;
+}
+
+size_t nemesis::CompileState::GetAnimationOrder(const std::filesystem::path& filepath,
+                                                const std::string& name) const
+{
+    auto compile_state = Manager.GetCompileState(filepath);
+
+    if (!compile_state)
+    {
+        throw std::runtime_error("Animation order not found (Character: " + filepath.string()
+                                 + "Animtion: " + name + ")");
+    }
+
+    size_t value;
+
+    if (compile_state->TryGetAnimationOrder(name, value)) return value;
+
+    throw std::runtime_error("Animation order not found (Character: " + filepath.string()
+                             + "Animtion: " + name + ")");
+}
+
+size_t nemesis::CompileState::AddAnimationToOrder(const std::string& name)
+{
+    std::scoped_lock lock(AnimationOrderMapMutex);
+    return AnimationOrderMap[name] = AnimationOrderMap.size();
+}
+
 const std::string& nemesis::CompileState::GetStateID(const std::string& unique_key)
 {
     auto itr = StateMap.find(unique_key);
@@ -588,4 +774,43 @@ const bool* nemesis::CompileState::TryGetCacheConditionResult(const std::string&
     if (itr != ConditionCache.end()) return &itr->second;
 
     return nullptr;
+}
+
+UPtr<nemesis::CompileState> nemesis::CompileState::Clone()
+{
+    UPtr<nemesis::CompileState> state = std::make_unique<nemesis::CompileState>(Manager);
+    state->BaseRequest      = BaseRequest;
+    state->CurrentRequest   = CurrentRequest;
+    state->ChildRequestList = ChildRequestList;
+
+    state->CurrentRequestOption = CurrentRequestOption;
+    state->CurrentOption        = CurrentOption;
+
+    state->CurrentRequestMap = CurrentRequestMap;
+    state->CurrentMap        = CurrentMap;
+
+    state->CurrentRequestMotionData = CurrentRequestMotionData;
+    state->CurrentMotionData        = CurrentMotionData;
+
+    state->CurrentRequestRotationData = CurrentRequestRotationData;
+    state->CurrentRotationData        = CurrentRotationData;
+
+    state->AddLineEvents = AddLineEvents;
+    state->EOFEvents     = EOFEvents;
+
+    state->SubTemplateRequests = SubTemplateRequests;
+
+    state->CurrentSubTemplateRequest = CurrentSubTemplateRequest;
+
+    state->EventMap          = EventMap;
+    state->VariableMap       = VariableMap;
+    state->AttributeMap      = AttributeMap;
+    state->PropertyMap       = PropertyMap;
+    state->StateMap          = StateMap;
+    state->AnimationOrderMap = AnimationOrderMap;
+
+    state->CounterMap = CounterMap;
+
+    state->ConditionCache = ConditionCache;
+    return state;
 }

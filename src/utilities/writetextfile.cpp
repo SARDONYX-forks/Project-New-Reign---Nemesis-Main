@@ -11,16 +11,15 @@ FileWriter::FileWriter(const std::filesystem::path& filepath,
     switch (encoding)
     {
         case FileWriter::ASCII:
-            mode = L"ccs=ASCII";
             break;
         case FileWriter::UTF8:
-            mode = L"ccs=UTF-8";
+            mode.append(L"ccs=UTF-8");
             break;
         case FileWriter::UTF16:
-            mode = L"ccs=UTF-16";
+            mode.append(L"ccs=UTF-16");
             break;
-        case FileWriter::UTF32:
-            mode = L"ccs=UTF-32";
+        case FileWriter::UNICODE_:
+            mode.append(L"ccs=UNICODE");
             break;
         default:
             throw std::runtime_error("Unsupported encoding format. File path (" + filepath.string() + ")");
@@ -31,7 +30,16 @@ FileWriter::FileWriter(const std::filesystem::path& filepath,
         mode.append(L"," + each);
     }
 
+    if (encoding == FileWriter::ASCII)
+    {
+        mode = mode.substr(1);
+    }
+
     _wfopen_s(&file, filepath.wstring().c_str(), mode.c_str());
+
+    if (file) return;
+
+    throw std::runtime_error("Failed to open file (" + filepath.string() + ")");
 }
 
 FileWriter::~FileWriter()
@@ -57,7 +65,7 @@ void FileWriter::Close()
 {
     Lockless lock(filelock);
 
-    if (file == nullptr) return;
+    if (!file) return;
 
     fflush(file);
     fclose(file);

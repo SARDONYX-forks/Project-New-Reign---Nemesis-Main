@@ -17,7 +17,7 @@ class FileWriter
         ASCII,
         UTF8,
         UTF16,
-        UTF32
+        UNICODE_
     };
 
 private:

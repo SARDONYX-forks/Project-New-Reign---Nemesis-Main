@@ -18,7 +18,8 @@ nemesis::AnimationEventStatement::AnimationEventStatement(const std::string& exp
     {
         case 1:
         {
-            GetValueFunction = [](nemesis::CompileState& state) { return state.GetBaseRequest()->GetAnimationEvent(); };
+            GetValueFunction
+                = [this](nemesis::CompileState& state) { return GetBaseRequest(state)->GetAnimationEvent(); };
             break;
         }
         case 3:
@@ -34,7 +35,8 @@ nemesis::AnimationEventStatement::AnimationEventStatement(const std::string& exp
             break;
         }
         default:
-            throw std::runtime_error("Syntax Error: Unsupported AnimationEvent format");
+            throw std::runtime_error("Syntax Error: Unsupported AnimationEvent format (Line: "
+                                     + std::to_string(linenum) + ", File: " + filepath.string() + ")");
     }
 }
 

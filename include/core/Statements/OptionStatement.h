@@ -40,7 +40,7 @@ namespace nemesis
                         const nemesis::SemanticManager& manager);
 
         std::string Serialize() const override;
-        std::string GetValue(nemesis::CompileState& state) const override;
+        std::string GetValue(nemesis::CompileState& state) const;
 
         const nemesis::TemplateOption* GetOption(nemesis::CompileState& state) const;
         std::string GetVariableValue(nemesis::CompileState& state, const std::string& variable_name) const;

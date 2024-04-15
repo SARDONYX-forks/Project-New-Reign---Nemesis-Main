@@ -22,7 +22,7 @@ nemesis::OptionVariableStatement::GetOptionFunction(const std::string& option_sy
     {
         if (!manager.HasOptionInQueue(option_syntax))
         {
-            throw std::runtime_error("Syntax error: Option not in queue (Line: " + std::to_string(linenum)
+            throw std::runtime_error("Syntax Error: Option not in queue (Line: " + std::to_string(linenum)
                                      + ", File: " + filepath.string() + ")");
         }
 
@@ -137,7 +137,7 @@ nemesis::OptionVariableStatement::GetBaseOptionFunction(const std::string& optio
     {
         if (!manager.HasOptionInQueue(option_name))
         {
-            throw std::runtime_error("Syntax error: Option not in queue (Line: " + std::to_string(linenum)
+            throw std::runtime_error("Syntax Error: Option not in queue (Line: " + std::to_string(linenum)
                                      + ", File: " + filepath.string() + ")");
         }
 
@@ -153,9 +153,9 @@ nemesis::OptionVariableStatement::GetBaseOptionFunction(const std::string& optio
         {
             return std::make_shared<
                 std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [&option_name](nemesis::CompileState& state)
+                [this, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (!options.empty()) return options.front();
 
@@ -167,9 +167,9 @@ nemesis::OptionVariableStatement::GetBaseOptionFunction(const std::string& optio
         {
             return std::make_shared<
                 std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [&option_name](nemesis::CompileState& state)
+                [this, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (!options.empty()) return options.back();
 
@@ -182,9 +182,9 @@ nemesis::OptionVariableStatement::GetBaseOptionFunction(const std::string& optio
             size_t index = std::stoul(index_str);
             return std::make_shared<
                 std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [index, &option_name](nemesis::CompileState& state)
+                [this, index, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (options.size() > index) return options[index];
 
@@ -200,13 +200,13 @@ nemesis::OptionVariableStatement::GetBaseOptionFunction(const std::string& optio
     auto& component = DynamicComponents.emplace_back(index_str, linenum, filepath, manager);
 
     return std::make_shared<std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-        [&component, &option_name, linenum, filepath](nemesis::CompileState& state)
+        [this, &component, &option_name, linenum, filepath](nemesis::CompileState& state)
         {
             std::string s_index = component.GetValue(state);
 
             if (s_index.empty()) return state.GetCurrentOption(option_name);
 
-            auto options = state.GetBaseRequest()->GetOptions(option_name);
+            auto options = GetBaseRequest(state)->GetOptions(option_name);
 
             if (s_index == "F")
             {
@@ -252,7 +252,7 @@ nemesis::OptionVariableStatement::GetVariableFunction(const std::string& variabl
                 [variable](nemesis::CompileState& state) { return variable; });
         }
 
-        throw std::runtime_error("Syntax error: Option variable does not exist (\"" + model->GetName() + "["
+        throw std::runtime_error("Syntax Error: Option variable does not exist (\"" + model->GetName() + "["
                                  + variable + "]\")");
     }
 
@@ -265,7 +265,7 @@ nemesis::OptionVariableStatement::GetVariableFunction(const std::string& variabl
 
             if (model->HasVariable(option_var)) return option_var;
 
-            throw std::runtime_error("Syntax error: Option variable does not exist (\"" + model->GetName()
+            throw std::runtime_error("Syntax Error: Option variable does not exist (\"" + model->GetName()
                                      + "[" + option_var + "]\")");
         });
 }
@@ -304,7 +304,7 @@ nemesis::OptionVariableStatement::OptionVariableStatement(const std::string& exp
             break;
         }
         default:
-            throw std::runtime_error("Syntax error: Invalid option components (Expression: "
+            throw std::runtime_error("Syntax Error: Invalid option components (Expression: "
                                          + expression + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
     }

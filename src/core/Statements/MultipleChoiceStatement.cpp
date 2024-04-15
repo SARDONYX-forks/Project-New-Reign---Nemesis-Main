@@ -37,7 +37,7 @@ nemesis::MultipleChoiceStatement::ChoiceValue::ChoiceValue(const std::string& ex
         {
             if (!dynamic_cast<nemesis::MultipleChoiceModifier*>(modifier.get())) continue;
 
-            throw std::runtime_error("Syntax error: only 1 MultiChoice per line");
+            throw std::runtime_error("Syntax Error: only 1 MultiChoice per line");
         }
     }
 }
@@ -85,7 +85,7 @@ nemesis::MultipleChoiceStatement::Choice::Choice(size_t begin,
     : Begin(begin)
     , End(end)
 {
-    if (value.empty()) throw std::runtime_error("Syntax error: choice value (" + value + ")");
+    if (value.empty()) throw std::runtime_error("Syntax Error: choice value (" + value + ")");
 
     Value = std::make_unique<ChoiceValue>(value, linenum, filepath, manager);
 
@@ -115,6 +115,7 @@ nemesis::MultipleChoiceStatement::MultipleChoiceStatement(const std::string& lin
                                                           size_t linenum,
                                                           const std::filesystem::path& filepath,
                                                           const nemesis::SemanticManager& manager)
+    : nemesis::Statement(line, linenum, filepath, true)
 {
     nemesis::smatch nmatch;
 
@@ -124,17 +125,16 @@ nemesis::MultipleChoiceStatement::MultipleChoiceStatement(const std::string& lin
     }
 
     Expression = nmatch.str(1);
-    LineNum    = linenum;
-    FilePath   = filepath;
 
-    const nemesis::regex pattern("<!--\\s(?:\\^(.+?)\\^\\s|)(.+?)\\s-->");
-    const nemesis::regex_iterator end;
+    static const nemesis::regex pattern("<!--\\s(?:\\^(.+?)\\^\\s|)(.+?)\\s-->");
+    static const nemesis::regex_iterator end;
 
     for (nemesis::regex_iterator itr(Expression, pattern); itr != end; ++itr)
     {
         size_t pos      = nmatch.position(1) + itr->position(2);
         std::string val = itr->str(2);
         Choices.emplace_back(pos, pos + val.size(), itr->str(1), linenum, filepath, manager, val);
+        Components.emplace_back(itr->str(0));
     }
 }
 
@@ -143,7 +143,7 @@ std::string nemesis::MultipleChoiceStatement::Serialize() const
     auto& first_choice = Choices.front();
     std::string statement = "<!-- ";
 
-    if (first_choice.GetCondition() != nullptr && !first_choice.GetCondition()->GetExpression().empty())
+    if (first_choice.GetCondition() && !first_choice.GetCondition()->GetExpression().empty())
     {
         statement += first_choice.GetCondition()->GetExpression() + " ";
     }
@@ -155,7 +155,7 @@ std::string nemesis::MultipleChoiceStatement::Serialize() const
         statement += " <!-- ";
         auto& choice = Choices[i];
 
-        if (choice.GetCondition() != nullptr && !choice.GetCondition()->GetExpression().empty())
+        if (choice.GetCondition() && !choice.GetCondition()->GetExpression().empty())
         {
             statement += choice.GetCondition()->GetExpression() + " ";
         }
@@ -166,8 +166,7 @@ std::string nemesis::MultipleChoiceStatement::Serialize() const
     return statement;
 }
 
-std::string nemesis::MultipleChoiceStatement::GetValue(const VecStr blocks,
-                                                       nemesis::CompileState& state) const
+std::string nemesis::MultipleChoiceStatement::GetValue(nemesis::CompileState& state) const
 {
     for (auto& choice : Choices)
     {

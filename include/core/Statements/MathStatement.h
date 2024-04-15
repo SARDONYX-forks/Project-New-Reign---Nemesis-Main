@@ -17,6 +17,6 @@ namespace nemesis
 
         std::string Serialize() const override;
 
-        std::string GetValue(nemesis::CompileState& state) const override;
+        std::string GetValue(nemesis::CompileState& state) const;
     };
 }

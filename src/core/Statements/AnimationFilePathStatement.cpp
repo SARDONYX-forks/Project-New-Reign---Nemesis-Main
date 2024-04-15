@@ -13,8 +13,8 @@ nemesis::AnimationFilePathStatement::AnimationFilePathStatement(const std::strin
     {
         case 1:
         {
-            GetValueFunction = [](nemesis::CompileState& state)
-            { return state.GetBaseRequest()->GetAnimationFilePath().string(); };
+            GetValueFunction = [this](nemesis::CompileState& state)
+            { return GetBaseRequest(state)->GetAnimationFilePath().string(); };
             break;
         }
         case 3:
@@ -30,7 +30,8 @@ nemesis::AnimationFilePathStatement::AnimationFilePathStatement(const std::strin
             break;
         }
         default:
-            throw std::runtime_error("Syntax Error: Unsupported AnimationEvent format");
+            throw std::runtime_error("Syntax Error: Unsupported AnimationFilePath format (Line: "
+                                     + std::to_string(linenum) + ", File: " + filepath.string() + ")");
     }
 }
 

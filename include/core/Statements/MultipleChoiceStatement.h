@@ -68,7 +68,7 @@ namespace nemesis
 
         std::string Serialize() const override;
 
-        std::string GetValue(const VecStr blocks, nemesis::CompileState& state) const;
+        std::string GetValue(nemesis::CompileState& state) const;
 
         bool IsPartOfChoiceValue(size_t begin, size_t end) const;
     };

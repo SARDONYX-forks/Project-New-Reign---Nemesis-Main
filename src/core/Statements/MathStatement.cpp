@@ -10,7 +10,11 @@ nemesis::MathStatement::MathStatement(const std::string& expression,
                                       const nemesis::SemanticManager& manager)
     : nemesis::CompositeStatement(expression, linenum, filepath)
 {
-    if (Components.size() != 2) throw std::runtime_error("Math only accepts 1 argument");
+    if (Components.size() != 2)
+    {
+        throw std::runtime_error("Syntax Error: Math only accepts 1 argument (Line: "
+                                 + std::to_string(linenum) + ", File: " + filepath.string() + ")");
+    }
 
     DynamicComponents.emplace_back(Components.back(), linenum, filepath, manager);
 }

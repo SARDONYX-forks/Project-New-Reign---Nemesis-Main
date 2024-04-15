@@ -17,7 +17,7 @@ nemesis::OptionStatement::BuildGetOptionFunction(const std::string& option_synta
     {
         if (!manager.HasOptionInQueue(option_syntax))
         {
-            throw std::runtime_error("Syntax error: Option not in queue (Line: " + std::to_string(linenum)
+            throw std::runtime_error("Syntax Error: Option not in queue (Line: " + std::to_string(linenum)
                                      + ", File: " + filepath.string() + ")");
         }
 
@@ -80,7 +80,6 @@ nemesis::OptionStatement::BuildGetOptionFunction(const std::string& option_synta
     }
 
     auto& component = DynamicComponents.emplace_back(index, linenum, filepath, manager);
-
     return std::make_shared<std::function<const nemesis::TemplateOption*(const nemesis::AnimationRequest*,
                                                                          nemesis::CompileState&)>>(
         [this, &component, &option_name, linenum, filepath](const nemesis::AnimationRequest* request,
@@ -132,7 +131,7 @@ nemesis::OptionStatement::BuildGetBaseOptionFunction(const std::string& option_n
     {
         if (!manager.HasOptionInQueue(option_name))
         {
-            throw std::runtime_error("Syntax error: Option not in queue (Line: " + std::to_string(linenum)
+            throw std::runtime_error("Syntax Error: Option not in queue (Line: " + std::to_string(linenum)
                                      + ", File: " + filepath.string() + ")");
         }
 
@@ -145,9 +144,9 @@ nemesis::OptionStatement::BuildGetBaseOptionFunction(const std::string& option_n
         if (index_str == "F")
         {
             return std::make_shared<std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [&option_name](nemesis::CompileState& state)
+                [this, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (!options.empty()) return options.front();
 
@@ -158,9 +157,9 @@ nemesis::OptionStatement::BuildGetBaseOptionFunction(const std::string& option_n
         if (index_str == "L")
         {
             return std::make_shared<std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [&option_name](nemesis::CompileState& state)
+                [this, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (!options.empty()) return options.back();
 
@@ -172,9 +171,9 @@ nemesis::OptionStatement::BuildGetBaseOptionFunction(const std::string& option_n
         {
             size_t index = std::stoul(index_str);
             return std::make_shared<std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-                [index, &option_name](nemesis::CompileState& state)
+                [this, index, &option_name](nemesis::CompileState& state)
                 {
-                    auto options = state.GetBaseRequest()->GetOptions(option_name);
+                    auto options = GetBaseRequest(state)->GetOptions(option_name);
 
                     if (options.size() > index) return options[index];
 
@@ -188,15 +187,14 @@ nemesis::OptionStatement::BuildGetBaseOptionFunction(const std::string& option_n
     }
 
     auto& component = DynamicComponents.emplace_back(index_str, linenum, filepath, manager);
-
     return std::make_shared<std::function<const nemesis::TemplateOption*(nemesis::CompileState&)>>(
-        [&component, &option_name, linenum, filepath](nemesis::CompileState& state)
+        [this, &component, &option_name, linenum, filepath](nemesis::CompileState& state)
         {
             std::string s_index = component.GetValue(state);
 
             if (s_index.empty()) return state.GetCurrentOption(option_name);
 
-            auto options = state.GetBaseRequest()->GetOptions(option_name);
+            auto options = GetBaseRequest(state)->GetOptions(option_name);
 
             if (s_index == "F")
             {
@@ -238,9 +236,9 @@ nemesis::OptionStatement::BuildAnyHasOptionFunction(const std::string& option_na
     if (!manager.HasRequestInQueue(Components.front())
         && !manager.HasRequestInQueue(template_name + "_" + std::to_string(num - 1)))
     {
-        throw std::runtime_error("Syntax error: Unable to get target request from queue (Expression: "
+        throw std::runtime_error("Syntax Error: Unable to get target request from queue (Expression: "
                                  + Expression + ", Line: " + std::to_string(LineNum)
-                                 + ", FilePath: " + FilePath.string() + ")");
+                                 + ", File: " + FilePath.string() + ")");
     }
 
     if (num == 1)
@@ -283,9 +281,9 @@ nemesis::OptionStatement::BuildAllHasOptionFunction(const std::string& option_na
     if (!manager.HasRequestInQueue(Components.front())
         && !manager.HasRequestInQueue(template_name + "_" + std::to_string(num - 1)))
     {
-        throw std::runtime_error("Syntax error: Unable to get target request from queue (Expression: "
+        throw std::runtime_error("Syntax Error: Unable to get target request from queue (Expression: "
                                  + Expression + ", Line: " + std::to_string(LineNum)
-                                 + ", FilePath: " + FilePath.string() + ")");
+                                 + ", File: " + FilePath.string() + ")");
     }
 
     if (num == 1)
@@ -329,100 +327,100 @@ nemesis::OptionStatement::OptionStatement(const std::string& expression,
     {
         case 1:
         {
-            std::string& name = Components.front();
-            auto model        = template_class->GetModel(name);
+            const std::string& name = Components.front();
+            const auto* model       = template_class->GetModel(name);
 
             if (!model)
             {
-                throw std::runtime_error("Syntax error: Option or joint option does not exist (Option: "
+                throw std::runtime_error("Syntax Error: Option or joint option does not exist (Option: "
                                          + name + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
             if (model->IsArray())
             {
-                throw std::runtime_error("Syntax error: Option is an array (Option: " + name
+                throw std::runtime_error("Syntax Error: Option is an array (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
-            GetOptionFunction
-                = [&name](nemesis::CompileState& state) { return state.GetBaseRequest()->GetOption(name); };
+            GetOptionFunction = [this, &name](nemesis::CompileState& state)
+            { return GetBaseRequest(state)->GetOption(name); };
             break;
         }
         case 2:
         {
-            std::string& name  = Components.front();
-            std::string& index = Components[1];
-            auto model         = template_class->GetModel(name);
+            const std::string& name  = Components.front();
+            const auto* model        = template_class->GetModel(name);
 
             if (!model)
             {
-                throw std::runtime_error("Syntax error: Option does not exist (Option: " + name
+                throw std::runtime_error("Syntax Error: Option does not exist (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
             if (!model->IsArray())
             {
-                throw std::runtime_error("Syntax error: Option is not an array (Option: " + name
+                throw std::runtime_error("Syntax Error: Option is not an array (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
-            auto get_option_func = BuildGetBaseOptionFunction(name, index, linenum, filepath, manager);
-
+            const std::string& index = Components[1];
+            auto get_option_func     = BuildGetBaseOptionFunction(name, index, linenum, filepath, manager);
             GetOptionFunction
                 = [get_option_func](nemesis::CompileState& state) { return (*get_option_func)(state); };
             break;
         }
         case 3:
         {
-            std::string& name     = Components[2];
-            auto model = template_class->GetModel(name);
+            const std::string& name = Components[2];
+            const auto* model       = template_class->GetModel(name);
 
             if (!model)
             {
-                throw std::runtime_error("Syntax error: Option does not exist (Option: " + name
+                throw std::runtime_error("Syntax Error: Option does not exist (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
             if (model->IsArray())
             {
-                throw std::runtime_error("Syntax error: Option is an array (Option: " + name
+                throw std::runtime_error("Syntax Error: Option is an array (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
-            auto& req_index = Components[1];
+            const std::string& req_index = Components[1];
 
-            if (req_index == "ALL")
+            if (nemesis::iequals(req_index, "ALL"))
             {
                 HasOptionFunction = BuildAllHasOptionFunction(name, manager);
-                GetOptionFunction = [](nemesis::CompileState& state)
+                GetOptionFunction = [this, &name](nemesis::CompileState& state)
                 {
                     throw std::runtime_error(
-                        "Syntax error: ALL syntax cannot be used to retrieve specific option");
+                        "Syntax Error: ALL syntax cannot be used to retrieve specific option (Option: " + name
+                        + ", Line: " + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
                     return nullptr;
                 };
                 return;
             }
-            else if (req_index == "ANY")
+            else if (nemesis::iequals(req_index, "ANY"))
             {
                 HasOptionFunction = BuildAnyHasOptionFunction(name, manager);
-                GetOptionFunction = [](nemesis::CompileState& state)
+                GetOptionFunction = [this, &name](nemesis::CompileState& state)
                 {
                     throw std::runtime_error(
-                        "Syntax error: ANY syntax cannot be used to retrieve specific option");
+                        "Syntax Error: ANY syntax cannot be used to retrieve specific option (Option: " + name
+                        + ", Line: " + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
                     return nullptr;
                 };
                 return;
             }
 
             auto get_request_func = GetTargetRequest(*template_class, manager);
-
-            GetOptionFunction = [get_request_func, &name](nemesis::CompileState& state)
+            GetOptionFunction     = [get_request_func, &name](nemesis::CompileState& state)
             {
                 auto request = (*get_request_func)(state);
                 return request->GetOption(name);
@@ -431,26 +429,26 @@ nemesis::OptionStatement::OptionStatement(const std::string& expression,
         }
         case 4:
         {
-            std::string& name  = Components[2];
-            std::string& index = Components[3];
-            auto model = template_class->GetModel(name);
+            const std::string& name  = Components[2];
+            const auto* model        = template_class->GetModel(name);
 
             if (!model)
             {
-                throw std::runtime_error("Syntax error: Option does not exist (Option: " + name
+                throw std::runtime_error("Syntax Error: Option does not exist (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
             if (!model->IsArray())
             {
-                throw std::runtime_error("Syntax error: Option is not array (Option: " + name
+                throw std::runtime_error("Syntax Error: Option is not array (Option: " + name
                                          + ", Line: " + std::to_string(linenum)
                                          + ", File: " + filepath.string() + ")");
             }
 
-            std::string option_syntax = Components.front() + "[" + Components[1] + "][" + name + "]";
-            auto get_request_func     = GetTargetRequest(*template_class, manager);
+            const std::string& index        = Components.back();
+            const std::string option_syntax = Components.front() + "[" + Components[1] + "][" + name + "]";
+            auto get_request_func           = GetTargetRequest(*template_class, manager);
             auto get_option_func
                 = BuildGetOptionFunction(option_syntax, name, index, linenum, filepath, manager);
 
@@ -464,7 +462,7 @@ nemesis::OptionStatement::OptionStatement(const std::string& expression,
             break;
         }
         default:
-            throw std::runtime_error("Syntax error: Invalid option components (Expression: " + expression
+            throw std::runtime_error("Syntax Error: Invalid option components (Expression: " + expression
                                      + ", Line: " + std::to_string(linenum) + ", File: " + filepath.string()
                                      + ")");
     }

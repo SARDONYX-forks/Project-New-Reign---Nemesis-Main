@@ -8,7 +8,7 @@
 #include "core/CompileState.h"
 #include "core/AnimationRequest.h"
 
-#include "core/Template/TemplateClass.h"
+#include "core/Template.h"
 
 nemesis::ConditionalStatement::ConditionalCollection*
 nemesis::ConditionalStatement::ConditionalNode::And(nemesis::ConditionalStatement::ConditionalNode* node)
@@ -59,8 +59,8 @@ nemesis::ConditionalStatement::ConditionalString::ConditionalString(const std::s
             switch (expression[i])
             {
                 case '"':
-                    throw std::runtime_error("Syntax error: near '\"' (Line: " + std::to_string(linenum)
-                                             + ", FilePath: " + filepath.string() + ")");
+                    throw std::runtime_error("Syntax Error: near '\"' (Line: " + std::to_string(linenum)
+                                             + ", File: " + filepath.string() + ")");
             }
         }
 
@@ -89,94 +89,283 @@ nemesis::ConditionalStatement::ConditionalString::GetValue(nemesis::CompileState
     return DynamicComponents.empty() ? ConstantValue : DynamicComponents.back().GetValue(state);
 }
 
+void nemesis::ConditionalStatement::ConditionalBoolean::Parse1Component(
+    const nemesis::TemplateClass* templt_class, const nemesis::SemanticManager& manager)
+{
+    const std::string& name = Components.front();
+
+    if (IsComplexComponent(name))
+    {
+        const auto& dynamic_name = DynamicComponents.emplace_back(name, LineNum, FilePath, manager);
+        IsTrueFunction           = [this, templt_class, &dynamic_name](nemesis::CompileState& state)
+        {
+            const std::string name = dynamic_name.GetValue(state);
+
+            if (name == "@MotionData")
+            {
+                auto request = GetBaseRequest(state);
+                return !request->GetMotionDataList().empty();
+            }
+
+            if (name == "@RotationData")
+            {
+                auto request = GetBaseRequest(state);
+                return !request->GetRotationDataList().empty();
+            }
+
+            if (!templt_class->GetModel(name))
+            {
+                throw std::runtime_error("Syntax Error: '" + name + "' is not a valid option (Line: "
+                                         + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+            }
+
+            auto request = GetBaseRequest(state);
+            return request->GetOption(name) != nullptr;
+        };
+        return;
+    }
+
+    if (name == "@MotionData")
+    {
+        IsTrueFunction = [this, &name](nemesis::CompileState& state)
+        {
+            auto request = GetBaseRequest(state);
+            return !request->GetMotionDataList().empty();
+        };
+        return;
+    }
+
+    if (name == "@RotationData")
+    {
+        IsTrueFunction = [this, &name](nemesis::CompileState& state)
+        {
+            auto request = GetBaseRequest(state);
+            return !request->GetRotationDataList().empty();
+        };
+        return;
+    }
+
+    if (!templt_class->GetModel(name))
+    {
+        throw std::runtime_error("Syntax Error: '" + name + "' is not a valid option (Line: "
+                                 + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+    }
+
+    IsTrueFunction = [this, &name](nemesis::CompileState& state)
+    {
+        auto request = GetBaseRequest(state);
+        return request->GetOption(name) != nullptr;
+    };
+}
+
+void nemesis::ConditionalStatement::ConditionalBoolean::Parse2Components(
+    const nemesis::TemplateClass* templt_class, const nemesis::SemanticManager& manager)
+{
+    const std::string& name = Components.front();
+
+    if (IsComplexComponent(name))
+    {
+        const auto& dynamic_name = DynamicComponents.emplace_back(name, LineNum, FilePath, manager);
+        IsTrueFunction           = [this, templt_class, &dynamic_name](nemesis::CompileState& state)
+        {
+            const std::string name = dynamic_name.GetValue(state);
+
+            if (name == "@Map")
+            {
+                const std::string& key = Components.back();
+                auto request           = GetBaseRequest(state);
+                return !request->GetMapValueList(key).empty();
+            }
+
+            if (!templt_class->GetModel(name))
+            {
+                throw std::runtime_error("Syntax Error: '" + name + "' is not a valid option (Line: "
+                                         + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+            }
+
+            size_t index = std::stoul(Components.back());
+            auto request = GetBaseRequest(state);
+            return index < request->GetOptions(name).size();
+        };
+        return;
+    }
+
+    if (name == "@Map")
+    {
+        const std::string& key = Components.back();
+        IsTrueFunction         = [this, &name, &key](nemesis::CompileState& state)
+        {
+            auto request = GetBaseRequest(state);
+            return !request->GetMapValueList(key).empty();
+        };
+        return;
+    }
+
+    if (!templt_class->GetModel(name))
+    {
+        throw std::runtime_error("Syntax Error: '" + name + "' is not a valid option (Line: "
+                                 + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+    }
+
+    size_t index = std::stoul(Components.back());
+
+    IsTrueFunction = [this, &name, index](nemesis::CompileState& state)
+    {
+        auto request = GetBaseRequest(state);
+        return index < request->GetOptions(name).size();
+    };
+}
+
+void nemesis::ConditionalStatement::ConditionalBoolean::Parse3Components(
+    const nemesis::TemplateClass* templt_class, const nemesis::SemanticManager& manager)
+{
+    const std::string& name = Components.back();
+    SPtr<std::function<bool(nemesis::CompileState&)>> callback_requests;
+    std::function<bool(nemesis::CompileState&, const nemesis::AnimationRequest*)> callback;
+
+    if (IsComplexComponent(name))
+    {
+        const auto& dynamic_name = DynamicComponents.emplace_back(name, LineNum, FilePath, manager);
+        callback                 = [this, templt_class, dynamic_name](nemesis::CompileState& state,
+                                                      const nemesis::AnimationRequest* request)
+        {
+            const std::string name = dynamic_name.GetValue(state);
+
+            if (name == "@MotionData") return !request->GetMotionDataList().empty();
+
+            if (name == "@RotationData") return !request->GetRotationDataList().empty();
+
+            if (templt_class->GetModel(name)) return request->GetOption(name) != nullptr;
+
+            throw std::runtime_error("Syntax Error: \"" + name + "\" is not a valid option (Line: "
+                                     + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+        };
+    }
+    else if (name == "@MotionData")
+    {
+        callback = [this](nemesis::CompileState& state, const nemesis::AnimationRequest* request)
+        { return !request->GetMotionDataList().empty(); };
+    }
+    else if (name == "@RotationData")
+    {
+        callback = [this](nemesis::CompileState& state, const nemesis::AnimationRequest* request)
+        { return !request->GetRotationDataList().empty(); };
+    }
+    else if (templt_class->GetModel(name))
+    {
+        callback = [this, &name](nemesis::CompileState& state, const nemesis::AnimationRequest* request)
+        { return request->GetOption(name) != nullptr; };
+    }
+    else
+    {
+        throw std::runtime_error("Syntax Error: \"" + name + "\" is not a valid option (Line: "
+                                 + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+    }
+
+    callback_requests = CallbackTargetRequests(*templt_class, manager, callback);
+    IsTrueFunction
+        = [callback_requests](nemesis::CompileState& state) { return (*callback_requests)(state); };
+}
+
+void nemesis::ConditionalStatement::ConditionalBoolean::Parse4Components(
+    const nemesis::TemplateClass* templt_class, const nemesis::SemanticManager& manager)
+{
+    auto get_request_func   = GetTargetRequest(*templt_class, manager);
+    const std::string& name = Components[2];
+    const std::string& key  = Components.back();
+    SPtr<std::function<std::string(nemesis::CompileState&)>> get_key;
+
+    if (IsComplexComponent(key))
+    {
+        const auto& dynamic_key = DynamicComponents.emplace_back(key, LineNum, FilePath, manager);
+        get_key                 = std::make_shared<std::function<std::string(nemesis::CompileState&)>>(
+            [&dynamic_key](nemesis::CompileState& state) { return dynamic_key.GetValue(state); });
+    }
+    else
+    {
+        get_key = std::make_shared<std::function<std::string(nemesis::CompileState&)>>(
+            [&key](nemesis::CompileState& state) { return key; });
+    }
+
+    if (IsComplexComponent(name))
+    {
+        const auto& dynamic_name = DynamicComponents.emplace_back(name, LineNum, FilePath, manager);
+        IsTrueFunction           = [get_request_func, &dynamic_name, &get_key](nemesis::CompileState& state)
+        {
+            const std::string name = dynamic_name.GetValue(state);
+            const std::string& key = (*get_key)(state);
+
+            if (name == "@Map")
+            {
+                auto request = (*get_request_func)(state);
+                return !request->GetMapValueList(key).empty();
+            }
+
+            size_t index = std::stoul(key);
+            auto request = (*get_request_func)(state);
+            return index < request->GetOptions(name).size();
+        };
+        return;
+    }
+
+    if (name == "@Map")
+    {
+        IsTrueFunction = [get_request_func, &name, get_key](nemesis::CompileState& state)
+        {
+            auto request = (*get_request_func)(state);
+            return !request->GetMapValueList((*get_key)(state)).empty();
+        };
+        return;
+    }
+
+    if (!templt_class->GetModel(name))
+    {
+        throw std::runtime_error("Syntax Error: '" + name + "' is not a valid option (Line: "
+                                 + std::to_string(LineNum) + ", File: " + FilePath.string() + ")");
+    }
+
+    IsTrueFunction = [get_request_func, &name, get_key](nemesis::CompileState& state)
+    {
+        size_t index = std::stoul((*get_key)(state));
+        auto request = (*get_request_func)(state);
+        return index < request->GetOptions(name).size();
+    };
+}
+
 nemesis::ConditionalStatement::ConditionalBoolean::ConditionalBoolean(const std::string& expression,
                                                                       size_t linenum,
                                                                       const std::filesystem::path& filepath,
                                                                       const nemesis::SemanticManager& manager,
                                                                       bool negative)
-    : nemesis::Statement(expression, linenum, filepath)
+    : nemesis::CompositeStatement(expression, linenum, filepath)
 {
-    auto template_class = manager.GetCurrentTemplateClass();
+    auto templt_class = manager.GetCurrentTemplateClass();
     Negative            = negative;
 
     switch (Components.size())
     {
         case 1:
         {
-            const std::string& name = Components.front();
-
-            if (!template_class->GetModel(name))
-            {
-                throw std::runtime_error("Syntax error: '" + name + "' is not a valid option (Line: "
-                                         + std::to_string(linenum) + ", File: " + filepath.string() + ")");
-            }
-
-            IsTrueFunction = [&name](nemesis::CompileState& state)
-            {
-                auto request = state.GetBaseRequest();
-                return request->GetOption(name) != nullptr;
-            };
+            Parse1Component(templt_class, manager);
             break;
         }
         case 2:
         {
-            const std::string& name = Components.front();
-
-            if (!template_class->GetModel(name))
-            {
-                throw std::runtime_error("Syntax error: '" + name + "' is not a valid option (Line: "
-                                         + std::to_string(linenum) + ", File: " + filepath.string() + ")");
-            }
-
-            size_t index = std::stoul(Components.back());
-
-            IsTrueFunction = [&name, index](nemesis::CompileState& state)
-            {
-                auto request = state.GetBaseRequest();
-                return index < request->GetOptions(name).size();
-            };
+            Parse2Components(templt_class, manager);
             break;
         }
         case 3:
         {
-            auto get_request_func   = GetTargetRequest(*template_class, manager);
-            const std::string& name = Components[2];
-
-            if (!template_class->GetModel(name))
-            {
-                throw std::runtime_error("Syntax error: '" + name + "' is not a valid option (Line: "
-                                         + std::to_string(linenum) + ", File: " + filepath.string() + ")");
-            }
-
-            IsTrueFunction          = [get_request_func, &name](nemesis::CompileState& state)
-            {
-                auto request = (*get_request_func)(state);
-                return request->GetOption(name) != nullptr;
-            };
+            Parse3Components(templt_class, manager);
             break;
         }
         case 4:
         {
-            auto get_request_func   = GetTargetRequest(*template_class, manager);
-            const std::string& name = Components[2];
-
-            if (!template_class->GetModel(name))
-            {
-                throw std::runtime_error("Syntax error: '" + name + "' is not a valid option (Line: "
-                                         + std::to_string(linenum) + ", File: " + filepath.string() + ")");
-            }
-
-            size_t index = std::stoul(Components.back());
-
-            IsTrueFunction = [get_request_func, & name, index](nemesis::CompileState& state)
-            {
-                auto request = (*get_request_func)(state);
-                return index < request->GetOptions(name).size();
-            };
+            Parse4Components(templt_class, manager);
             break;
         }
         default:
-            throw std::runtime_error("Syntax error: Invalid condition statement (Line: "
+            throw std::runtime_error("Syntax Error: Invalid condition statement (Line: "
                                      + std::to_string(linenum) + ", File: " + filepath.string() + ")");
     }
 }
@@ -203,18 +392,16 @@ nemesis::ConditionalStatement::ConditionalAnimationRequest::ConditionalAnimation
     const nemesis::SemanticManager& manager)
     : nemesis::Statement(expression, linenum, filepath)
 {
-    auto template_class = manager.GetCurrentTemplateClass();
+    auto templt_class = manager.GetCurrentTemplateClass();
 
-    switch (Components.size())
+    if (Components.size() != 2)
     {
-        case 2:
-        {
-            GetRequestFunction = *GetTargetRequest(*template_class, manager);
-            break;
-        }
-        default:
-            throw std::runtime_error("Syntax error");
+        throw std::runtime_error(
+            "Syntax Error: ConditionalAnimationRequest only accepts 1 argument (Expression: " + expression
+            + ", Line: " + std::to_string(linenum) + ", File: " + filepath.string() + ")");
     }
+
+    GetRequestFunction = *GetTargetRequest(*templt_class, manager);
 }
 
 std::string nemesis::ConditionalStatement::ConditionalAnimationRequest::Serialize() const
@@ -302,7 +489,7 @@ bool nemesis::ConditionalStatement::ConditionalOption::IsOption(
     const std::string& expression, const nemesis::TemplateObject& template_object)
 {
     auto components     = nemesis::Statement::SplitComponents(expression);
-    auto template_class = template_object.GetTemplateClass();
+    auto templt_class = template_object.GetTemplateClass();
 
     switch (components.size())
     {
@@ -310,21 +497,21 @@ bool nemesis::ConditionalStatement::ConditionalOption::IsOption(
         case 2:
         {
             const std::string& name = components.front();
-            auto model              = template_class->GetModel(name);
+            auto model              = templt_class->GetModel(name);
             return model;
         }
         case 3:
         case 4:
         {
             if (!nemesis::regex_match(expression,
-                                      "^" + template_class->GetName()
+                                      "^" + templt_class->GetName()
                                           + "_([1-9]+)\\[.*?\\](?:\\[.+?\\]|)(?:\\[.+?\\]|)?$"))
             {
                 return false;
             }
 
             const std::string& name = components[2];
-            auto model              = template_class->GetModel(name);
+            auto model              = templt_class->GetModel(name);
             return model;
         }
         default:
@@ -452,14 +639,14 @@ nemesis::ConditionalStatement::ConditionalCollection::~ConditionalCollection() n
 {
     for (auto& condition : AndConditions)
     {
-        if (condition == nullptr) continue;
+        if (!condition) continue;
 
         delete condition;
     }
 
     for (auto& condition : OrConditions)
     {
-        if (condition == nullptr) continue;
+        if (!condition) continue;
 
         delete condition;
     }
@@ -613,7 +800,7 @@ bool nemesis::ConditionalStatement::ConditionalStatementParser::Match(
 const nemesis::ConditionalStatement::ConditionalStatementParser::Token&
 nemesis::ConditionalStatement::ConditionalStatementParser::Consume(TokenType type) const
 {
-    if (!Match(type)) throw std::runtime_error("Syntax error");
+    if (!Match(type)) throw std::runtime_error("Syntax Error");
 
     return Advance();
 }
@@ -723,7 +910,7 @@ nemesis::ConditionalStatement::ConditionalStatementParser::ParseFactor() const
             {
                 if (negative)
                 {
-                    throw std::runtime_error("Syntax error: Near \"" + token.Value + "\" (Line: " + std::to_string(LineNum)
+                    throw std::runtime_error("Syntax Error: Near \"" + token.Value + "\" (Line: " + std::to_string(LineNum)
                                              + ", File: " + FilePathPtr->string() + ")");
                 }
 
@@ -761,7 +948,7 @@ nemesis::ConditionalStatement::ConditionalStatementParser::ParseFactor() const
             {
                 if (negative)
                 {
-                    throw std::runtime_error("Syntax error: Near \"" + token.Value
+                    throw std::runtime_error("Syntax Error: Near \"" + token.Value
                                              + "\" (Line: " + std::to_string(LineNum)
                                              + ", File: " + FilePathPtr->string() + ")");
                 }
@@ -802,7 +989,7 @@ nemesis::ConditionalStatement::ConditionalStatementParser::ParseFactor() const
         }
 
         auto token = Advance();
-        throw std::runtime_error("Syntax error: Near \"" + token.Value + "\" (Line: "
+        throw std::runtime_error("Syntax Error: Near \"" + token.Value + "\" (Line: "
                                  + std::to_string(LineNum) + ", File: " + FilePathPtr->string() + ")");
     }
     catch (const std::exception&)
@@ -891,30 +1078,26 @@ nemesis::ConditionalStatement::ConditionalStatement(const std::string& expressio
                                                     size_t linenum,
                                                     const std::filesystem::path& filepath,
                                                     const nemesis::SemanticManager& manager)
+    : nemesis::Statement(expression, linenum, filepath, true)
 {
-    Expression = expression;
-    LineNum    = linenum;
-    FilePath   = filepath;
-
     ConditionalStatementParser parser(manager);
     parser.SetExpression(Expression);
     parser.SetLineNumber(LineNum);
     parser.SetFilePath(FilePath);
     CondNode = parser.MakeCondition();
+    Components.emplace_back(CondNode->GetExpression());
 }
 
 nemesis::ConditionalStatement::ConditionalStatement(const nemesis::Line& line,
                                                     const nemesis::SemanticManager& manager)
+    : nemesis::Statement(line)
 {
-    Expression = line;
-    LineNum    = line.GetLineNumber();
-    FilePath   = line.GetFilePath();
-
     ConditionalStatementParser parser(manager);
     parser.SetExpression(Expression);
     parser.SetLineNumber(LineNum);
     parser.SetFilePath(FilePath);
     CondNode = parser.MakeCondition();
+    Components.emplace_back(CondNode->GetExpression());
 }
 
 nemesis::ConditionalStatement::ConditionalStatement(const nemesis::ConditionalStatement& statement)

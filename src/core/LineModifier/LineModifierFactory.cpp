@@ -1,18 +1,25 @@
 #include "core/LineModifier/MapModifier.h"
 #include "core/LineModifier/MathModifier.h"
+#include "core/LineModifier/Crc32Modifier.h"
+#include "core/LineModifier/LengthModifier.h"
 #include "core/LineModifier/StateIdModifier.h"
 #include "core/LineModifier/EventIdModifier.h"
 #include "core/LineModifier/CounterModifier.h"
+#include "core/LineModifier/SubstringModifier.h"
 #include "core/LineModifier/RequestIdModifier.h"
+#include "core/LineModifier/MotionDataModifier.h"
 #include "core/LineModifier/VariableIdModifier.h"
 #include "core/LineModifier/PropertyIdModifier.h"
 #include "core/LineModifier/NumelementModifier.h"
 #include "core/LineModifier/AttributeIdModifier.h"
 #include "core/LineModifier/SubTemplateModifier.h"
 #include "core/LineModifier/LineModifierFactory.h"
+#include "core/LineModifier/RotationDataModifier.h"
 #include "core/LineModifier/RequestIndexModifier.h"
 #include "core/LineModifier/CurrentCountModifier.h"
+#include "core/LineModifier/RunningNumberModifier.h"
 #include "core/LineModifier/AnimationEventModifier.h"
+#include "core/LineModifier/AnimationOrderModifier.h"
 #include "core/LineModifier/MultipleChoiceModifier.h"
 #include "core/LineModifier/OptionVariableModifier.h"
 #include "core/LineModifier/AnimationFilePathModifier.h"
@@ -21,20 +28,25 @@
 
 nemesis::LineModifierFactory::ModifierBuilderCollection::ModifierBuilderCollection()
 {
-    FirstBuilders["@SubTemplate"]  = std::make_shared<ModifierBuilder<nemesis::SubTemplateModifier>>();
-    FirstBuilders["@StateID"]      = std::make_shared<ModifierBuilder<nemesis::StateIdModifier>>();
-    FirstBuilders["@EventID"]      = std::make_shared<ModifierBuilder<nemesis::EventIdModifier>>();
-    FirstBuilders["@VariableID"]   = std::make_shared<ModifierBuilder<nemesis::VariableIdModifier>>();
-    FirstBuilders["@AttributeID"]  = std::make_shared<ModifierBuilder<nemesis::AttributeIdModifier>>();
-    FirstBuilders["@PropertyID"]   = std::make_shared<ModifierBuilder<nemesis::PropertyIdModifier>>();
-    FirstBuilders["@Math"]         = std::make_shared<ModifierBuilder<nemesis::MathModifier>>();
-    FirstBuilders["@CurrentCount"] = std::make_shared<ModifierBuilder<nemesis::CurrentCountModifier>>();
+    FirstBuilders["@SubTemplate"]    = std::make_unique<ModifierBuilder<nemesis::SubTemplateModifier>>();
+    FirstBuilders["@StateID"]        = std::make_unique<ModifierBuilder<nemesis::StateIdModifier>>();
+    FirstBuilders["@EventID"]        = std::make_unique<ModifierBuilder<nemesis::EventIdModifier>>();
+    FirstBuilders["@VariableID"]     = std::make_unique<ModifierBuilder<nemesis::VariableIdModifier>>();
+    FirstBuilders["@AttributeID"]    = std::make_unique<ModifierBuilder<nemesis::AttributeIdModifier>>();
+    FirstBuilders["@PropertyID"]     = std::make_unique<ModifierBuilder<nemesis::PropertyIdModifier>>();
+    FirstBuilders["@Math"]           = std::make_unique<ModifierBuilder<nemesis::MathModifier>>();
+    FirstBuilders["@CurrentCount"]   = std::make_unique<ModifierBuilder<nemesis::CurrentCountModifier>>();
+    FirstBuilders["@AnimationOrder"] = std::make_unique<ModifierBuilder<nemesis::AnimationOrderModifier>>();
+    FirstBuilders["@RunningNumber"]  = std::make_unique<ModifierBuilder<nemesis::RunningNumberModifier>>();
+    FirstBuilders["@Crc32"]          = std::make_unique<ModifierBuilder<nemesis::Crc32Modifier>>();
+    FirstBuilders["@Substring"]      = std::make_unique<ModifierBuilder<nemesis::SubstringModifier>>();
+    FirstBuilders["@Length"]         = std::make_unique<ModifierBuilder<nemesis::LengthModifier>>();
 
-    LastBuilders["@ID"]             = std::make_shared<ModifierBuilder<nemesis::RequestIdModifier>>();
-    LastBuilders["@Index"]          = std::make_shared<ModifierBuilder<nemesis::RequestIndexModifier>>();
-    LastBuilders["@AnimationEvent"] = std::make_shared<ModifierBuilder<nemesis::AnimationEventModifier>>();
+    LastBuilders["@ID"]             = std::make_unique<ModifierBuilder<nemesis::RequestIdModifier>>();
+    LastBuilders["@Index"]          = std::make_unique<ModifierBuilder<nemesis::RequestIndexModifier>>();
+    LastBuilders["@AnimationEvent"] = std::make_unique<ModifierBuilder<nemesis::AnimationEventModifier>>();
     LastBuilders["@AnimationFilePath"]
-        = std::make_shared<ModifierBuilder<nemesis::AnimationFilePathModifier>>();
+        = std::make_unique<ModifierBuilder<nemesis::AnimationFilePathModifier>>();
 }
 
 Map<size_t, Vec<SPtr<nemesis::LineModifier>>>
@@ -44,39 +56,52 @@ nemesis::LineModifierFactory::BuildModifiers(const std::string& line,
                                              const nemesis::SemanticManager& manager)
 {
     Map<size_t, Vec<SPtr<nemesis::LineModifier>>> modifiers;
+    const nemesis::MultipleChoiceStatement* mc_statement = nullptr;
 
-    if (line.find("$") != NOT_FOUND)
+    for (size_t i = 0; i < line.length(); i++)
     {
-        std::stringstream ss(line);
+        auto& ch = line[i];
+
+        if (ch != '$') continue;
+
+        size_t begin = i + 1;
         std::string component;
-        size_t begin                                         = 0;
-        const nemesis::MultipleChoiceStatement* mc_statement = nullptr;
+        char ch2;
 
-        while (std::getline(ss, component, '$') && !ss.eof())
+        do
         {
-            begin = ss.tellg();
-
-            if (!std::getline(ss, component, '$')) throw std::runtime_error("Syntax error: Unexpected '$'");
-
-            size_t end = ss.tellg();
-
-            if (mc_statement && mc_statement->IsPartOfChoiceValue(begin, end)) continue;
-
-            auto modifier    = BuildModifier(begin, end, component, line, linenum, filepath, manager);
-            auto mc_modifier = dynamic_cast<nemesis::MultipleChoiceModifier*>(modifier.get());
-
-            if (mc_modifier)
+            if (++i == line.length())
             {
-                if (mc_statement)
-                {
-                    throw std::runtime_error("Syntax error: only 1 MultiChoice per line");
-                }
-
-                mc_statement = mc_modifier->GetStatement();
+                throw std::runtime_error("Syntax Error: Unexpected '$' (Line: " + std::to_string(linenum)
+                                         + ", File: " + filepath.string() + ")");
             }
 
-            modifiers[end - begin].emplace_back(modifier);
+            ch2 = line[i];
+
+            if (ch2 == '$') break;
+
+            component.push_back(ch2);
+        } while (true);
+
+        size_t end = i + 1;
+
+        if (mc_statement && mc_statement->IsPartOfChoiceValue(begin, end)) continue;
+
+        auto modifier    = BuildModifier(begin, end, component, line, linenum, filepath, manager);
+        auto mc_modifier = dynamic_cast<nemesis::MultipleChoiceModifier*>(modifier.get());
+
+        if (mc_modifier)
+        {
+            if (mc_statement)
+            {
+                throw std::runtime_error("Syntax Error: only 1 MultiChoice per line (Line: " + std::to_string(linenum)
+                                         + ", File: " + filepath.string() + ")");
+            }
+
+            mc_statement = &mc_modifier->GetStatement();
         }
+
+        modifiers[i - begin].emplace_back(modifier);
     }
 
     constexpr std::string_view hkxname_sv(R"(<hkparam name=")");
@@ -146,9 +171,21 @@ nemesis::LineModifierFactory::BuildModifier(size_t begin,
         return itr->second->Build(begin - 1, end - 1, component, linenum, filepath, manager);
     }
 
-    if (components.front() == "@Map" || (components.size() > 3 && components[2] == "@Map"))
+    if (first == "@Map" || (components.size() > 2 && components[2] == "@Map"))
     {
         return std::make_shared<nemesis::MapModifier>(
+            begin - 1, end - 1, component, linenum, filepath, manager);
+    }
+    
+    if (first == "@MotionData" || (components.size() > 2 && components[2] == "@MotionData"))
+    {
+        return std::make_shared<nemesis::MotionDataModifier>(
+            begin - 1, end - 1, component, linenum, filepath, manager);
+    }
+    
+    if (first == "@RotationData" || (components.size() > 2 && components[2] == "@RotationData"))
+    {
+        return std::make_shared<nemesis::RotationDataModifier>(
             begin - 1, end - 1, component, linenum, filepath, manager);
     }
 

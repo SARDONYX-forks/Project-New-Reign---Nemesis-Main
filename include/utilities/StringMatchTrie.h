@@ -12,13 +12,23 @@ namespace nemesis
     private:
         struct TrieNode
         {
+            static const size_t Level1Size = 256;
+
             bool IsEnd      = false;
             bool HasCapture = false;
 
-            TrieNode* Previous;
+            TrieNode* Previous = nullptr;
             std::function<ReturnType(const std::string&)> OnMatch;
 
-            UMap<char, UPtr<TrieNode>> Children;
+            UPtr<TrieNode> Children[Level1Size];
+
+            TrieNode()
+            {
+                for (auto& child : Children)
+                {
+                    child = nullptr;
+                }
+            }
         };
 
         UPtr<TrieNode> Root;
@@ -37,15 +47,15 @@ namespace nemesis
 
             for (auto& ch : text)
             {
-                auto itr = current->Children.find(ch);
+                auto& trie_node = current->Children[static_cast<unsigned char>(ch)];
 
-                if (current->Children.find(ch) != current->Children.end())
+                if (!trie_node)
                 {
-                    current = itr->second.get();
+                    current = (trie_node = std::make_unique<TrieNode>()).get();
                     continue;
                 }
 
-                current = (current->Children[ch] = std::make_unique<TrieNode>()).get();
+                current = trie_node.get();
             }
 
             current->IsEnd   = true;
@@ -60,15 +70,15 @@ namespace nemesis
 
             for (auto& ch : prefix)
             {
-                auto itr = current->Children.find(ch);
+                auto& trie_node = current->Children[static_cast<unsigned char>(ch)];
 
-                if (current->Children.find(ch) != current->Children.end())
+                if (!trie_node)
                 {
-                    current = itr->second.get();
+                    current = (trie_node = std::make_unique<TrieNode>()).get();
                     continue;
                 }
 
-                current = (current->Children[ch] = std::make_unique<TrieNode>()).get();
+                current = trie_node.get();
             }
 
             current->HasCapture = true;
@@ -76,63 +86,68 @@ namespace nemesis
 
             for (auto& ch : suffix)
             {
-                auto itr = current->Children.find(ch);
+                auto& trie_node = current->Children[static_cast<unsigned char>(ch)];
 
-                if (current->Children.find(ch) != current->Children.end())
+                if (!trie_node)
                 {
-                    current = itr->second.get();
+                    current = (trie_node = std::make_unique<TrieNode>()).get();
                     continue;
                 }
 
-                current           = (current->Children[ch] = std::make_unique<TrieNode>()).get();
-                current->Previous = previous;
+                current = trie_node.get();
             }
 
-            current->IsEnd   = true;
-            current->OnMatch = callback_on_match;
+            current->Previous = previous;
+            current->IsEnd    = true;
+            current->OnMatch  = callback_on_match;
         }
 
         ReturnType Match(const std::string& text) const
         {
-            UMap<TrieNode*, Pair<size_t, size_t>> capture;
-            Deq<TrieNode*> current_list = {Root.get()};
-
             for (size_t k = 0; k < text.length(); k++)
             {
-                auto& ch = text[k];
+                auto* trie_node = Root->Children[static_cast<unsigned char>(text[k])].get();
+                size_t i        = 0;
+                Pair<size_t, size_t> pair;
 
-                for (size_t i = 0; i < current_list.size(); ++i)
+                while (trie_node)
                 {
-                    auto& current = current_list[i];
-                    auto itr      = current->Children.find(ch);
-
-                    if (itr == current->Children.end()) continue;
-
-                    current_list.emplace_front(Root.get());
-                    ++i;
-                    current = itr->second.get();
-
-                    if (current->HasCapture)
+                    if (trie_node->HasCapture)
                     {
-                        capture[current] = {k + 1, 0};
+                        pair           = {k + i + 1, 0};
+                        TrieNode* node = nullptr;
+
+                        do
+                        {
+                            ++i;
+                            size_t next = k + i;
+
+                            if (next == text.length()) break;
+
+                            auto& ch = text[next];
+                            node     = trie_node->Children[static_cast<unsigned char>(ch)].get();
+                        } while (!node);
+
+                        if (!node) break;
+
+                        pair.second = k + i - pair.first;
+                        trie_node = node;
                         continue;
                     }
-                    else if (current->IsEnd)
+                    else if (trie_node->IsEnd)
                     {
-                        if (!current->Previous) return current->OnMatch("");
+                        if (!trie_node->Previous) return trie_node->OnMatch("");
 
-                        auto& pair = capture[current->Previous];
-                        return current->OnMatch(text.substr(pair.first, pair.second));
+                        return trie_node->OnMatch(text.substr(pair.first, pair.second));
                     }
-                    else if (current->Previous)
-                    {
-                        auto& pair = capture[current->Previous];
 
-                        if (pair.second == 0)
-                        {
-                            pair = {pair.first, k - pair.first};
-                        }
-                    }
+                    ++i;
+                    size_t next = k + i;
+
+                    if (next == text.length()) break;
+
+                    auto& ch  = text[next];
+                    trie_node = trie_node->Children[static_cast<unsigned char>(ch)].get();
                 }
             }
 

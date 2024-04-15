@@ -1,10 +1,6 @@
 #pragma once
 
-#include "hkx/HkxBehavior.h"
-
-#include "core/Template/TemplateClass.h"
-
-#include "core/AnimationRequestRepository.h"
+#include "core/CoreObject.h"
 
 namespace nemesis
 {
@@ -17,6 +13,7 @@ namespace nemesis
         Vec<UPtr<nemesis::TemplateClass>> TemplateClasses;
 
         nemesis::AnimationRequestRepository RequestRepository;
+        nemesis::TemplateRepository TemplateRepository;
         
     public:
         void AddBehavior(UPtr<nemesis::HkxBehavior>&& behavior);

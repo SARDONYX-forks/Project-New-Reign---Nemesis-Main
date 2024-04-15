@@ -1,4 +1,3 @@
-#include "core/CompileState.h"
 #include "core/MasterRepository.h"
 
 #include "utilities/writetextfile.h"
@@ -66,9 +65,11 @@ Vec<const nemesis::HkxBehavior*> nemesis::MasterRepository::GetBehaviorList() co
 
 void nemesis::MasterRepository::CompileAllBehaviors() const
 {
+    nemesis::CompilationManager manager({}, RequestRepository, TemplateRepository);
+
     for (auto& behavior : BehaviorMap)
     {
-        nemesis::CompileState state(RequestRepository);
+        nemesis::CompileState& state = manager.CreateCompileState(behavior.second->GetFilePath());
         sf::path behavior_path(behavior.second->GetFilePath());
         sf::path hkx_path(behavior_path.parent_path()
                           / (sf::path(behavior.first).stem().wstring() + L".hkx"));
@@ -100,12 +101,16 @@ void nemesis::MasterRepository::CompileAllBehaviors() const
 
 void nemesis::MasterRepository::CompileAllBehaviors(nemesis::ThreadPool& tp) const
 {
+    SPtr<nemesis::CompilationManager> sptr_manager
+        = std::make_shared<nemesis::CompilationManager>(VecStr(), RequestRepository, TemplateRepository);
+
     for (auto& behavior : BehaviorMap)
     {
         tp.enqueue(
-            [this, &behavior]
+            [this, sptr_manager, & behavior]
             {
-                nemesis::CompileState state(RequestRepository);
+                nemesis::CompileState& state
+                    = sptr_manager->CreateCompileState(behavior.second->GetFilePath());
                 sf::path behavior_path(behavior.second->GetFilePath());
                 sf::path hkx_path(behavior_path.parent_path()
                                   / (sf::path(behavior.first).stem().wstring() + L".hkx"));

@@ -47,7 +47,10 @@ std::shared_ptr<FileReader> CreateReader(const sf::path& filename, Vec<LineType>
 
     SPtr<FileReader> filereader = std::make_shared<FileReader>(filename.wstring());
 
-    if (!filereader->TryGetFile()) ErrorMessage(3002, filename);
+    if (!filereader->TryGetFile())
+    {
+        ErrorMessage(3002, filename);
+    }
 
     functionlines = Vec<LineType>();
     functionlines.reserve(100000);
@@ -68,8 +71,7 @@ bool ValidateEndLine(bool emptylast, Vec<LineType>& storeline, const Vec<LineTyp
             if (storeline.back().find(each) != NOT_FOUND) return true;
         }
 
-        LineType line;
-        storeline.emplace_back(line);
+        storeline.emplace_back(storeline.back()).clear();
     }
     else if (storeline.back().empty())
     {

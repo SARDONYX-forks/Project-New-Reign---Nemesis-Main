@@ -9,10 +9,6 @@ namespace nemesis
 
 	struct TemplateHkx : public nemesis::TemplateObject
     {
-    private:
-        static Vec<UPtr<nemesis::NObject>> ParseObjects(nemesis::LineStream& stream,
-                                                        nemesis::SemanticManager& manager);
-
     public:
         TemplateHkx(const nemesis::TemplateClass* template_class) noexcept;
 

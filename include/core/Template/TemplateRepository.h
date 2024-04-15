@@ -2,19 +2,28 @@
 
 #include "core/Template/TemplateClass.h"
 
+#include "core/SubTemplateObject.h"
+
 namespace nemesis
 {
 	struct TemplateRepository
     {
     private:
-        Vec<UPtr<nemesis::TemplateClass>> TemplateClasses;
+        Vec<UPtr<nemesis::TemplateClass>> TemplateClassList;
+        Vec<UPtr<nemesis::SubTemplateObject>> SubTemplateList;
+
+        mutable UPtr<Vec<const nemesis::TemplateClass*>> TemplateClassList_Cache;
+        mutable UPtr<Vec<const nemesis::SubTemplateObject*>> SubTemplateList_Cache;
 
     public:
-        void AddTemplateClass(UPtr<nemesis::TemplateClass>&& templt_class);
+        TemplateRepository() = default;
+        TemplateRepository(const std::filesystem::path& templt_dir, nemesis::NObjectRepository& repo);
 
-        Vec<const nemesis::TemplateObject*> GetTemplateListByBehavior(const std::filesystem::path& behavior_path) const;
-        Vec<const nemesis::TemplateObject*> GetTemplateListByClass(const std::string& class_name) const;
-        const nemesis::TemplateClass* GetClassByName(const std::string& class_name) const;
+        UPtr<nemesis::AnimationRequest> CreateRequest(const std::string& request_info,
+                                                      size_t linenum,
+                                                      const std::filesystem::path& filepath);
 
+        Vec<const nemesis::TemplateClass*> GetTemplateClassList() const noexcept;
+        Vec<const nemesis::SubTemplateObject*> GetSubTemplateList() const noexcept;
     };
 }

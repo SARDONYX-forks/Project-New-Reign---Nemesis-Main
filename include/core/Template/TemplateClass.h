@@ -1,13 +1,15 @@
 #pragma once
 
-#include "core/Template/TemplateHkx.h"
-#include "core/Template/TemplateObject.h"
 #include "core/Template/TemplateOptionModel.h"
 
 #include "core/AnimationRequest.h"
+#include "core/NObjectRepository.h"
 
 namespace nemesis
 {
+    struct ThreadPool;
+    struct TemplateObject;
+
 	struct TemplateClass
     {
     private:
@@ -20,6 +22,25 @@ namespace nemesis
         Vec<SPtr<nemesis::TemplateObject>> Templates;
 
         std::filesystem::path InfoPath;
+
+        static void ParseHkxTemplatesLoopDirectory(const std::filesystem::path& relative_parent_path,
+                                                   const std::filesystem::path& dir,
+                                                   nemesis::TemplateClass& templt_class,
+                                                   nemesis::NObjectRepository& repo,
+                                                   nemesis::ThreadPool& thread_pool);
+        static void AddTemplateToHkxFile(const std::filesystem::path& relative_parent_path,
+                                         const std::filesystem::path& templt_path,
+                                         TemplateClass& templt_class,
+                                         nemesis::NObjectRepository& repo,
+                                         nemesis::ThreadPool& thread_pool);
+        static void AddTemplateToAnimDataSingleFile(const std::filesystem::path& dir,
+                                                    TemplateClass& templt_class,
+                                                    nemesis::AnimationDataSingleFile& singlefile,
+                                                    nemesis::ThreadPool& thread_pool);
+        static void AddTemplateToAnimSetDataSingleFile(const std::filesystem::path& dir,
+                                                       TemplateClass& templt_class,
+                                                       nemesis::AnimationSetDataSingleFile& singlefile);
+
     public:
         TemplateClass(const std::filesystem::path& template_info_path);
 
@@ -43,8 +64,10 @@ namespace nemesis
         const std::filesystem::path& GetInfoPath() const noexcept;
 
         UPtr<nemesis::AnimationRequest> CreateRequest(const std::string& request_info,
-                                                      size_t index,
                                                       size_t linenum,
                                                       const std::filesystem::path& filepath) const;
+
+        static UPtr<nemesis::TemplateClass> ParseTemplateClassFromDirectory(const std::filesystem::path& dir,
+                                                                            nemesis::NObjectRepository& repo);
     };
 }

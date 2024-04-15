@@ -34,7 +34,6 @@ namespace nemesis
         std::mutex queue_mutex;
         bool abort = false;
         bool sync = false;
-        bool started = false;
     };
 
     // add new work item to the pool
@@ -60,7 +59,6 @@ namespace nemesis
         }
 
         condition.notify_one();
-        started = true;
         return res;
     }
 }

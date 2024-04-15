@@ -25,7 +25,6 @@
 #include "generate/addanims.h"
 #include "generate/hkxcompiler.h"
 #include "generate/behaviorcheck.h"
-#include "generate/installscripts.h"
 #include "generate/papyruscompile.h"
 #include "generate/behaviorprocess.h"
 #include "generate/playerexclusive.h"

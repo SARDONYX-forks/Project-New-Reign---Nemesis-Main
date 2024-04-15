@@ -3,7 +3,6 @@
 #include "hkx/HkxBehaviorFile.h"
 
 #include "utilities/lineprocess.h"
-#include "utilities/templateline.h"
 
 #include "scope/scopeinfo.h"
 

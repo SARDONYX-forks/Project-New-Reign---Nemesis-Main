@@ -2,12 +2,14 @@
 #include "core/SemanticManager.h"
 
 #include "utilities/conditionsyntax.h"
-#include "..\..\include\core\IfObject.h"
 
 namespace ns = nemesis::syntax;
 
-nemesis::regex nemesis::IfObject::if_rgx("^.*\\<\\!-- IF \\^(.+?)\\^ --\\>.*$");
-nemesis::regex nemesis::IfObject::elseif_rgx("^.*\\<\\!-- ELSEIF \\^(.+?)\\^ --\\>.*$");
+nemesis::IfObject::ElseIfObject::ElseIfObject(const nemesis::IfObject::ElseIfObject& elseif_obj)
+    : Statement(elseif_obj.Statement)
+    , Value(elseif_obj.Value->CloneNObject())
+{
+}
 
 nemesis::IfObject::ElseIfObject::ElseIfObject(const std::string& expression,
                                               size_t linenum,
@@ -19,16 +21,20 @@ nemesis::IfObject::ElseIfObject::ElseIfObject(const std::string& expression,
 {
 }
 
-nemesis::IfObject::ElseIfObject::ElseIfObject(const nemesis::IfObject::ElseIfObject& elif_obj)
-    : Statement(elif_obj.Statement)
+UPtr<nemesis::IfObject::ElseIfObject> nemesis::IfObject::ElseIfObject::Clone() const
 {
-    Value = elif_obj.Value->CloneNObject();
+    return UPtr<nemesis::IfObject::ElseIfObject>(new nemesis::IfObject::ElseIfObject(*this));
 }
 
 nemesis::IfObject::IfObject(const nemesis::IfObject& if_obj)
     : Statement(if_obj.Statement)
 {
     Value = if_obj.Value->CloneNObject();
+
+    for (auto& elseif_obj : if_obj.ElseIfCollection)
+    {
+        ElseIfCollection.emplace_back(elseif_obj->Clone());
+    }
 }
 
 nemesis::IfObject::IfObject(const std::string& expression,
@@ -43,15 +49,42 @@ nemesis::IfObject::IfObject(const std::string& expression,
 
 void nemesis::IfObject::CompileTo(DeqNstr& lines, nemesis::CompileState& state) const
 {
-    if (!Statement.IsTrue(state)) return;
+    if (Statement.IsTrue(state))
+    {
+        Value->CompileTo(lines, state);
+        return;
+    }
 
-    Value->CompileTo(lines, state);
+    for (auto& elseif_obj : ElseIfCollection)
+    {
+        if (!elseif_obj->Statement.IsTrue(state)) continue;
+
+        elseif_obj->Value->CompileTo(lines, state);
+        return;
+    }
+
+    if (!ElseValue) return;
+
+    ElseValue->CompileTo(lines, state);
 }
 
 void nemesis::IfObject::SerializeTo(DeqNstr& lines) const
 {
     lines.emplace_back(Statement.Serialize());
     Value->SerializeTo(lines);
+
+    for (auto& elseif_obj : ElseIfCollection)
+    {
+        lines.emplace_back(elseif_obj->Statement.Serialize());
+        Value->SerializeTo(lines);
+    }
+
+    if (ElseValue)
+    {
+        lines.emplace_back(ns::Else());
+        ElseValue->SerializeTo(lines);
+    }
+
     lines.emplace_back(ns::EndIf());
 }
 
@@ -76,65 +109,10 @@ void nemesis::IfObject::ElseIf(const std::string& expression,
                                const nemesis::SemanticManager& manager,
                                UPtr<nemesis::NObject>&& value)
 {
-    ElseIfCollection.emplace_back(expression, linenum, filepath, manager, std::move(value));
+    ElseIfCollection.emplace_back(std::make_unique<nemesis::IfObject::ElseIfObject>(expression, linenum, filepath, manager, std::move(value)));
 }
 
 void nemesis::IfObject::Else(UPtr<nemesis::NObject>&& value) noexcept
 {
     ElseValue = std::move(value);
-}
-
-bool nemesis::IfObject::MatchIf(const std::string& line, std::string& condition)
-{
-    try
-    {
-        condition = std::string(ns::IfCondition(line));
-        return true;
-    }
-    catch (const std::exception&)
-    {
-        condition.clear();
-        return false;
-    }
-
-    //nemesis::smatch match;
-
-    //if (nemesis::regex_match(line, match, if_rgx))
-    //{
-    //    condition = match.str(1);
-    //    return true;
-    //}
-
-    //condition.clear();
-    //return false;
-}
-
-bool nemesis::IfObject::MatchElseIf(const std::string& line, std::string& condition)
-{
-    try
-    {
-        condition = std::string(ns::ElseIfCondition(line));
-        return true;
-    }
-    catch (const std::exception&)
-    {
-        condition.clear();
-        return false;
-    }
-
-    //nemesis::smatch match;
-
-    //if (nemesis::regex_match(line, match, elseif_rgx))
-    //{
-    //    condition = match.str(1);
-    //    return true;
-    //}
-
-    //condition.clear();
-    //return false;
-}
-
-bool nemesis::IfObject::MatchEndIf(const std::string& line) noexcept
-{
-    return line.find(ns::EndIf()) != NOT_FOUND;
 }

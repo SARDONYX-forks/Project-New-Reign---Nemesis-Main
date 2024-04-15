@@ -4,6 +4,7 @@
 
 #include "core/NObject.h"
 
+#include "core/Statements/IfStatement.h"
 #include "core/Statements/ElseIfStatement.h"
 
 namespace nemesis
@@ -16,22 +17,24 @@ namespace nemesis
             nemesis::ElseIfStatement Statement;
             UPtr<nemesis::NObject> Value;
 
+        private:
+            ElseIfObject(const nemesis::IfObject::ElseIfObject& elseif_obj);
+
+        public:
             ElseIfObject(const std::string& expression,
                          size_t linenum,
                          const std::filesystem::path& filepath,
                          const nemesis::SemanticManager& manager,
                          UPtr<nemesis::NObject>&& value);
-            ElseIfObject(const nemesis::IfObject::ElseIfObject& elif_obj);
+
+            UPtr<nemesis::IfObject::ElseIfObject> Clone() const;
         };
 
         nemesis::IfStatement Statement;
         UPtr<nemesis::NObject> Value;
 
-        Vec<ElseIfObject> ElseIfCollection;
+        Vec<UPtr<nemesis::IfObject::ElseIfObject>> ElseIfCollection;
         UPtr<nemesis::NObject> ElseValue;
-
-        static nemesis::regex if_rgx;
-        static nemesis::regex elseif_rgx;
 
         IfObject(const nemesis::IfObject& if_obj);
 
@@ -56,9 +59,5 @@ namespace nemesis
                     const nemesis::SemanticManager& manager,
                     UPtr<nemesis::NObject>&& value);
         void Else(UPtr<nemesis::NObject>&& value) noexcept;
-
-        static bool MatchIf(const std::string& line, std::string& condition);
-        static bool MatchElseIf(const std::string& line, std::string& condition);
-        static bool MatchEndIf(const std::string& line) noexcept;
     };
 }

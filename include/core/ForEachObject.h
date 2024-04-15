@@ -12,7 +12,7 @@ namespace nemesis
     struct ForEachObject : public nemesis::NObject
     {
     private:
-        nemesis::ForEachStatement Statement;
+        SPtr<nemesis::ForEachStatement> Statement;
         UPtr<nemesis::NObject> Value;
 
         ForEachObject(const nemesis::ForEachObject& fe_object);

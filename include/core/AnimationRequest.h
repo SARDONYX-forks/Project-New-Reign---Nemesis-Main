@@ -6,7 +6,9 @@
 
 namespace nemesis
 {
-	struct AnimationRequest
+    struct TemplateClass;
+
+    struct AnimationRequest
     {
     private:
         Vec<UPtr<nemesis::TemplateOption>> Options;
@@ -17,30 +19,46 @@ namespace nemesis
 
         Vec<UPtr<nemesis::AnimationRequest>> Requests;
 
-        size_t Index;
+        size_t Id;
+        mutable long Index = -1;
 
-        std::string TemplateName;
+        const nemesis::TemplateClass& TemplateClass;
         std::string AnimationEvent;
         std::filesystem::path AnimationFilePath;
+
+        VecNstr MotionDataList;
+        VecNstr RotationDataList;
 
         Vec<nemesis::AnimationRequest*> Parents;
 
         bool SupportArray;
 
+        static std::atomic_uint32_t IdCounter;
+
     public:
-        AnimationRequest(const std::string& template_name, size_t index, bool support_array) noexcept;
+        AnimationRequest(const nemesis::TemplateClass& templt_class, bool support_array) noexcept;
+        ~AnimationRequest() noexcept;
+
+        void SetIndex(size_t index) noexcept;
 
         size_t GetId() const noexcept;
         size_t GetIndex() const noexcept;
         size_t GetLevel() const noexcept;
 
         const std::string& GetTemplateName() const noexcept;
+        const nemesis::TemplateClass& GetTemplateClass() const noexcept;
 
         const std::string& GetAnimationEvent() const noexcept;
         void SetAnimationEvent(const std::string& animation_event) noexcept;
 
         const std::filesystem::path& GetAnimationFilePath() const noexcept;
         void SetAnimationFilePath(const std::string& filepath) noexcept;
+
+        const VecNstr GetMotionDataList() const noexcept;
+        nemesis::Line& SetMotionData(const nemesis::Line& line);
+
+        const VecNstr GetRotationDataList() const noexcept;
+        nemesis::Line& SetRotationData(const nemesis::Line& line);
 
         const nemesis::TemplateOption* GetOption(const std::string& option_name) const;
         const Vec<const nemesis::TemplateOption*>& GetOptions(const std::string& option_name) const;

@@ -1,21 +1,47 @@
 #include "core/AnimationRequest.h"
 
-nemesis::AnimationRequest::AnimationRequest(const std::string& template_name,
-                                            size_t index,
+#include "core/Template/TemplateClass.h"
+
+std::atomic_uint32_t nemesis::AnimationRequest::IdCounter = 0;
+
+nemesis::AnimationRequest::AnimationRequest(const nemesis::TemplateClass& templt_class,
                                             bool support_array) noexcept
-    : TemplateName(template_name)
-    , Index(index)
+    : TemplateClass(templt_class)
     , SupportArray(support_array)
 {
+    Id = ++IdCounter;
+}
+
+nemesis::AnimationRequest::~AnimationRequest()
+{
+    --IdCounter;
+}
+
+void nemesis::AnimationRequest::SetIndex(size_t index) noexcept
+{
+    Index = index;
 }
 
 size_t nemesis::AnimationRequest::GetId() const noexcept
 {
-    return reinterpret_cast<size_t>(this);
+    return Id;
 }
 
 size_t nemesis::AnimationRequest::GetIndex() const noexcept
 {
+    if (Index > -1 || Parents.empty()) return Index;
+
+    auto parent = Parents.back();
+    auto list   = parent->GetRequests();
+
+    for (size_t i = 0; i < list.size(); i++)
+    {
+        if (list[i] != this) continue;
+
+        Index = i;
+        break;
+    }
+
     return Index;
 }
 
@@ -26,7 +52,12 @@ size_t nemesis::AnimationRequest::GetLevel() const noexcept
 
 const std::string& nemesis::AnimationRequest::GetTemplateName() const noexcept
 {
-    return TemplateName;
+    return TemplateClass.GetName();
+}
+
+const nemesis::TemplateClass& nemesis::AnimationRequest::GetTemplateClass() const noexcept
+{
+    return TemplateClass;
 }
 
 const std::string& nemesis::AnimationRequest::GetAnimationEvent() const noexcept
@@ -112,6 +143,26 @@ Vec<const std::string*> nemesis::AnimationRequest::GetMapValueList(const std::st
 void nemesis::AnimationRequest::AddMapValue(const std::string& key, const std::string& value)
 {
     StringListMap[key].emplace_back(value);
+}
+
+const VecNstr nemesis::AnimationRequest::GetMotionDataList() const noexcept
+{
+    return MotionDataList;
+}
+
+nemesis::Line& nemesis::AnimationRequest::SetMotionData(const nemesis::Line& line)
+{
+    return MotionDataList.emplace_back(line);
+}
+
+const VecNstr nemesis::AnimationRequest::GetRotationDataList() const noexcept
+{
+    return RotationDataList;
+}
+
+nemesis::Line& nemesis::AnimationRequest::SetRotationData(const nemesis::Line& line)
+{
+    return RotationDataList.emplace_back(line);
 }
 
 Vec<const nemesis::AnimationRequest*> nemesis::AnimationRequest::GetRequests() const noexcept

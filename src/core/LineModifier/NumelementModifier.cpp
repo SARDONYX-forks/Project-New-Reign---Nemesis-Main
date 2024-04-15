@@ -59,21 +59,20 @@ nemesis::NumelementModifier::NumelementModifier(size_t begin,
 
 void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& state) const
 {
-    SPtr<int> element_counter = std::make_shared<int>(0);
-    SPtr<int> param_layer     = std::make_shared<int>(0);
-    SPtr<int> object_layer    = std::make_shared<int>(0);
+    auto element_counter = std::make_shared<int>(0);
+    auto param_layer     = std::make_shared<int>(0);
+    auto object_layer    = std::make_shared<int>(0);
 
-    SPtr<uintptr_t> handler_add       = std::make_shared<uintptr_t>(0);
-    SPtr<uintptr_t> error_handler_add = std::make_shared<uintptr_t>(0);
+    auto handler_add       = std::make_shared<void*>(nullptr);
+    auto error_handler_add = std::make_shared<std::function<void()>*>(nullptr);
 
-    SPtr<nemesis::Line*> start_ptr = std::make_shared<nemesis::Line*>(nullptr);
-    SPtr<std::string> guid_ptr     = std::make_shared<std::string>("{" + nemesis::generate_guid() + "}");
+    auto start_ptr = std::make_shared<nemesis::Line*>(nullptr);
+    auto guid_ptr  = std::make_shared<std::string>("{" + nemesis::generate_guid() + "}");
 
     ClearCoveredBlocks(blocks);
     blocks[Begin] = *guid_ptr;
 
-    SPtr<std::function<void(nemesis::Line&)>> counting_handler
-        = std::make_shared<std::function<void(nemesis::Line&)>>([](nemesis::Line&) {});
+    auto counting_handler = std::make_shared<std::function<void(nemesis::Line&)>>([](nemesis::Line&) {});
 
     std::function<void(nemesis::Line&)> count_check = [element_counter,
                                                        param_layer,
@@ -87,9 +86,8 @@ void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& s
     {
         if (*object_layer <= 0)
         {
-            int& layer_count = *param_layer;
             auto cont
-                = TrackLayer(layer_count,
+                = TrackLayer(*param_layer,
                              line,
                              "<hkparam ",
                              "</hkparam>",
@@ -97,8 +95,8 @@ void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& s
                              {
                                  (*start_ptr)->replace(*guid_ptr, std::to_string(*element_counter));
 
-                                 state.RemoveAddLineHandler(*handler_add);
                                  state.RemoveEOFHandler(*error_handler_add);
+                                 state.RemoveAddLineHandler(*handler_add);
                                  return false;
                              });
 
@@ -108,102 +106,105 @@ void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& s
         (*counting_handler)(line);
     };
 
-    std::function<void(nemesis::Line&)> first_check = [element_counter,
-                                                       param_layer,
-                                                       object_layer,
-                                                       handler_add,
-                                                       error_handler_add,
-                                                       start_ptr,
-                                                       guid_ptr,
-                                                       counting_handler,
-                                                       count_check,
-                                                       &state](nemesis::Line& line)
-    {
-        if (line.find("<hkobject>") != NOT_FOUND)
+    auto first_check = std::make_shared<std::function<void(nemesis::Line&)>>(
+        [element_counter,
+         param_layer,
+         object_layer,
+         handler_add,
+         error_handler_add,
+         start_ptr,
+         guid_ptr,
+         counting_handler,
+         count_check,
+         &state](nemesis::Line& line)
         {
-            *counting_handler = [element_counter, object_layer](nemesis::Line& line)
+            if (line.find("<hkobject>") != NOT_FOUND)
             {
-                int& layer_count = *object_layer;
-                TrackLayer(layer_count,
-                           line,
-                           "<hkobject>",
-                           "</hkobject>",
-                           [element_counter]()
-                           {
-                               (*element_counter)++;
-                               return true;
-                           });
-            };
-        }
-        else if (line.find("<hkcstring>") != NOT_FOUND)
-        {
-            *counting_handler = [element_counter](nemesis::Line& line)
-            { *element_counter += CountMatches(line, "<hkcstring>"); };
-        }
-        else if(line.find("(") != NOT_FOUND)
-        {
-            *counting_handler = [element_counter, object_layer](nemesis::Line& line)
-            {
-                int& layer_count = *object_layer;
-
-                for (auto& ch : line)
+                *counting_handler = [element_counter, object_layer](nemesis::Line& line)
                 {
-                    switch (ch)
-                    {
-                        case '(':
-                        {
-                            layer_count++;
-                            break;
-                        }
-                        case ')':
-                        {
-                            if (--layer_count != 0) break;
+                    TrackLayer(*object_layer,
+                               line,
+                               "<hkobject>",
+                               "</hkobject>",
+                               [element_counter]()
+                               {
+                                   (*element_counter)++;
+                                   return true;
+                               });
+                };
+            }
+            else if (line.find("<hkcstring>") != NOT_FOUND)
+            {
+                *counting_handler = [element_counter](nemesis::Line& line)
+                { *element_counter += CountMatches(line, "<hkcstring>"); };
+            }
+            else if (line.find("(") != NOT_FOUND)
+            {
+                *counting_handler = [element_counter, object_layer](nemesis::Line& line)
+                {
+                    int& layer_count = *object_layer;
 
-                            (*element_counter)++;
-                            break;
+                    for (auto& ch : line)
+                    {
+                        switch (ch)
+                        {
+                            case '(':
+                            {
+                                layer_count++;
+                                break;
+                            }
+                            case ')':
+                            {
+                                if (--layer_count != 0) break;
+
+                                (*element_counter)++;
+                                break;
+                            }
                         }
                     }
-                }
-            };
-        }
-        else if (line.find("<") == NOT_FOUND)
-        {
-            *counting_handler = [element_counter](nemesis::Line& line)
+                };
+            }
+            else if (line.find("<") == NOT_FOUND)
             {
-                std::string e;
-                std::istringstream iss(line);
-    
-                while (iss >> e)
+                *counting_handler = [element_counter](nemesis::Line& line)
                 {
-                    (*element_counter)++;
-                }
-            };
-        }
+                    std::string e;
+                    std::istringstream iss(line);
 
-        (*counting_handler)(line);
+                    while (iss >> e)
+                    {
+                        (*element_counter)++;
+                    }
+                };
+            }
 
-        if (*object_layer == 0)
-        {
-            int& layer_count = *param_layer;
-            TrackLayer(layer_count,
-                       line,
-                       "<hkparam ",
-                       "</hkparam>",
-                       [start_ptr, guid_ptr, element_counter, handler_add, error_handler_add, &state]()
-                       {
-                           (*start_ptr)->replace(*guid_ptr, std::to_string(*element_counter));
+            (*counting_handler)(line);
 
-                           state.RemoveAddLineHandler(*handler_add);
-                           state.RemoveEOFHandler(*error_handler_add);
-                           return false;
-                       });
+            if (*object_layer == 0)
+            {
+                int layer_count = *param_layer;
+                TrackLayer(layer_count,
+                           line,
+                           "<hkparam ",
+                           "</hkparam>",
+                           [start_ptr, guid_ptr, element_counter, handler_add, error_handler_add, &state]()
+                           {
+                               (*start_ptr)->replace(*guid_ptr, std::to_string(*element_counter));
 
-            if (layer_count == 0) return;
-        }
+                               state.RemoveEOFHandler(*error_handler_add);
+                               state.RemoveAddLineHandler(*handler_add);
+                               return false;
+                           });
 
-        state.RemoveAddLineHandler(*handler_add);
-        *handler_add = state.InsertAddLineHandler(count_check);
-    };
+                if (layer_count == 0) return;
+
+                *param_layer = layer_count;
+            }
+
+            auto address = *handler_add;
+            *handler_add = state.InsertAddLineHandler(count_check);
+            state.RemoveAddLineHandler(address);
+        });
 
     std::function<void(nemesis::Line&)> start_assign = [element_counter,
                                                         param_layer,
@@ -216,7 +217,7 @@ void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& s
     {
         *start_ptr = &line;
 
-        int& layer_count = *param_layer;
+        int layer_count = *param_layer;
         TrackLayer(layer_count,
                    line,
                    "<hkparam ",
@@ -232,16 +233,17 @@ void nemesis::NumelementModifier::Apply(VecStr& blocks, nemesis::CompileState& s
 
         if (layer_count == 0) return;
 
-        state.RemoveAddLineHandler(*handler_add);
-        *handler_add = state.InsertAddLineHandler(first_check);
+        *param_layer = layer_count;
+        auto address = *handler_add;
+        *handler_add = state.InsertAddLineHandler(*first_check);
+        state.RemoveAddLineHandler(address);
     };
 
-    *handler_add = state.InsertAddLineHandler(start_assign);
-
+    *handler_add       = state.InsertAddLineHandler(start_assign);
     *error_handler_add = state.InsertEOFHandler(
         [this]()
         {
-            throw std::runtime_error("Syntax error: Unclose counter (LineNum: " + std::to_string(LineNum)
-                                     + ", FilePath: " + FilePath.string() + ")");
+            throw std::runtime_error("Syntax Error: Unclose counter (Line: " + std::to_string(LineNum)
+                                     + ", File: " + FilePath.string() + ")");
         });
 }

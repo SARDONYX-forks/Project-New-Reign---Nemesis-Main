@@ -6,18 +6,7 @@ nemesis::MathModifier::MathModifier(size_t begin,
                                     size_t linenum,
                                     const std::filesystem::path& filepath,
                                     const nemesis::SemanticManager& manager)
-    : nemesis::LineModifier(begin, end)
-    , Statement(expression, linenum, filepath, manager)
+    : nemesis::StandardLineModifier<nemesis::MathStatement>(
+        begin, end, expression, linenum, filepath, manager)
 {
-}
-
-void nemesis::MathModifier::Apply(VecStr& blocks, nemesis::CompileState& state) const
-{
-    ClearCoveredBlocks(blocks);
-    blocks[Begin] = Statement.GetValue(state);
-}
-
-const nemesis::MathStatement* nemesis::MathModifier::GetStatement() const noexcept
-{
-    return &Statement;
 }

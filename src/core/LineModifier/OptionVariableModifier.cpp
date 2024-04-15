@@ -6,18 +6,7 @@ nemesis::OptionVariableModifier::OptionVariableModifier(size_t begin,
                                                         size_t linenum,
                                                         const std::filesystem::path& filepath,
                                                         const nemesis::SemanticManager& manager)
-    : nemesis::LineModifier(begin, end)
-    , statement(expression, linenum, filepath, manager)
+    : nemesis::StandardLineModifier<nemesis::OptionVariableStatement>(
+        begin, end, expression, linenum, filepath, manager)
 {
-}
-
-void nemesis::OptionVariableModifier::Apply(VecStr& blocks, nemesis::CompileState& state) const
-{
-    ClearCoveredBlocks(blocks);
-    blocks[Begin] = statement.GetValue(state);
-}
-
-const nemesis::OptionVariableStatement* nemesis::OptionVariableModifier::GetStatement() const noexcept
-{
-    return &statement;
 }

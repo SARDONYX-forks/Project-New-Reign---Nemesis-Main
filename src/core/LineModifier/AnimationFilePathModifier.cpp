@@ -6,18 +6,7 @@ nemesis::AnimationFilePathModifier::AnimationFilePathModifier(size_t begin,
                                                               size_t linenum,
                                                               const std::filesystem::path& filepath,
                                                               const nemesis::SemanticManager& manager)
-    : nemesis::LineModifier(begin, end)
-    , Statement(expression, linenum, filepath, manager)
+    : nemesis::StandardLineModifier<nemesis::AnimationFilePathStatement>(
+        begin, end, expression, linenum, filepath, manager)
 {
-}
-
-void nemesis::AnimationFilePathModifier::Apply(VecStr& blocks, nemesis::CompileState& state) const
-{
-    ClearCoveredBlocks(blocks);
-    blocks[Begin] = Statement.GetValue(state);
-}
-
-const nemesis::AnimationFilePathStatement* nemesis::AnimationFilePathModifier::GetStatement() const noexcept
-{
-    return &Statement;
 }

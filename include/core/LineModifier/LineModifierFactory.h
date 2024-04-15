@@ -15,7 +15,7 @@ namespace nemesis
     private:
         struct ModifierBuilderBase
         {
-            virtual UPtr<nemesis::LineModifier> Build(size_t begin,
+            virtual SPtr<nemesis::LineModifier> Build(size_t begin,
                                                       size_t end,
                                                       const std::string& component,
                                                       size_t linenum,
@@ -25,16 +25,16 @@ namespace nemesis
         };
 
         template<typename LineModifierType>
-        struct ModifierBuilder : ModifierBuilderBase
+        struct ModifierBuilder : nemesis::LineModifierFactory::ModifierBuilderBase
         {
-            UPtr<nemesis::LineModifier> Build(size_t begin,
+            SPtr<nemesis::LineModifier> Build(size_t begin,
                                               size_t end,
                                               const std::string& component,
                                               size_t linenum,
                                               const std::filesystem::path& filepath,
                                               const nemesis::SemanticManager& manager) override
             {
-                return std::make_unique<LineModifierType>(
+                return std::make_shared<LineModifierType>(
                     begin, end, component, linenum, filepath, manager);
             }
 
@@ -44,8 +44,8 @@ namespace nemesis
 
         struct ModifierBuilderCollection
         {
-            UMap<std::string, SPtr<ModifierBuilderBase>> FirstBuilders;
-            UMap<std::string, SPtr<ModifierBuilderBase>> LastBuilders;
+            UMap<std::string, UPtr<nemesis::LineModifierFactory::ModifierBuilderBase>> FirstBuilders;
+            UMap<std::string, UPtr<nemesis::LineModifierFactory::ModifierBuilderBase>> LastBuilders;
             
             ModifierBuilderCollection();
         };

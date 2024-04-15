@@ -23,7 +23,7 @@ void nemesis::SubTemplateModifier::Apply(VecStr& blocks, nemesis::CompileState& 
     if (!isOnlyNumber(components[1]))
     {
         state.AddSubTemplateRequest(components);
-        blocks[Begin] = Statement.GetExpression();
+        blocks[Begin] = components.front();
         return;
     }
 

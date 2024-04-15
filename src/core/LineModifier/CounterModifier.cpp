@@ -43,12 +43,12 @@ nemesis::CounterModifier::CounterModifier(size_t begin,
 
 void nemesis::CounterModifier::Apply(VecStr& blocks, nemesis::CompileState& state) const 
 {
-    SPtr<int> element_counter         = std::make_shared<int>(0);
-    SPtr<uintptr_t> handler_add       = std::make_shared<uintptr_t>(0);
-    SPtr<uintptr_t> error_handler_add = std::make_shared<uintptr_t>(0);
+    auto element_counter   = std::make_shared<int>(0);
+    auto handler_add       = std::make_shared<void*>(nullptr);
+    auto error_handler_add = std::make_shared<std::function<void()>*>(nullptr);
 
-    SPtr<nemesis::Line*> start_ptr = std::make_shared<nemesis::Line*>(nullptr);
-    SPtr<std::string> guid_ptr     = std::make_shared<std::string>("{" + GenerateGuid() + "}");
+    auto start_ptr = std::make_shared<nemesis::Line*>(nullptr);
+    auto guid_ptr  = std::make_shared<std::string>("{" + GenerateGuid() + "}");
 
     ClearCoveredBlocks(blocks);
     blocks[Begin] = *guid_ptr;
@@ -92,8 +92,8 @@ void nemesis::CounterModifier::Apply(VecStr& blocks, nemesis::CompileState& stat
     *error_handler_add = state.InsertEOFHandler(
         [this]()
         {
-            throw std::runtime_error("Syntax error: Unclose counter (Counter name: " + CounterName
-                                     + ", LineNum: " + std::to_string(LineNum)
-                                     + ", FilePath: " + FilePath.string() + ")");
+            throw std::runtime_error("Syntax Error: Unclose counter (Counter name: " + CounterName
+                                     + ", Line: " + std::to_string(LineNum)
+                                     + ", File: " + FilePath.string() + ")");
         });
 }

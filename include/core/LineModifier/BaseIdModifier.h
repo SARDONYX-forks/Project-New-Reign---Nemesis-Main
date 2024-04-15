@@ -30,13 +30,13 @@ namespace nemesis
             blocks[Begin] = Statement.GetValue(state);
         }
 
-        const BaseIdStatementType* GetStatement() const noexcept
+        const BaseIdStatementType& GetStatement() const noexcept
         {
             return &Statement;
         }
 
         static_assert(std::is_base_of_v<BaseIdStatement, BaseIdStatementType>,
-                      "Non-ParsableObject is passed to _ParObjTy");
+                      "Non-BaseIdStatement is passed to BaseIdStatementType");
     };
 
 }

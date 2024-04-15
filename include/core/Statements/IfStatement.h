@@ -2,16 +2,15 @@
 
 #include "core/Statements/ConditionalStatement.h"
 
+#include "utilities/NonCopyable.h"
+
 namespace nemesis
 {
     struct CompileState;
     struct Template;
 
-	struct IfStatement : public nemesis::ConditionalStatement
+	struct IfStatement : public nemesis::ConditionalStatement, public nemesis::NonCopyableStruct
     {
-    protected:
-        bool Negative = false;
-
     public:
         IfStatement(const std::string& expression,
                     size_t linenum,

@@ -5,6 +5,8 @@
 #include "core/Statements/OptionStatement.h"
 #include "core/Statements/OptionVariableStatement.h"
 
+#include "utilities/NonCopyable.h"
+
 #include "base/file.h"
 
 namespace nemesis
@@ -36,7 +38,7 @@ namespace nemesis
             Or(nemesis::ConditionalStatement::ConditionalNode* node);
         };
 
-        struct ConditionalString : public nemesis::CompositeStatement
+        struct ConditionalString : public nemesis::CompositeStatement, public nemesis::NonCopyableStruct
         {
         private:
             std::string ConstantValue;
@@ -52,14 +54,27 @@ namespace nemesis
             nemesis::ConditionalStatement::ConditionalStringComparer*
             NotEqualsTo(ConditionalString* term) noexcept;
 
-            std::string GetValue(nemesis::CompileState& state) const override;
+            std::string GetValue(nemesis::CompileState& state) const;
         };
 
         struct ConditionalBoolean : public nemesis::ConditionalStatement::ConditionalNode,
-                                    public nemesis::Statement
+                                    public nemesis::CompositeStatement,
+                                    public nemesis::NonCopyableStruct
         {
         private:
             std::function<bool(nemesis::CompileState&)> IsTrueFunction;
+
+            void Parse1Component(const nemesis::TemplateClass* templt_class,
+                                 const nemesis::SemanticManager& manager);
+            void Parse2Components(const nemesis::TemplateClass* templt_class,
+                                  const nemesis::SemanticManager& manager);
+            void Parse3Components(const nemesis::TemplateClass* templt_class,
+                                  const nemesis::SemanticManager& manager);
+            void Parse4Components(const nemesis::TemplateClass* templt_class,
+                                  const nemesis::SemanticManager& manager);
+
+            ConditionalBoolean(const ConditionalBoolean&) = default;
+            ConditionalBoolean& operator=(const ConditionalBoolean&) = default;
 
         public:
             ConditionalBoolean(const std::string& expression,
@@ -75,7 +90,7 @@ namespace nemesis
             bool IsTrue(nemesis::CompileState& state) const override;
         };
 
-        struct ConditionalAnimationRequest : public nemesis::Statement
+        struct ConditionalAnimationRequest : public nemesis::Statement, public nemesis::NonCopyableStruct
         {
         private:
             std::function<const nemesis::AnimationRequest*(nemesis::CompileState&)> GetRequestFunction;
@@ -98,7 +113,7 @@ namespace nemesis
             static bool IsAnimationRequest(const std::string& term, const nemesis::TemplateObject& template_object);
         };
 
-        struct ConditionalOption: public nemesis::OptionStatement
+        struct ConditionalOption : public nemesis::OptionStatement, public nemesis::NonCopyableStruct
         {
         public:
             ConditionalOption(const std::string& expression,
@@ -115,7 +130,8 @@ namespace nemesis
                                            const nemesis::TemplateObject& template_object);
         };
 
-        struct ConditionOptionComparer : public nemesis::ConditionalStatement::ConditionalNode
+        struct ConditionOptionComparer : public nemesis::ConditionalStatement::ConditionalNode,
+                                         public nemesis::NonCopyableStruct
         {
         private:
             mutable std::string Expression;
@@ -134,7 +150,8 @@ namespace nemesis
             bool IsTrue(nemesis::CompileState& state) const override;
         };
 
-        struct ConditionalAnimationRequestComparer : public nemesis::ConditionalStatement::ConditionalNode
+        struct ConditionalAnimationRequestComparer : public nemesis::ConditionalStatement::ConditionalNode,
+                                                     public nemesis::NonCopyableStruct
         {
         private:
             mutable std::string Expression;
@@ -153,7 +170,8 @@ namespace nemesis
             bool IsTrue(nemesis::CompileState& state) const override;
         };
 
-        struct ConditionalStringComparer : public nemesis::ConditionalStatement::ConditionalNode
+        struct ConditionalStringComparer : public nemesis::ConditionalStatement::ConditionalNode,
+                                           public nemesis::NonCopyableStruct
         {
         private:
             mutable std::string Expression;
@@ -172,7 +190,8 @@ namespace nemesis
             bool IsTrue(nemesis::CompileState& state) const override;
         };
 
-        struct ConditionalCollection : public nemesis::ConditionalStatement::ConditionalNode
+        struct ConditionalCollection : public nemesis::ConditionalStatement::ConditionalNode,
+                                       public nemesis::NonCopyableStruct
         {
         private:
             mutable std::string Expression;
@@ -195,7 +214,8 @@ namespace nemesis
             bool IsTrue(nemesis::CompileState& state) const override;
         };
 
-        struct ConditionalParentheses : public nemesis::ConditionalStatement::ConditionalNode
+        struct ConditionalParentheses : public nemesis::ConditionalStatement::ConditionalNode,
+                                        public nemesis::NonCopyableStruct
         {
         private:
             mutable std::string Expression;
@@ -277,7 +297,6 @@ namespace nemesis
     protected:
         SPtr<nemesis::ConditionalStatement::ConditionalNode> CondNode;
 
-        ConditionalStatement() = default;
         ConditionalStatement(const std::string& expression,
                              size_t linenum,
                              const std::filesystem::path& filepath,

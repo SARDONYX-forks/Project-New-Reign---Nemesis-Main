@@ -1,15 +1,18 @@
 #pragma once
 
-#include "core/Statements/ConditionalStatement.h"
+#include "core/Statements/Statement.h"
 
 namespace nemesis
 {
     struct CompileState;
 
-	struct ModCodeStatement : public nemesis::ConditionalStatement
+	struct ModCodeStatement : public nemesis::Statement
     {
     public:
-        ModCodeStatement(const std::string& mod_code,
+        ModCodeStatement(const std::string& modcode,
+                         size_t linenum,
+                         const std::filesystem::path& filepath) noexcept;
+        ModCodeStatement(const std::string& modcode,
                          size_t linenum,
                          const std::filesystem::path& filepath,
                          nemesis::SemanticManager& manager) noexcept;
@@ -18,6 +21,6 @@ namespace nemesis
 
         std::string Serialize() const override;
 
-        bool IsTrue(nemesis::CompileState& state) const override;
+        bool IsTrue(nemesis::CompileState& state) const;
     };
 }

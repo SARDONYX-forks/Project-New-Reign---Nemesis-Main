@@ -15,8 +15,8 @@ nemesis::RequestIdStatement::RequestIdStatement(const std::string& expression,
     {
         case 1:
         {
-            GetValueFunction = [](nemesis::CompileState& state)
-            { return std::to_string(state.GetBaseRequest()->GetId()); };
+            GetValueFunction = [this](nemesis::CompileState& state)
+            { return std::to_string(GetBaseRequest(state)->GetId()); };
             break;
         }
         case 3:

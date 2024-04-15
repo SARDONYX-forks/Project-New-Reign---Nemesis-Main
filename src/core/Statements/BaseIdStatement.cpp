@@ -23,7 +23,12 @@ nemesis::BaseIdStatement::BaseIdStatement(const std::string& expression,
                                           const nemesis::SemanticManager& manager)
     : nemesis::CompositeStatement(expression, linenum, filepath)
 {
-    if (Components.size() != 2) throw std::runtime_error(GetTypeName() + " only accepts 1 argument");
+    if (Components.size() != 2)
+    {
+        throw std::runtime_error("Syntax Error: " + GetTypeName() + " only accepts 1 argument (Syntax: "
+                                 + expression + ", Line: " + std::to_string(linenum)
+                                 + ", File: " + filepath.string() + ")");
+    }
 
     auto& component = Components.back();
 

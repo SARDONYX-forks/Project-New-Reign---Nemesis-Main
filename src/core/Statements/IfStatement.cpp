@@ -8,36 +8,22 @@ nemesis::IfStatement::IfStatement(const std::string& expression,
                                   const nemesis::SemanticManager& manager)
     : nemesis::ConditionalStatement(expression, linenum, filepath, manager)
 {
+    if (!expression.empty()) return;
+
+    throw std::runtime_error("Empty IF STATEMENT is not allowed");
 }
 
 nemesis::IfStatement::IfStatement(const nemesis::Line& line, const nemesis::SemanticManager& manager)
     : nemesis::ConditionalStatement(line, manager)
 {
-    if (line.empty()) throw std::runtime_error("Empty IF STATEMENT is not allowed");
+    if (!line.empty()) return;
 
-    Expression = line;
-    LineNum    = line.GetLineNumber();
-    size_t pos = line.find("!=");
-
-    if (pos != NOT_FOUND)
-    {
-        Negative = true;
-    }
-
-    pos = line.find("==");
-
-    if (pos != NOT_FOUND)
-    {
-        Negative = false;
-    }
-
-    Negative = line.front() == '!';
+    throw std::runtime_error("Empty IF STATEMENT is not allowed");
 }
 
 nemesis::IfStatement::IfStatement(const nemesis::IfStatement& statement)
     : nemesis::ConditionalStatement(statement)
 {
-    Negative = statement.Negative;
 }
 
 std::string nemesis::IfStatement::Serialize() const

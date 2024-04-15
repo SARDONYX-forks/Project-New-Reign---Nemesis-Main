@@ -1,23 +1,29 @@
 #include "core/Statements/ModCodeStatement.h"
 
 #include "core/CompileState.h"
+#include "core/SemanticManager.h"
 
 #include "utilities/conditionsyntax.h"
 
-nemesis::ModCodeStatement::ModCodeStatement(const std::string& mod_code,
+nemesis::ModCodeStatement::ModCodeStatement(const std::string& modcode,
+                                            size_t linenum,
+                                            const std::filesystem::path& filepath) noexcept
+    : nemesis::Statement(modcode, linenum, filepath)
+{
+}
+
+nemesis::ModCodeStatement::ModCodeStatement(const std::string& modcode,
                                             size_t linenum,
                                             const std::filesystem::path& filepath,
                                             nemesis::SemanticManager& manager) noexcept
+    : nemesis::Statement(modcode, linenum, filepath)
 {
-    Expression = mod_code;
-    LineNum    = linenum;
-    FilePath   = filepath;
-    
-    manager.AddModInUsed(mod_code);
+    manager.AddModInUsed(modcode);
 }
 
 nemesis::ModCodeStatement::ModCodeStatement(const nemesis::Line& mod_code,
                                             nemesis::SemanticManager& manager) noexcept
+    : nemesis::Statement(mod_code)
 {
     Expression = mod_code;
     LineNum    = mod_code.GetLineNumber();
@@ -27,7 +33,7 @@ nemesis::ModCodeStatement::ModCodeStatement(const nemesis::Line& mod_code,
 }
 
 nemesis::ModCodeStatement::ModCodeStatement(const nemesis::ModCodeStatement& statement)
-    : nemesis::ConditionalStatement(statement)
+    : nemesis::Statement(statement)
 {
 }
 

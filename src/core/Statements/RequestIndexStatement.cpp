@@ -13,8 +13,8 @@ nemesis::RequestIndexStatement::RequestIndexStatement(const std::string& express
     {
         case 1:
         {
-            GetValueFunction
-                = [](nemesis::CompileState& state) { return std::to_string(state.GetBaseRequest()->GetIndex()); };
+            GetValueFunction = [this](nemesis::CompileState& state)
+            { return std::to_string(GetBaseRequest(state)->GetIndex()); };
             break;
         }
         case 3:
@@ -30,7 +30,8 @@ nemesis::RequestIndexStatement::RequestIndexStatement(const std::string& express
             break;
         }
         default:
-            throw std::runtime_error("Syntax Error: Unsupported AnimationEvent format");
+            throw std::runtime_error("Syntax Error: Unsupported request index format (File: "
+                                     + filepath.string() + ", Line: " + std::to_string(linenum) + ")");
     }
 }
 

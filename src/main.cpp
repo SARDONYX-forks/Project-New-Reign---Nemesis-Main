@@ -18,6 +18,8 @@
 //#endif
 #include <regex>
 
+#include "LaunchPatcher.h"
+
 namespace sf = std::filesystem;
 
 extern std::wstring stagePath;
@@ -31,11 +33,12 @@ int main(int argc, char* argv[])
 #if _DEBUG
     CurrentExeDirectory = sf::current_path();
 #else
-    CurrentExeDirectory = CurrentExePath.parent_path();
+    CurrentExeDirectory = sf::current_path();
 #endif
 
 //#if _DEBUG
-    nemesis::RunAllTest();
+    //nemesis::RunAllTest();
+    nemesis::LaunchPatcher(VecStr());
     return 0;
 //#endif
 

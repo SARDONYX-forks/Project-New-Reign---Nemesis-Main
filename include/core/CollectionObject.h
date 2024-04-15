@@ -14,17 +14,18 @@ namespace nemesis
         private:
             Vec<UPtr<nemesis::NObject>>& Objects;
 
-            size_t BaseIndex;
+            size_t BaseIndex, OriginalSize;
 
             nemesis::NLine* GetNextLine();
 
         public:
-            ObjectMatcher(Vec<UPtr<nemesis::NObject>>& objects);
+            ObjectMatcher(Vec<UPtr<nemesis::NObject>>& objects, size_t ori_size);
 
             void MatchAndUpdate(const Vec<UPtr<nemesis::NObject>>& objects);
         };
 
     protected:
+        size_t OriginalSize = 0;
         Vec<UPtr<nemesis::NObject>> Objects;
 
     public:
@@ -32,7 +33,7 @@ namespace nemesis
         void SerializeTo(DeqNstr& lines) const override;
 
         UPtr<nemesis::NObject> CloneNObject() const override;
-        UPtr<nemesis::CollectionObject> Clone() const;
+        virtual UPtr<nemesis::CollectionObject> Clone() const;
 
         UPtr<nemesis::NObject>& AddObject(UPtr<nemesis::NObject>&& object) noexcept;
         nemesis::NObject* GetByIndex(size_t index) noexcept;

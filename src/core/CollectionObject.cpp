@@ -1,7 +1,5 @@
-#include "core/NLine.h"
-#include "core/condition.h"
-#include "core/CompileState.h"
 #include "core/CollectionObject.h"
+#include "core/NLine.h"
 
 #include "core/Statements/ConditionalStatement.h"
 
@@ -24,14 +22,15 @@ nemesis::NLine* nemesis::CollectionObject::ObjectMatcher::GetNextLine()
     return nullptr;
 }
 
-nemesis::CollectionObject::ObjectMatcher::ObjectMatcher(Vec<UPtr<nemesis::NObject>>& objects)
+nemesis::CollectionObject::ObjectMatcher::ObjectMatcher(Vec<UPtr<nemesis::NObject>>& objects, size_t ori_size)
     : Objects(objects)
+    , OriginalSize(ori_size)
 {
 }
 
 void nemesis::CollectionObject::ObjectMatcher::MatchAndUpdate(const Vec<UPtr<nemesis::NObject>>& objects)
 {
-    if (Objects.size() > objects.size())
+    if (OriginalSize > objects.size())
     {
         throw std::runtime_error("Failed to update node. Missing data or node ID mismatched");
     }
@@ -112,6 +111,7 @@ UPtr<nemesis::CollectionObject> nemesis::CollectionObject::Clone() const
 
 UPtr<nemesis::NObject>& nemesis::CollectionObject::AddObject(UPtr<nemesis::NObject>&& object) noexcept
 {
+    ++OriginalSize;
     return Objects.emplace_back(std::move(object));
 }
 
@@ -127,7 +127,7 @@ const nemesis::NObject* nemesis::CollectionObject::GetByIndex(size_t index) cons
 
 void nemesis::CollectionObject::MatchAndUpdate(const nemesis::CollectionObject& object_list)
 {
-    ObjectMatcher matcher(Objects);
+    ObjectMatcher matcher(Objects, OriginalSize);
     matcher.MatchAndUpdate(object_list.Objects);
 }
 

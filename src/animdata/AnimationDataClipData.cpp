@@ -1,6 +1,7 @@
 #include "animdata/AnimationDataClipData.h"
 
 #include "core/ModLine.h"
+#include "core/ModClass.h"
 #include "core/IfObject.h"
 #include "core/ModObject.h"
 #include "core/ForEachObject.h"
@@ -107,8 +108,21 @@ UPtr<nemesis::NObject> nemesis::AnimationDataClipData::CloneNObject() const
 
 UPtr<nemesis::AnimationDataClipData> nemesis::AnimationDataClipData::Clone() const
 {
-    auto clone = std::make_unique<nemesis::AnimationDataClipData>(Name, Code);
+    auto clone      = std::make_unique<nemesis::AnimationDataClipData>(Name, Code);
+    clone->FilePath = FilePath;
     clone->ClipData = ClipData->Clone();
+    return clone;
+}
+
+UPtr<nemesis::AnimationDataClipData>
+nemesis::AnimationDataClipData::Clone(const nemesis::ModClass& mod_class,
+                                      const std::filesystem::path& filepath) const
+{
+    auto clone    = Clone();
+    auto new_data = std::make_unique<nemesis::CollectionObject>();
+    auto mod_obj  = std::make_unique<nemesis::ModObject>(mod_class.GetCode(), 0, filepath, std::move(clone->ClipData));
+    new_data->AddObject(std::move(mod_obj));
+    clone->ClipData = std::move(new_data);
     return clone;
 }
 
@@ -129,14 +143,19 @@ void nemesis::AnimationDataClipData::MatchAndUpdate(const nemesis::AnimationData
     ClipData->MatchAndUpdate(*clip_data.ClipData);
 }
 
-const std::string& nemesis::AnimationDataClipData::GetName() const
+const std::string& nemesis::AnimationDataClipData::GetName() const noexcept
 {
     return Name;
 }
 
-const std::string& nemesis::AnimationDataClipData::GetCode() const
+const std::string& nemesis::AnimationDataClipData::GetCode() const noexcept
 {
     return Code;
+}
+
+const std::filesystem::path& nemesis::AnimationDataClipData::GetFilePath() const noexcept
+{
+    return FilePath;
 }
 
 void nemesis::AnimationDataClipData::SerializeToFile(const std::filesystem::path& filepath) const
@@ -180,6 +199,7 @@ nemesis::AnimationDataClipData::Deserialize(const std::string& name,
     auto collection = std::make_unique<nemesis::CollectionObject>();
     auto col_ptr    = collection.get();
     auto state      = std::make_unique<nemesis::AnimationDataClipData>(name, code);
+    state->FilePath = stream.GetToken().Value.GetFilePath();
     state->ClipData = std::move(collection);
 
     for (; !stream.IsEoF(); ++stream)
@@ -304,7 +324,7 @@ nemesis::AnimationDataClipData::ParseObjects(nemesis::LineStream& stream,
     bool has_new_state = false;
     auto* token_ptr    = &stream.GetToken();
 
-    if (token_ptr == nullptr) return clip_list;
+    if (!token_ptr) return clip_list;
 
     auto& active_val = token_ptr->Value;
 
@@ -347,7 +367,7 @@ nemesis::AnimationDataClipData::ParseObjects(nemesis::LineStream& stream,
             continue;
         }
 
-        if (collection_ptr == nullptr)
+        if (!collection_ptr)
         {
             auto& name = token_ptr->Value;
             ++stream;
@@ -370,6 +390,7 @@ nemesis::AnimationDataClipData::ParseObjects(nemesis::LineStream& stream,
             }
 
             auto clip_data      = std::make_unique<nemesis::AnimationDataClipData>(name, code);
+            clip_data->FilePath = name.GetFilePath();
             clip_data->ClipData = std::make_unique<nemesis::CollectionObject>();
             collection_ptr      = clip_data->ClipData.get();
             collection_ptr->AddObject(

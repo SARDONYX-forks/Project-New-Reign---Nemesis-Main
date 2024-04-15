@@ -2,6 +2,7 @@
 
 #include "core/NLine.h"
 #include "core/ModLine.h"
+#include "core/ModClass.h"
 #include "core/IfObject.h"
 #include "core/ModObject.h"
 #include "core/ForEachObject.h"
@@ -120,7 +121,21 @@ UPtr<nemesis::NObject> nemesis::AnimationDataMotionData::CloneNObject() const
 UPtr<nemesis::AnimationDataMotionData> nemesis::AnimationDataMotionData::Clone() const
 {
     auto clone        = std::make_unique<nemesis::AnimationDataMotionData>(Code);
+    clone->FilePath   = FilePath;
     clone->MotionData = MotionData->Clone();
+    return clone;
+}
+
+UPtr<nemesis::AnimationDataMotionData>
+nemesis::AnimationDataMotionData::Clone(const nemesis::ModClass& mod_class,
+                                        const std::filesystem::path& filepath) const
+{
+    auto clone    = Clone();
+    auto new_data = std::make_unique<nemesis::CollectionObject>();
+    auto mod_obj  = std::make_unique<nemesis::ModObject>(
+        mod_class.GetCode(), 0, filepath, std::move(clone->MotionData));
+    new_data->AddObject(std::move(mod_obj));
+    clone->MotionData = std::move(new_data);
     return clone;
 }
 
@@ -129,9 +144,14 @@ void nemesis::AnimationDataMotionData::MatchAndUpdate(const nemesis::AnimationDa
     MotionData->MatchAndUpdate(*motion_data.MotionData);
 }
 
-const std::string& nemesis::AnimationDataMotionData::GetCode() const
+const std::string& nemesis::AnimationDataMotionData::GetCode() const noexcept
 {
     return Code;
+}
+
+const std::filesystem::path& nemesis::AnimationDataMotionData::GetFilePath() const noexcept
+{
+    return FilePath;
 }
 
 void nemesis::AnimationDataMotionData::SerializeToFile(const std::filesystem::path& filepath) const
@@ -168,6 +188,7 @@ UPtr<nemesis::AnimationDataMotionData> nemesis::AnimationDataMotionData::Deseria
     if (stream.IsEoF()) return nullptr;
 
     auto motion_data        = std::make_unique<nemesis::AnimationDataMotionData>(code);
+    motion_data->FilePath   = stream.GetToken().Value.GetFilePath();
     motion_data->MotionData = nemesis::NObject::ParseAsCollection(stream, manager);
     return motion_data;
 }
@@ -249,7 +270,7 @@ nemesis::AnimationDataMotionData::ParseObjects(nemesis::LineStream& stream, neme
     
     auto* ftoken = stream.GetForwardToken(size);
 
-    if (ftoken == nullptr || !ftoken->Value.empty())
+    if (!ftoken || !ftoken->Value.empty())
     {
         throw std::runtime_error("Invalid nemesis::AnimationDataMotionData::ParseObjects size (Line: "
                                  + std::to_string(ssize.GetLineNumber())
@@ -273,9 +294,10 @@ nemesis::AnimationDataMotionData::ParseObjects(nemesis::LineStream& stream, neme
 
         auto& value = token.Value;
 
-        if (motion_data == nullptr)
+        if (!motion_data)
         {
             motion_data             = std::make_unique<nemesis::AnimationDataMotionData>(value);
+            motion_data->FilePath   = value.GetFilePath();
             motion_data->MotionData = std::make_unique<nemesis::CollectionObject>();
         }
 

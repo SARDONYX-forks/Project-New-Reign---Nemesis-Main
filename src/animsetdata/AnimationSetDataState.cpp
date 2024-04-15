@@ -1,6 +1,7 @@
 #include "animsetdata/AnimationSetDataState.h"
 
 #include "core/ModLine.h"
+#include "core/ModClass.h"
 #include "core/IfObject.h"
 #include "core/ModObject.h"
 #include "core/ForEachObject.h"
@@ -320,8 +321,22 @@ UPtr<nemesis::NObject> nemesis::AnimationSetDataState::CloneNObject() const
 UPtr<nemesis::AnimationSetDataState> nemesis::AnimationSetDataState::Clone() const
 {
     auto state       = std::make_unique<nemesis::AnimationSetDataState>(Name);
+    state->FilePath  = FilePath;
     state->StateData = StateData->Clone();
     return state;
+}
+
+UPtr<nemesis::AnimationSetDataState>
+nemesis::AnimationSetDataState::Clone(const nemesis::ModClass& mod_class,
+                                      const std::filesystem::path& filepath) const
+{
+    auto clone    = Clone();
+    auto new_data = std::make_unique<nemesis::CollectionObject>();
+    auto mod_obj
+        = std::make_unique<nemesis::ModObject>(mod_class.GetCode(), 0, filepath, std::move(clone->StateData));
+    new_data->AddObject(std::move(mod_obj));
+    clone->StateData = std::move(new_data);
+    return clone;
 }
 
 void nemesis::AnimationSetDataState::MatchAndUpdate(const nemesis::AnimationSetDataState& state)
@@ -333,6 +348,11 @@ void nemesis::AnimationSetDataState::MatchAndUpdate(const nemesis::AnimationSetD
 const std::string& nemesis::AnimationSetDataState::GetName() const noexcept
 {
     return Name;
+}
+
+const std::filesystem::path& nemesis::AnimationSetDataState::GetFilePath() const noexcept
+{
+    return FilePath;
 }
 
 void nemesis::AnimationSetDataState::SerializeToFile(const std::filesystem::path& filepath) const
@@ -370,6 +390,7 @@ nemesis::AnimationSetDataState::Deserialize(const std::string& name, nemesis::Li
     auto collection    = std::make_unique<nemesis::CollectionObject>();
     auto col_ptr       = collection.get();
 
+    state->FilePath  = stream.GetToken().Value.GetFilePath();
     state->StateData = std::move(collection);
 
     std::function<void(const nemesis::Line&)> new_state_checker = [&has_new_state](const nemesis::Line& nline)
@@ -564,6 +585,7 @@ Vec<UPtr<nemesis::AnimationSetDataState>> nemesis::AnimationSetDataState::ParseO
                     }
 
                     auto state       = std::make_unique<nemesis::AnimationSetDataState>(*name_itr++);
+                    state->FilePath  = value.GetFilePath();
                     state->StateData = std::make_unique<nemesis::CollectionObject>();
                     auto& data_ptr   = state->StateData;
                     add_object       = [&data_ptr](UPtr<nemesis::NObject>&& obj_ptr)
@@ -577,7 +599,7 @@ Vec<UPtr<nemesis::AnimationSetDataState>> nemesis::AnimationSetDataState::ParseO
                     {
                         auto* ftoken_ptr = stream.GetForwardToken(i);
 
-                        if (ftoken_ptr == nullptr) break;
+                        if (!ftoken_ptr) break;
 
                         if (ftoken_ptr->Type != nemesis::LineStream::NONE) continue;
 

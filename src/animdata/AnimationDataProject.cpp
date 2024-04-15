@@ -8,63 +8,30 @@
 
 #include "utilities/writetextfile.h"
 
-UPtr<nemesis::CollectionObject>
-nemesis::AnimationDataProject::DeserailizeHeaderFromFile(const std::filesystem::path& filepath)
+const std::filesystem::path&
+nemesis::AnimationDataProject::Headers::GetFilePath() const noexcept
 {
-    nemesis::SemanticManager manager;
-    VecNstr lines;
-    GetFileLines(filepath, lines);
+    return FilePath;
+}
 
-    nemesis::LineStream stream(lines.begin(), lines.end());
-    UPtr<nemesis::CollectionObject> collection = std::make_unique<nemesis::CollectionObject>();
+UPtr<nemesis::CollectionObject> nemesis::AnimationDataProject::Headers::Clone() const
+{
+    auto collection = std::make_unique<nemesis::AnimationDataProject::Headers>();
+    collection->FilePath = FilePath;
 
-    for (; !stream.IsEoF(); ++stream)
+    for (auto& object : Objects)
     {
-        auto& token = stream.GetToken();
-
-        switch (token.Type)
-        {
-            case nemesis::LineStream::MOD_OPEN:
-            {
-                auto list = nemesis::NObject::ParseModObjects(stream, manager);
-
-                for (auto& each : list)
-                {
-                    collection->AddObject(std::move(each));
-                }
-
-                break;
-            }
-            case nemesis::LineStream::FOR_EACH:
-            {
-                auto fe_obj = nemesis::NObject::ParseForEachObject(stream, manager);
-                collection->AddObject(std::move(fe_obj));
-                break;
-            }
-            case nemesis::LineStream::IF:
-            {
-                auto if_obj = nemesis::NObject::ParseIfObject(stream, manager);
-                collection->AddObject(std::move(if_obj));
-                break;
-            }
-            case nemesis::LineStream::NONE:
-            {
-                auto& value = token.Value;
-                collection->AddObject(std::make_unique<nemesis::NLine>(
-                    value, value.GetLineNumber(), value.GetFilePath(), manager));
-                break;
-            }
-            default:
-            {
-                auto& value = token.Value;
-                throw std::runtime_error("Syntax Error: Unsupport syntax (Line: "
-                                         + std::to_string(value.GetLineNumber())
-                                         + ". File: " + value.GetFilePath().string() + ")");
-            }
-        }
+        collection->AddObject(object->CloneNObject());
     }
 
     return collection;
+}
+
+UPtr<nemesis::AnimationDataProject::Headers>
+nemesis::AnimationDataProject::Headers::CloneHeaders() const
+{
+    return UPtr<nemesis::AnimationDataProject::Headers>(
+        static_cast<nemesis::AnimationDataProject::Headers*>(Clone().release()));
 }
 
 UPtr<nemesis::AnimationDataProject> nemesis::AnimationDataProject::ParseProject(
@@ -84,7 +51,7 @@ UPtr<nemesis::AnimationDataProject> nemesis::AnimationDataProject::ParseProject(
     size_t size     = std::stoul(ssize);
     auto* end_token = stream.GetForwardToken(size);
 
-    if (end_token == nullptr)
+    if (!end_token)
     {
         throw std::runtime_error("Invalid nemesis::AnimationDataProject::ParseProject size (Line: "
                                  + std::to_string(ssize.GetLineNumber())
@@ -134,7 +101,8 @@ UPtr<nemesis::AnimationDataProject> nemesis::AnimationDataProject::ParseProject(
                 }
 
                 fsize             = std::stoul(value);
-                project->HkxFiles = std::make_unique<nemesis::CollectionObject>();
+                project->HkxFiles
+                    = std::make_unique<nemesis::AnimationDataProject::Headers>();
 
                 if (fsize > 0)
                 {
@@ -254,7 +222,7 @@ UPtr<nemesis::NObject> nemesis::AnimationDataProject::CloneNObject() const
 UPtr<nemesis::AnimationDataProject> nemesis::AnimationDataProject::Clone() const
 {
     auto project      = std::make_unique<nemesis::AnimationDataProject>(Name);
-    project->HkxFiles = HkxFiles->Clone();
+    project->HkxFiles = HkxFiles->CloneHeaders();
 
     for (auto& clip_data : ClipDataList)
     {
@@ -267,6 +235,11 @@ UPtr<nemesis::AnimationDataProject> nemesis::AnimationDataProject::Clone() const
     }
 
     return project;
+}
+
+void nemesis::AnimationDataProject::MatchAndUpdateHeader(const nemesis::CollectionObject& hkxfiles)
+{
+    HkxFiles->MatchAndUpdate(hkxfiles);
 }
 
 const std::string& nemesis::AnimationDataProject::GetName() const
@@ -311,12 +284,24 @@ nemesis::AnimationDataProject::AddMotionData(UPtr<nemesis::AnimationDataMotionDa
     return MotionDataList.emplace_back(std::move(motion_data));
 }
 
+SPtr<nemesis::TemplateObject>&
+nemesis::AnimationDataProject::AddClipDataTemplate(const SPtr<nemesis::TemplateObject>& templt_obj)
+{
+    return ClipDataTemplateList.emplace_back(templt_obj);
+}
+
+SPtr<nemesis::TemplateObject>&
+nemesis::AnimationDataProject::AddMotionDataTemplate(const SPtr<nemesis::TemplateObject>& templt_obj)
+{
+    return MotionDataTemplateList.emplace_back(templt_obj);
+}
+
 void nemesis::AnimationDataProject::SerializeToDirectory(const std::filesystem::path& directory_path) const
 {
     std::filesystem::create_directories(directory_path);
     DeqNstr lines = HkxFiles->Serialize();
 
-    std::filesystem::path filepath = directory_path / "Header.txt";
+    std::filesystem::path filepath = directory_path / "$header$.txt";
     FileWriter writer(filepath);
 
     if (!writer.is_open())
@@ -365,9 +350,9 @@ nemesis::AnimationDataProject::DeserializeFromDirectory(const std::filesystem::p
 
         if (path.extension() != ".txt") continue;
 
-        if (nemesis::iequals(path.filename().string(), "header.txt"))
+        if (nemesis::iequals(path.stem().string(), "$header$"))
         {
-            project->HkxFiles = DeserailizeHeaderFromFile(path);
+            project->HkxFiles = DeserializeHeaderFromFile(path);
             continue;
         }
 
@@ -383,6 +368,67 @@ nemesis::AnimationDataProject::DeserializeFromDirectory(const std::filesystem::p
     }
 
     return project;
+}
+
+UPtr<nemesis::AnimationDataProject::Headers>
+nemesis::AnimationDataProject::DeserializeHeaderFromFile(const std::filesystem::path& filepath)
+{
+    nemesis::SemanticManager manager;
+    VecNstr lines;
+    GetFileLines(filepath, lines);
+
+    nemesis::LineStream stream(lines.begin(), lines.end());
+    UPtr<nemesis::AnimationDataProject::Headers> headers
+        = std::make_unique<nemesis::AnimationDataProject::Headers>();
+
+
+    for (; !stream.IsEoF(); ++stream)
+    {
+        auto& token = stream.GetToken();
+
+        switch (token.Type)
+        {
+            case nemesis::LineStream::MOD_OPEN:
+            {
+                auto list = nemesis::NObject::ParseModObjects(stream, manager);
+
+                for (auto& each : list)
+                {
+                    headers->AddObject(std::move(each));
+                }
+
+                break;
+            }
+            case nemesis::LineStream::FOR_EACH:
+            {
+                auto fe_obj = nemesis::NObject::ParseForEachObject(stream, manager);
+                headers->AddObject(std::move(fe_obj));
+                break;
+            }
+            case nemesis::LineStream::IF:
+            {
+                auto if_obj = nemesis::NObject::ParseIfObject(stream, manager);
+                headers->AddObject(std::move(if_obj));
+                break;
+            }
+            case nemesis::LineStream::NONE:
+            {
+                auto& value = token.Value;
+                headers->AddObject(std::make_unique<nemesis::NLine>(
+                    value, value.GetLineNumber(), value.GetFilePath(), manager));
+                break;
+            }
+            default:
+            {
+                auto& value = token.Value;
+                throw std::runtime_error("Syntax Error: Unsupport syntax (Line: "
+                                         + std::to_string(value.GetLineNumber())
+                                         + ". File: " + value.GetFilePath().string() + ")");
+            }
+        }
+    }
+
+    return headers;
 }
 
 Vec<UPtr<nemesis::AnimationDataProject>> nemesis::AnimationDataProject::ParseObjects(

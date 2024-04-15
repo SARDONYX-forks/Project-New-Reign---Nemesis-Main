@@ -14,6 +14,7 @@ namespace nemesis
         std::string Name;
         VecNstr Headers;
         UMap<std::string, UPtr<nemesis::AnimationSetDataState>> StateMap;
+        Vec<UPtr<nemesis::AnimationSetDataState>> StateTemplateList;
 
         std::mutex UpdaterMutex;
 
@@ -40,11 +41,14 @@ namespace nemesis
         UPtr<nemesis::NObject> CloneNObject() const override;
         UPtr<nemesis::AnimationSetDataProject> Clone() const;
 
+        const std::string& GetName() const noexcept;
+
         UPtr<nemesis::AnimationSetDataState>& AddState(UPtr<nemesis::AnimationSetDataState>&& state);
 
-        const std::string& GetName() const noexcept;
         nemesis::AnimationSetDataState* GetState(const std::string& name);
         const nemesis::AnimationSetDataState* GetState(const std::string& name) const;
+
+
 
         void SerializeToDirectory(const std::filesystem::path& folder_path) const;
         static UPtr<nemesis::AnimationSetDataProject> DeserializeFromDirectory(const std::filesystem::path& directory_path);

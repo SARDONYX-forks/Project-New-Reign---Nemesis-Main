@@ -5,6 +5,7 @@
 
 namespace nemesis
 {
+    struct ModClass;
     struct IfObject;
     struct TemplateClass;
     struct ForEachObject;
@@ -15,6 +16,7 @@ namespace nemesis
     private:
         std::string Name;
         std::string Code;
+        std::filesystem::path FilePath;
         UPtr<nemesis::CollectionObject> ClipData;
 
         std::mutex UpdaterMutex;
@@ -33,11 +35,14 @@ namespace nemesis
 
         UPtr<nemesis::NObject> CloneNObject() const override;
         UPtr<nemesis::AnimationDataClipData> Clone() const;
+        UPtr<nemesis::AnimationDataClipData> Clone(const nemesis::ModClass& mod_class,
+                                                   const std::filesystem::path& filepath) const;
 
         void MatchAndUpdate(const nemesis::AnimationDataClipData& clip_data);
 
-        const std::string& GetName() const;
-        const std::string& GetCode() const;
+        const std::string& GetName() const noexcept;
+        const std::string& GetCode() const noexcept;
+        const std::filesystem::path& GetFilePath() const noexcept;
 
         void SerializeToFile(const std::filesystem::path& filepath) const;
 

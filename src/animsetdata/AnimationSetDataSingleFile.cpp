@@ -3,6 +3,10 @@
 #include "core/SemanticManager.h"
 #include "core/CollectionObject.h"
 
+#include "nemesisinfo.h"
+
+#include "utilities/writetextfile.h"
+
 VecNstr nemesis::AnimationSetDataSingleFile::ParseHeaders(nemesis::LineStream& stream,
                                                           nemesis::SemanticManager& manager)
 {
@@ -40,22 +44,30 @@ VecNstr nemesis::AnimationSetDataSingleFile::ParseHeaders(nemesis::LineStream& s
 
 void nemesis::AnimationSetDataSingleFile::CompileTo(DeqNstr& lines, nemesis::CompileState& state) const
 {
+    DeqNstr header_lines;
     DeqNstr project_contents;
-    size_t count          = 0;
-    auto& counter_element = lines.emplace_back("");
 
     for (auto& project : ProjectList)
     {
-        size_t size = project_contents.size();
-        project->CompileTo(project_contents, state);
+        DeqNstr temp_lines;
+        project->CompileTo(temp_lines, state);
 
-        if (size >= project_contents.size()) continue;
+        if (temp_lines.empty()) continue;
 
-        count++;
-        lines.emplace_back(project->GetName());
+        header_lines.emplace_back(project->GetName());
+
+        for (auto& line : temp_lines)
+        {
+            project_contents.emplace_back(std::move(line));
+        }
     }
 
-    counter_element = std::to_string(count);
+    lines.emplace_back(std::to_string(header_lines.size()));
+
+    for (auto& line : header_lines)
+    {
+        lines.emplace_back(std::move(line));
+    }
 
     for (auto& line : project_contents)
     {
@@ -86,11 +98,44 @@ UPtr<nemesis::AnimationSetDataSingleFile> nemesis::AnimationSetDataSingleFile::C
     return file;
 }
 
+void nemesis::AnimationSetDataSingleFile::CompileFile(nemesis::CompileState& state) const
+{
+    CompileFileAs(TargetPath, state);
+}
+
+void nemesis::AnimationSetDataSingleFile::CompileFileAs(const std::filesystem::path& filepath,
+                                                        nemesis::CompileState& state) const
+{
+    DeqNstr lines = Compile(state);
+    FileWriter writer(filepath);
+
+    for (auto& line : lines)
+    {
+        writer.LockFreeWriteLine(line);
+    }
+}
+
+std::filesystem::path nemesis::AnimationSetDataSingleFile::GetFilePath() const
+{
+    return FilePath;
+}
+
+std::filesystem::path nemesis::AnimationSetDataSingleFile::GetTargetPath() const
+{
+    return TargetPath;
+}
+
 UPtr<nemesis::AnimationSetDataProject>&
 nemesis::AnimationSetDataSingleFile::AddProject(UPtr<nemesis::AnimationSetDataProject>&& project)
 {
     std::scoped_lock<std::mutex> lock(UpdaterMutex);
     return ProjectList.emplace_back(std::move(project));
+}
+
+SPtr<nemesis::TemplateObject>&
+nemesis::AnimationSetDataSingleFile::AddProjectTemplate(const SPtr<nemesis::TemplateObject>& templt_obj)
+{
+    return ProjectTemplateList.emplace_back(templt_obj);
 }
 
 nemesis::AnimationSetDataProject*
@@ -167,14 +212,46 @@ nemesis::AnimationSetDataSingleFile::DeserializeFromDirectory(const std::filesys
 UPtr<nemesis::AnimationSetDataSingleFile>
 nemesis::AnimationSetDataSingleFile::ParseFromFile(const std::filesystem::path& filepath)
 {
+    auto singlefile        = std::make_unique<nemesis::AnimationSetDataSingleFile>();
+    singlefile->FilePath   = filepath;
+    singlefile->TargetPath = NemesisInfo::GetInstance()->PatchOutputPath(filepath.parent_path())
+                             / (nemesis::istarts_with(filepath.filename().wstring(), L"nemesis_")
+                                    ? filepath.filename().wstring().substr(8)
+                                    : filepath.filename());
+
     nemesis::SemanticManager manager;
     VecNstr lines;
     GetFileLines(filepath, lines, false);
     nemesis::LineStream stream(lines.begin(), lines.end());
 
-    UPtr<nemesis::AnimationSetDataSingleFile> singlefile
-        = std::make_unique<nemesis::AnimationSetDataSingleFile>();
-    auto headers            = nemesis::AnimationSetDataSingleFile::ParseHeaders(stream, manager);
+    VecNstr headers         = nemesis::AnimationSetDataSingleFile::ParseHeaders(stream, manager);
     singlefile->ProjectList = nemesis::AnimationSetDataProject::ParseObjects(stream, manager, headers);
+    return singlefile;
+}
+
+UPtr<nemesis::AnimationSetDataSingleFile>
+nemesis::AnimationSetDataSingleFile::ParseFromFile(const std::filesystem::path& filepath,
+                                                   nemesis::ThreadPool& threadpool)
+{
+    auto singlefile        = std::make_unique<nemesis::AnimationSetDataSingleFile>();
+    singlefile->FilePath   = filepath;
+    singlefile->TargetPath = NemesisInfo::GetInstance()->PatchOutputPath(filepath.parent_path())
+                             / (nemesis::istarts_with(filepath.filename().wstring(), L"nemesis_")
+                                    ? filepath.filename().wstring().substr(8)
+                                    : filepath.filename());
+    auto singlefile_ptr = singlefile.get();
+
+    threadpool.enqueue(
+        [singlefile_ptr]()
+        {
+            nemesis::SemanticManager manager;
+            VecNstr lines;
+            GetFileLines(singlefile_ptr->GetFilePath(), lines, false);
+            nemesis::LineStream stream(lines.begin(), lines.end());
+
+            VecNstr headers = nemesis::AnimationSetDataSingleFile::ParseHeaders(stream, manager);
+            singlefile_ptr->ProjectList
+                = nemesis::AnimationSetDataProject::ParseObjects(stream, manager, headers);
+        });
     return singlefile;
 }

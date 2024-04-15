@@ -9,6 +9,7 @@
 
 namespace nemesis
 {
+    struct ModClass;
     struct IfObject;
     struct TemplateClass;
     struct ForEachObject;
@@ -17,8 +18,8 @@ namespace nemesis
 	struct HkxNode : public nemesis::NObject
     {
     private:
-        std::string NodeId;
-        std::string ClassName;
+        std::filesystem::path FilePath;
+        std::string NodeId, ClassName;
         UPtr<nemesis::CollectionObject> Data;
 
         std::mutex UpdaterMutex;
@@ -37,6 +38,8 @@ namespace nemesis
 
         const std::string& GetNodeId() const noexcept;
         const std::string& GetClassName() const noexcept;
+
+        const std::filesystem::path& GetFilePath() const noexcept;
 
         void MatchAndUpdate(const nemesis::HkxNode& hkxnode);
 

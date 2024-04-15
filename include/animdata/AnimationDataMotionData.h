@@ -5,6 +5,7 @@
 
 namespace nemesis
 {
+    struct ModClass;
     struct IfObject;
     struct TemplateClass;
     struct ForEachObject;
@@ -24,6 +25,7 @@ namespace nemesis
         };
 
         std::string Code;
+        std::filesystem::path FilePath;
         UPtr<nemesis::CollectionObject> MotionData;
 
     public:
@@ -34,10 +36,13 @@ namespace nemesis
 
         UPtr<nemesis::NObject> CloneNObject() const override;
         UPtr<nemesis::AnimationDataMotionData> Clone() const;
+        UPtr<nemesis::AnimationDataMotionData> Clone(const nemesis::ModClass& mod_class,
+                                                     const std::filesystem::path& filepath) const;
 
         void MatchAndUpdate(const nemesis::AnimationDataMotionData& motion_data);
 
-        const std::string& GetCode() const;
+        const std::string& GetCode() const noexcept;
+        const std::filesystem::path& GetFilePath() const noexcept;
 
         void SerializeToFile(const std::filesystem::path& filepath) const;
 

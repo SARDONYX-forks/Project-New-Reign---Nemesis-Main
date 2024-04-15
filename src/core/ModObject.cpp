@@ -14,6 +14,15 @@ nemesis::ModObject::ModObject(const nemesis::ModObject& modobject)
 nemesis::ModObject::ModObject(const std::string& modcode,
                               size_t linenum,
                               const std::filesystem::path& filepath,
+                              UPtr<nemesis::NObject>&& value)
+    : Statement(modcode, linenum, filepath)
+    , Value(std::move(value))
+{
+}
+
+nemesis::ModObject::ModObject(const std::string& modcode,
+                              size_t linenum,
+                              const std::filesystem::path& filepath,
                               nemesis::SemanticManager& manager,
                               UPtr<nemesis::NObject>&& value)
     : Statement(modcode, linenum, filepath, manager)

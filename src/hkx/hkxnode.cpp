@@ -6,6 +6,7 @@
 #include "utilities/stringextension.h"
 
 #include "core/ModLine.h"
+#include "core/ModClass.h"
 #include "core/NObjectParser.h"
 
 namespace ns = nemesis::syntax;
@@ -98,7 +99,7 @@ UPtr<nemesis::HkxNode> nemesis::HkxNode::Clone() const
     auto hkxnode       = std::make_unique<nemesis::HkxNode>();
     hkxnode->NodeId    = NodeId;
     hkxnode->ClassName = ClassName;
-    hkxnode->Data      = Data == nullptr ? nullptr : Data->Clone();
+    hkxnode->Data      = !Data ? nullptr : Data->Clone();
     return hkxnode;
 }
 
@@ -110,6 +111,11 @@ const std::string& nemesis::HkxNode::GetNodeId() const noexcept
 const std::string& nemesis::HkxNode::GetClassName() const noexcept
 {
     return ClassName;
+}
+
+const std::filesystem::path& nemesis::HkxNode::GetFilePath() const noexcept
+{
+    return FilePath;
 }
 
 void nemesis::HkxNode::MatchAndUpdate(const nemesis::HkxNode& hkxnode)
@@ -153,11 +159,12 @@ UPtr<nemesis::NObject> nemesis::HkxNode::ParseHkxNode(nemesis::LineStream& strea
                                                       nemesis::SemanticManager& manager,
                                                       nemesis::HkxNode*& node)
 {
-    auto& token       = stream.GetToken();
-    auto& token_value = token.Value;
-    auto hkx_node     = std::make_unique<nemesis::HkxNode>();
-    node              = hkx_node.get();
-    bool start        = true;
+    auto& token        = stream.GetToken();
+    auto& token_value  = token.Value;
+    auto hkx_node      = std::make_unique<nemesis::HkxNode>();
+    hkx_node->FilePath = token_value.GetFilePath();
+    node               = hkx_node.get();
+    bool start         = true;
 
     auto collection = std::make_unique<nemesis::CollectionObject>();
     auto col_ptr    = collection.get();
@@ -318,10 +325,11 @@ UPtr<nemesis::HkxNode> nemesis::HkxNode::ParseHkxNodeFromFile(const std::filesys
     GetFileLines(filepath, lines);
     nemesis::LineStream stream(lines.begin(), lines.end());
 
-    auto hkx_node     = std::make_unique<nemesis::HkxNode>();
-    auto token        = stream.GetToken();
-    auto& token_value = token.Value;
-    bool start        = true;
+    auto hkx_node      = std::make_unique<nemesis::HkxNode>();
+    hkx_node->FilePath = filepath;
+    auto token         = stream.GetToken();
+    auto& token_value  = token.Value;
+    bool start         = true;
 
     auto collection = std::make_unique<nemesis::CollectionObject>();
     auto col_ptr    = collection.get();

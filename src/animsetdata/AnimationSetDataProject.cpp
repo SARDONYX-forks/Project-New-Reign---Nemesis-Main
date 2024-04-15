@@ -215,7 +215,7 @@ nemesis::AnimationSetDataProject::ParseIfObjects(nemesis::LineStream& stream,
 
                 if (has_else)
                 {
-                    throw std::runtime_error("Syntax error: ELSEIF syntax cannot come after ELSE (Line: "
+                    throw std::runtime_error("Syntax Error: ELSEIF syntax cannot come after ELSE (Line: "
                                              + std::to_string(value.GetLineNumber())
                                              + ", File: " + value.GetFilePath().string() + ")");
                 }
@@ -231,7 +231,7 @@ nemesis::AnimationSetDataProject::ParseIfObjects(nemesis::LineStream& stream,
                 if (has_else)
                 {
                     auto& value = token.Value;
-                    throw std::runtime_error("Syntax error: ELSE syntax cannot come after ELSE (Line: "
+                    throw std::runtime_error("Syntax Error: ELSE syntax cannot come after ELSE (Line: "
                                              + std::to_string(value.GetLineNumber())
                                              + ", File: " + value.GetFilePath().string() + ")");
                 }
@@ -296,9 +296,8 @@ nemesis::AnimationSetDataProject::AnimationSetDataProject(const std::string& nam
 
 void nemesis::AnimationSetDataProject::CompileTo(DeqNstr& lines, nemesis::CompileState& state) const
 {
+    DeqNstr header_lines;
     DeqNstr state_contents;
-    size_t count          = 0;
-    auto& counter_element = lines.emplace_back("");
 
     for (auto& header : Headers)
     {
@@ -306,17 +305,27 @@ void nemesis::AnimationSetDataProject::CompileTo(DeqNstr& lines, nemesis::Compil
 
         if (templines.empty()) continue;
 
-        ++count;
-        lines.emplace_back(header);
-        state_contents.insert(state_contents.end(),
-                              std::make_move_iterator(templines.begin()),
-                              std::make_move_iterator(templines.end()));
+        header_lines.emplace_back(header);
+
+        for (auto& line : templines)
+        {
+            state_contents.emplace_back(std::move(line));
+        }
     }
 
-    counter_element = std::to_string(count);
-    lines.insert(lines.end(),
-                 std::make_move_iterator(state_contents.begin()),
-                 std::make_move_iterator(state_contents.end()));
+    if (header_lines.empty()) return;
+
+    lines.emplace_front(std::to_string(header_lines.size()));
+
+    for (auto& line : header_lines)
+    {
+        lines.emplace_back(std::move(line));
+    }
+
+    for (auto& line : state_contents)
+    {
+        lines.emplace_back(std::move(line));
+    }
 }
 
 void nemesis::AnimationSetDataProject::SerializeTo(DeqNstr& lines) const
@@ -343,6 +352,11 @@ UPtr<nemesis::AnimationSetDataProject> nemesis::AnimationSetDataProject::Clone()
     return project;
 }
 
+const std::string& nemesis::AnimationSetDataProject::GetName() const noexcept
+{
+    return Name;
+}
+
 UPtr<nemesis::AnimationSetDataState>&
 nemesis::AnimationSetDataProject::AddState(UPtr<nemesis::AnimationSetDataState>&& state)
 {
@@ -351,11 +365,6 @@ nemesis::AnimationSetDataProject::AddState(UPtr<nemesis::AnimationSetDataState>&
     Headers.emplace_back(name);
     StateMap[name] = std::move(state);
     return StateMap[name];
-}
-
-const std::string& nemesis::AnimationSetDataProject::GetName() const noexcept
-{
-    return Name;
 }
 
 nemesis::AnimationSetDataState* nemesis::AnimationSetDataProject::GetState(const std::string& name)

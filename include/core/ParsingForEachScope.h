@@ -10,10 +10,11 @@ namespace nemesis
     {
     private:
         nemesis::SemanticManager* Manager;
-        bool IsOption;
+        nemesis::ForEachStatement::ForEachType Type;
+        const std::string* Expression_Ptr;
 
     public:
         ParsingForEachScope(const nemesis::ForEachStatement& statement, nemesis::SemanticManager& manager);
-        ~ParsingForEachScope();
+        ~ParsingForEachScope() noexcept;
     };
 }

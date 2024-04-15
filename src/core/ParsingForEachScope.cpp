@@ -3,28 +3,70 @@
 nemesis::ParsingForEachScope::ParsingForEachScope(const nemesis::ForEachStatement& statement,
                                                   nemesis::SemanticManager& manager)
 {
-    Manager = &manager;
+    Manager        = &manager;
+    Type           = statement.GetType();
+    Expression_Ptr = &statement.GetExpression();
+    std::string key;
+    Manager->AddForEachToQueue(*Expression_Ptr);
 
-    std::string option_name;
-    
-    if (statement.TryGetOptionName(option_name))
+    switch (Type)
     {
-        IsOption = true;
-        Manager->TryAddOptionToQueue(option_name, statement.GetExpression());
-        return;
+        case nemesis::ForEachStatement::REQUEST:
+            Manager->TryAddRequestToQueue(*Expression_Ptr);
+            break;
+        case nemesis::ForEachStatement::OPTION:
+        {
+            statement.TryGetOptionName(key);
+            Manager->TryAddOptionToQueue(key, *Expression_Ptr);
+            break;
+        }
+        case nemesis::ForEachStatement::MAP:
+        {
+            statement.TryGetMapKey(key);
+            Manager->TryAddMapToQueue(key);
+            break;
+        }
+        case nemesis::ForEachStatement::MOTION_DATA:
+        {
+            Manager->AddMotionDataToQueue();
+            break;
+        }
+        case nemesis::ForEachStatement::ROTATION_DATA:
+        {
+            Manager->AddRotationDataToQueue();
+            break;
+        }
     }
-
-    Manager->TryAddRequestToQueue(statement.GetExpression());
-    IsOption = false;
 }
 
-nemesis::ParsingForEachScope::~ParsingForEachScope()
+nemesis::ParsingForEachScope::~ParsingForEachScope() noexcept
 {
-    if (IsOption)
-    {
-        Manager->TryRemoveLastOption();
-        return;
-    }
+    Manager->RemoveTopForEachFromQueue(*Expression_Ptr);
 
-    Manager->TryRemoveLastRequest();
+    switch (Type)
+    {
+        case nemesis::ForEachStatement::REQUEST:
+            Manager->TryRemoveLastRequest();
+            break;
+        case nemesis::ForEachStatement::OPTION:
+        {
+            Manager->TryRemoveLastOption();
+            break;
+        }
+        case nemesis::ForEachStatement::MAP:
+        {
+            Manager->TryRemoveLastMap();
+            break;
+        }
+        case nemesis::ForEachStatement::MOTION_DATA:
+        {
+            Manager->TryRemoveLastMotionData();
+            break;
+        }
+        case nemesis::ForEachStatement::ROTATION_DATA:
+        {
+            Manager->TryRemoveLastRotationData();
+            break;
+        }
+    }
 }

@@ -1,0 +1,79 @@
+name: build-common
+description: Common Windows build steps using xmake, Qt, and MSVC
+
+inputs:
+  target:
+    description: Target name passed to xmake (e.g. app or library target)
+    required: true
+
+  mode:
+    description: Build mode for xmake (e.g. debug or release)
+    default: debug
+    required: true
+
+  runtimes:
+    description: Optional MSVC runtime setting for xmake (e.g. MD, MT)
+    required: false
+    default: ""
+
+  artifact_name:
+    description: Name of the uploaded artifact (defaults to target if empty)
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Use long path
+      shell: pwsh
+      run: |
+        git config --system core.longpaths true
+        New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+          -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - uses: jurplel/install-qt-action@v3
+      with:
+        aqtversion: "==3.1.*"
+        version: "6.10.2"
+        host: windows
+        target: desktop
+        arch: win64_msvc2022_64
+        modules: qt5compat qtmultimedia qtshadertools
+        dir: ${{ github.workspace }}/packages
+
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: "3.0.6"
+        actions-cache-key: ${{ runner.os }}-xmake
+        build-cache-key: ${{ runner.os }}-xmake-build-${{ inputs.target }}
+
+    - name: Generate qrc file
+      shell: pwsh
+      run: ${{ github.workspace }}/.github/gen_qrc.ps1
+
+    - name: xmake config
+      shell: pwsh
+      run: |
+        if ("${{ inputs.runtimes }}" -ne "") {
+          xmake config --runtimes=${{ inputs.runtimes }} --toolchain=clang-cl --mode=${{ inputs.mode }} -y
+        } else {
+          xmake config --toolchain=clang-cl --mode=${{ inputs.mode }} -y
+        }
+
+    - name: Build
+      shell: pwsh
+      run: xmake build -y ${{ inputs.target }}
+
+    - name: Install
+      shell: pwsh
+      run: xmake install -o ./build/artifact ${{ inputs.target }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name != '' && inputs.artifact_name || inputs.target }}
+        path: ./build/artifact

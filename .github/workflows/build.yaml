@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: Nemesis_App
+            mode: release # To avoid Python link error
+
+          - target: Nemesis_Core_Engine
+            mode: release # To avoid Python link error
+
+          - target: Nemesis_Havok
+            mode: debug
+            runtimes: MT
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and Upload Artifact
+        uses: ./.github/actions/build-common
+        with:
+          target: ${{ matrix.target }}
+          mode: ${{ matrix.mode }}
+          runtimes: ${{ matrix.runtimes }}

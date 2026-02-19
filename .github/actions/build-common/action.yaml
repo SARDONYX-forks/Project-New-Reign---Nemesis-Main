@@ -49,6 +49,12 @@ runs:
         actions-cache-key: ${{ runner.os }}-xmake
         build-cache-key: ${{ runner.os }}-xmake-build-${{ inputs.target }}
 
+    - name: Install LLVM and Clang
+      uses: KyleMayes/install-llvm-action@v2
+      if: runner.os != 'Windows'
+      with:
+        version: "20.1.7"
+
     - name: xmake config(Windows)
       if: runner.os == 'Windows'
       shell: pwsh
@@ -56,7 +62,7 @@ runs:
 
     - name: xmake config(Linux/MacOS)
       if: runner.os == 'Linux' || runner.os == 'macOS'
-      shell: pwsh
+      shell: bash
       run: xmake config --toolchain=clang --mode=${{ inputs.mode }} -y
 
     - name: Build

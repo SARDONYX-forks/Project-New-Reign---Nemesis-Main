@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        # os: [windows-latest, ubuntu-latest, macos-latest]
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        # os: [windows-latest]
         target: [Nemesis_App, Nemesis_Core_Engine, Nemesis_Havok]
 
     runs-on: ${{ matrix.os }}

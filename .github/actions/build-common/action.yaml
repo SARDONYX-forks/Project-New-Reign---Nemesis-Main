@@ -1,0 +1,74 @@
+name: build-common
+description: Common Windows build steps using xmake, Qt, and MSVC
+
+inputs:
+  target:
+    description: Target name passed to xmake (e.g. app or library target)
+    required: true
+
+  mode:
+    description: Build mode for xmake (e.g. debug or release)
+    default: debug
+    required: true
+
+  runtimes:
+    description: Optional MSVC runtime setting for xmake (e.g. MD, MT)
+    required: false
+    default: "MD"
+
+  artifact_name:
+    description: Name of the uploaded artifact (defaults to target if empty)
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Use long path
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        git config --system core.longpaths true
+        New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+          -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+
+    - name: Setup MSVC & LLVM(Windows)
+      uses: ilammy/msvc-dev-cmd@v1
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+
+    - name: Setup Qt
+      uses: ./.github/actions/setup-qt
+      with:
+        qt_version: "6.10.2"
+
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: "3.0.6"
+        actions-cache-key: ${{ runner.os }}-xmake
+        build-cache-key: ${{ runner.os }}-xmake-build-${{ inputs.target }}
+
+    - name: xmake config(Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: xmake config --toolchain=clang-cl --mode=${{ inputs.mode }} -y
+
+    - name: xmake config(Linux/MacOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: pwsh
+      run: xmake config --toolchain=clang --mode=${{ inputs.mode }} -y
+
+    - name: Build
+      shell: pwsh
+      run: xmake build -y ${{ inputs.target }}
+
+    - name: Install
+      shell: pwsh
+      run: xmake install -o ./build/artifact ${{ inputs.target }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name != '' && inputs.artifact_name || inputs.target }}
+        path: ./build/artifact/bin/

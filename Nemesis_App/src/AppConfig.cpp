@@ -1,15 +1,11 @@
-#include <QFile>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QDebug>
 #include <QDir>
-#include <QSettings>
+#include <QJSValue>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJSValue>
-#include <sstream>
-#include <unordered_map>
+#include <QMessageBox>
+#include <QSettings>
+#include <QTextStream>
 
 #include "AppConfig.h"
 
@@ -41,11 +37,12 @@ AppConfig::AppConfig(const std::filesystem::path& filepath, QObject* parent)
     PriorityWidth = IniSettings->value("PriorityWidth", "50").toInt();
     DevMode       = IniSettings->value("DevMode", "false").toBool();
 
-    auto dir      = IniSettings->value("DataDirectory");
-    DataDirectory = dir.type() == QVariant::ByteArray ? QString::fromUtf8(dir.toByteArray()) : dir.toString();
-    dir           = IniSettings->value("StageDirectory");
+    auto dir = IniSettings->value("DataDirectory");
+    DataDirectory
+        = dir.typeId() == QMetaType::QByteArray ? QString::fromUtf8(dir.toByteArray()) : dir.toString();
+    dir = IniSettings->value("StageDirectory");
     StageDirectory
-        = dir.type() == QVariant::ByteArray ? QString::fromUtf8(dir.toByteArray()) : dir.toString();
+        = dir.typeId() == QMetaType::QByteArray ? QString::fromUtf8(dir.toByteArray()) : dir.toString();
 
     QByteArray base64    = IniSettings->value("ListData").toByteArray();
     QByteArray json_data = QByteArray::fromBase64(base64);
@@ -61,7 +58,10 @@ AppConfig::AppConfig(const std::filesystem::path& filepath, QObject* parent)
 
     if (!Platform.isEmpty()) return;
 
-    QMessageBox::critical(nullptr, tr("Configuration Error"), tr("Platform type cannot be found. Only win32, amd64, ps3, ps4 and xb360 are supported"));
+    QMessageBox::critical(
+        nullptr,
+        tr("Configuration Error"),
+        tr("Platform type cannot be found. Only win32, amd64, ps3, ps4 and xb360 are supported"));
     exit(-1);
 }
 

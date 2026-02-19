@@ -1,0 +1,59 @@
+# - https://ddalcino.github.io/aqt-list-server/
+name: "Setup Qt (Cross Platform)"
+description: "Install Qt using install-qt-action for Windows, Linux, macOS"
+
+inputs:
+  qt_version:
+    description: "Qt version"
+    required: false
+    default: "6.10.2"
+
+  aqt_version:
+    description: "aqtinstall version"
+    required: false
+    default: "==3.1.*"
+
+  qt_modules:
+    description: "Qt modules"
+    required: false
+    default: "qt5compat qtmultimedia qtshadertools"
+
+  install_dir:
+    description: "Qt install directory"
+    required: false
+    default: "${{ github.workspace }}/packages"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Detect platform values
+      id: platform
+      shell: bash
+      run: |
+        case "${{ runner.os }}" in
+          Windows)
+            echo "host=windows" >> $GITHUB_OUTPUT
+            echo "arch=win64_msvc2022_64" >> $GITHUB_OUTPUT
+            ;;
+          Linux)
+            echo "host=linux" >> $GITHUB_OUTPUT
+            echo "arch=linux_gcc_64" >> $GITHUB_OUTPUT
+            ;;
+          macOS)
+            echo "host=mac" >> $GITHUB_OUTPUT
+            echo "arch=clang_64" >> $GITHUB_OUTPUT
+            ;;
+        esac
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        aqtversion: ${{ inputs.aqt_version }}
+        version: ${{ inputs.qt_version }}
+        host: ${{ steps.platform.outputs.host }}
+        target: desktop
+        arch: ${{ steps.platform.outputs.arch }}
+        modules: ${{ inputs.qt_modules }}
+        dir: ${{ inputs.install_dir }}
+        cache: true

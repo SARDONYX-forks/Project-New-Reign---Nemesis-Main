@@ -1,20 +1,26 @@
 #include <QApplication>
+#include <QIcon>
+#include <QMessageBox>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QMessageBox>
-#include <QIcon>
+#include <QResource>
 
 #include "AppConfig.h"
 #include "AppLauncher.h"
+#include "DebugDump.h"
+#include "Logger.h"
 #include "ModModelHandler.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/resources/icon.png"));
 
     try
     {
+        Logger::SetPath(std::filesystem::current_path() / "Nemesis_App.log");
+        Logger::ClearLog();
+
         QQmlApplicationEngine engine;
 
         AppConfig app_config(std::filesystem::path(argv[0]).parent_path() / L"nemesis.ini");
@@ -29,14 +35,25 @@ int main(int argc, char *argv[])
         root_context->setContextProperty("appDirectoryPath", QGuiApplication::applicationDirPath());
         root_context->setContextProperty("appExecutablePath", QGuiApplication::applicationFilePath());
 
-        QObject::connect(
-            &engine,
-            &QQmlApplicationEngine::objectCreationFailed,
-            &app,
-            []() { QCoreApplication::exit(-1); },
-            Qt::QueuedConnection);
+        QObject::connect(&engine,
+                         &QQmlApplicationEngine::objectCreationFailed,
+                         &engine,
+                         []() { qCritical() << "QML object creation failed"; });
+        QObject::connect(&engine,
+                         &QQmlApplicationEngine::warnings,
+                         [](const QList<QQmlError>& warnings)
+                         {
+                             for (const auto& w : warnings)
+                                 Logger::Log(w.toString().toStdString());
+                         });
         QObject::connect(&app, &QApplication::aboutToQuit, &app_launcher, &AppLauncher::quitRunningProcess);
-        engine.loadFromModule("Nemesis_App", "Main");
+
+        engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
+        if (engine.rootObjects().isEmpty())
+        {
+            Logger::Log(makeQrcDump());
+            throw std::runtime_error("No root QML objects loaded");
+        }
         return app.exec();
     }
     catch (const std::exception& ex)

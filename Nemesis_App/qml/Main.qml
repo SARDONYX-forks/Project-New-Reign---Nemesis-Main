@@ -24,7 +24,7 @@ Window {
         property color gradientTop: "#2C2C2C"
         property color gradientMiddle: "#1C1C1C"
         property color gradientBottom: "#0E0E0E"
-        
+
         property real blurOpacity: 0.75
     }
 
@@ -95,7 +95,6 @@ Window {
                 source: "qrc:/resources/logo-text.png"
                 fillMode: Image.PreserveAspectFit
                 opacity: 1
-
             }
         }
 
@@ -185,10 +184,10 @@ Window {
         priorityWidth = appConfig.getPriorityWidth();
         heightOffset = Math.max(minimumHeight, height);
 
-        modHandler.dataReady.connect(function(data) {
+        modHandler.dataReady.connect(function (data) {
             listModel.clear();
 
-            for(let item of data) {
+            for (let item of data) {
                 listModel.append(item);
                 modNameWidth = Math.max(modNameWidth, item["name"].length * 14);
                 authorWidth = Math.max(authorWidth, item["author"].length * 14);
@@ -208,19 +207,17 @@ Window {
 
         for (var i = 0; i < visualModel.count; ++i) {
             var item = visualModel.items.get(i);
-            args.push({mod_code: item.model.mod_code, checked: item.model.checked});
+            args.push({
+                mod_code: item.model.mod_code,
+                checked: item.model.checked
+            });
         }
 
         appConfig.setModListData(args);
     }
 
     function preloadEngine() {
-        let args = [
-                "-p"
-                , appConfig.getPlatform()
-                , "-pi"
-                , "-pr"
-            ];
+        let args = ["-p", appConfig.getPlatform(), "-pi", "-pr"];
 
         if (dataDirectory !== "") {
             args.push("-d");
@@ -238,13 +235,17 @@ Window {
     function setEdges(x, y) {
         edges = 0;
 
-        if(x < edgeOffest) edges |= Qt.LeftEdge;
+        if (x < edgeOffest)
+            edges |= Qt.LeftEdge;
 
-        if(x > (width - edgeOffest))  edges |= Qt.RightEdge;
+        if (x > (width - edgeOffest))
+            edges |= Qt.RightEdge;
 
-        if(y < edgeOffest) edges |= Qt.TopEdge;
+        if (y < edgeOffest)
+            edges |= Qt.TopEdge;
 
-        if(y > (height - edgeOffest)) edges |= Qt.BottomEdge;
+        if (y > (height - edgeOffest))
+            edges |= Qt.BottomEdge;
     }
 
     MouseArea {
@@ -254,19 +255,16 @@ Window {
         acceptedButtons: Qt.LeftButton
 
         cursorShape: {
-            return !containsMouse ? Qt.ArrowCursor:
-                   edges == 3 || edges == 12 ? Qt.SizeFDiagCursor :
-                   edges == 5 || edges == 10 ? Qt.SizeBDiagCursor :
-                   edges & 9 ? Qt.SizeVerCursor :
-                   edges & 6 ? Qt.SizeHorCursor : Qt.ArrowCursor;
+            return !containsMouse ? Qt.ArrowCursor : edges == 3 || edges == 12 ? Qt.SizeFDiagCursor : edges == 5 || edges == 10 ? Qt.SizeBDiagCursor : edges & 9 ? Qt.SizeVerCursor : edges & 6 ? Qt.SizeHorCursor : Qt.ArrowCursor;
         }
 
-        onPositionChanged: setEdges(mouseX, mouseY);
+        onPositionChanged: setEdges(mouseX, mouseY)
 
         onPressed: {
             setEdges(mouseX, mouseY);
 
-            if(!edges || !containsMouse) return;
+            if (!edges || !containsMouse)
+                return;
 
             startSystemResize(edges);
         }
@@ -289,7 +287,8 @@ Window {
         z: 1
 
         onPressed: {
-            if(!containsMouse) return;
+            if (!containsMouse)
+                return;
 
             startSystemResize(Qt.TopEdge | Qt.LeftEdge);
         }
@@ -312,19 +311,22 @@ Window {
         opacity: 0
 
         onEntered: {
-            if (contentZone.opacity != 1) return;
+            if (contentZone.opacity != 1)
+                return;
 
             topRightCorner.opacity = 1;
         }
 
         onExited: {
-            if (contentZone.opacity != 1) return;
+            if (contentZone.opacity != 1)
+                return;
 
             topRightCorner.opacity = 0.8;
         }
 
         onReleased: {
-            if(!containsMouse) return;
+            if (!containsMouse)
+                return;
 
             Qt.callLater(Qt.quit);
         }
@@ -353,7 +355,8 @@ Window {
         z: 1
 
         onPressed: {
-            if(!containsMouse) return;
+            if (!containsMouse)
+                return;
 
             startSystemResize(Qt.BottomEdge | Qt.LeftEdge);
         }
@@ -376,7 +379,8 @@ Window {
         z: 1
 
         onPressed: {
-            if(!containsMouse) return;
+            if (!containsMouse)
+                return;
 
             startSystemResize(Qt.BottomEdge | Qt.RightEdge);
         }
@@ -409,7 +413,8 @@ Window {
             }
 
             onPositionChanged: {
-                if (!dragArea.pressed) return;
+                if (!dragArea.pressed)
+                    return;
 
                 window.x += mouseX - mousePressedPosition.x;
                 window.y += mouseY - mousePressedPosition.y;
@@ -425,14 +430,14 @@ Window {
         property bool shiftHeld: false
         property int lastToggledIndex: -1
 
-        Keys.onPressed: (event) => {
+        Keys.onPressed: event => {
             if (event.key === Qt.Key_Shift) {
                 shiftHeld = true;
                 console.log("Shift key pressed");
             }
         }
 
-        Keys.onReleased: (event) => {
+        Keys.onReleased: event => {
             if (event.key === Qt.Key_Shift) {
                 shiftHeld = false;
                 console.log("Shift key released");
@@ -461,9 +466,18 @@ Window {
             Gradient {
                 id: rowBlockGradient
 
-                GradientStop { position: 0.0; color: theme.gradientTop }  // Top light color
-                GradientStop { position: 0.5; color: theme.gradientMiddle }  // Middle color
-                GradientStop { position: 1.0; color: theme.gradientBottom }  // Bottom darker color
+                GradientStop {
+                    position: 0.0
+                    color: theme.gradientTop
+                }  // Top light color
+                GradientStop {
+                    position: 0.5
+                    color: theme.gradientMiddle
+                }  // Middle color
+                GradientStop {
+                    position: 1.0
+                    color: theme.gradientBottom
+                }  // Bottom darker color
             }
 
             Component {
@@ -550,7 +564,6 @@ Window {
                         Drag.hotSpot.x: width / 2
                         Drag.hotSpot.y: height / 2
 
-
                         states: State {
                             when: dragArea.held
 
@@ -578,7 +591,7 @@ Window {
                             width: parent.width
                             height: parent.height
 
-                            NemesisCheckBox  {
+                            NemesisCheckBox {
                                 id: checkbox
 
                                 Layout.alignment: Qt.AlignVCenter
@@ -590,7 +603,7 @@ Window {
                                 height: 20
                                 z: 15
 
-                                onToggled: (checked) => {
+                                onToggled: checked => {
                                     var curIndex = dragArea.DelegateModel.itemsIndex;
                                     var itemData;
 
@@ -618,7 +631,7 @@ Window {
                                 }
                             }
 
-                            Text  {
+                            Text {
                                 font.pixelSize: 20
 
                                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
@@ -636,7 +649,7 @@ Window {
 
                                 height: Math.max(authorText.height, indexText.height)
 
-                                Text  {
+                                Text {
                                     id: authorText
 
                                     anchors.verticalCenter: parent.verticalCenter
@@ -647,7 +660,7 @@ Window {
                                     color: "white"
                                 }
 
-                                Text  {
+                                Text {
                                     id: indexText
 
                                     font.pixelSize: 20
@@ -667,11 +680,9 @@ Window {
                             margins: 10
                         }
 
-                        onEntered: (drag) => {
-                            visualModel.items.move(
-                                    drag.source.DelegateModel.itemsIndex,
-                                    dragArea.DelegateModel.itemsIndex);
-                                    
+                        onEntered: drag => {
+                            visualModel.items.move(drag.source.DelegateModel.itemsIndex, dragArea.DelegateModel.itemsIndex);
+
                             saveDisplayData();
                         }
                     }
@@ -713,7 +724,8 @@ Window {
 
                     // Required to force drag update on scroll
                     onContentYChanged: {
-                        if (dragItem == undefined) return;
+                        if (dragItem == undefined)
+                            return;
 
                         dragItem.Drag.hotSpot.y += 1;
                         dragItem.Drag.hotSpot.y -= 1;
@@ -743,34 +755,32 @@ Window {
                 state: "DONE"
 
                 function start() {
-                    if (!button.enabled) return;
+                    if (!button.enabled)
+                        return;
 
                     startZone.state = "PROCESSING";
                     outputArea.text = "";
 
                     console.log("========= START ===========");
-                    
+
                     if (!appConfig.isDevMode()) {
                         let mods = [];
-                        
+
                         for (var i = 0; i < visualModel.count; ++i) {
                             var item = visualModel.items.get(i);
                             console.log(item.model.mod_code + ": " + item.model.checked.toString());
 
-                            if (!item.model.checked) continue;
+                            if (!item.model.checked)
+                                continue;
 
                             mods.push(item.model.mod_code);
                         }
-                    
+
                         console.log("preloaded");
                         appLauncher.writeToProgram(mods);
                     } else {
-                        let args = [
-                                "-p"
-                                , appConfig.getPlatform()
-                                , "-pi"
-                            ];
-                            
+                        let args = ["-p", appConfig.getPlatform(), "-pi"];
+
                         if (dataDirectory !== "") {
                             args.push("-d");
                             args.push(dataDirectory);
@@ -780,18 +790,19 @@ Window {
                             args.push("-o");
                             args.push(stageDirectory);
                         }
-                        
+
                         args.push("-m");
 
                         for (var i = 0; i < visualModel.count; ++i) {
                             var item = visualModel.items.get(i);
                             console.log(item.model.mod_code + ": " + item.model.checked.toString());
 
-                            if (!item.model.checked) continue;
+                            if (!item.model.checked)
+                                continue;
 
                             args.push(item.model.mod_code);
                         }
-                    
+
                         appLauncher.launchProgram(enginePath, args, false);
                     }
 
@@ -849,7 +860,8 @@ Window {
                     }
 
                     onClicked: {
-                        if (!effective) return;
+                        if (!effective)
+                            return;
 
                         startZone.start();
                         progressLoader.start();
@@ -888,7 +900,7 @@ Window {
                             target: button
                             visible: true
                         }
-                        
+
                         PropertyChanges {
                             target: progressBar
                             width: button.width
@@ -934,7 +946,7 @@ Window {
                             buttonBorderColor: "transparent"
                             effective: false
                         }
-                        
+
                         PropertyChanges {
                             target: proxyBorder
                             opacity: 0
@@ -988,7 +1000,7 @@ Window {
                                 to: 1
                                 duration: 100
                             }
-                            
+
                             PropertyAction {
                                 target: proxyBorder
                                 property: "opacity"
@@ -1011,7 +1023,7 @@ Window {
                     Transition {
                         from: "DONE"
                         to: "PROCESSING"
-                        
+
                         PropertyAction {
                             target: proxyBorder
                             property: "opacity"
@@ -1155,7 +1167,7 @@ Window {
                                 property: "timing"
                                 to: 1.0
                                 duration: 1500
-                                easing.type: Easing.InOutQuint;
+                                easing.type: Easing.InOutQuint
                             }
 
                             PauseAnimation {
@@ -1177,7 +1189,7 @@ Window {
                                     property: "timing"
                                     to: 1.0
                                     duration: 1000
-                                    easing.type: Easing.InOutQuint;
+                                    easing.type: Easing.InOutQuint
                                 }
                             }
 
@@ -1240,7 +1252,7 @@ Window {
                             property: "width"
                             duration: 1000
                             easing.type: Easing.InOutQuint
-                            
+
                             onFinished: {
                                 if (progressBarFill.width == progressBar.width) {
                                     startZone.finish();
@@ -1330,7 +1342,7 @@ Window {
             Connections {
                 target: appLauncher
 
-                onOutputReceived: (output) => {
+                function onOutputReceived(output) {
                     if (progressBarFill.completed) {
                         progressBarFill.completeText += output;
                         return;
@@ -1339,16 +1351,16 @@ Window {
                     outputArea.text += output;
                 }
 
-                onErrorReceived: (error) => {
+                function onErrorReceived(error) {
                     progressBarAnimation.stop();
                     outputArea.text += error;
                     startZone.finish();
                 }
 
-                onFinishedReceived: {
+                function onFinishedReceived() {
                 }
 
-                onProgressUp: (step, max) => {
+                function onProgressUp(step, max) {
                     progressBarAnimation.stop();
                     progressBarFill.completed = step / max == 1;
                     progressBarAnimation.to = progressBar.width * step / max;
